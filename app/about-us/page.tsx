@@ -84,7 +84,7 @@ export default function AboutPage() {
               </p>
 
               <p className="text-slate-300 text-lg mt-8">
-                Whether you're a seasoned contractor, a construction estimator, or a DIY enthusiast tackling your first concrete project, our calculator provides the accuracy and ease of use you need to get the job done right.
+                Whether you are a seasoned contractor, a construction estimator, or a DIY enthusiast tackling your first concrete project, our calculator provides the accuracy and ease of use you need to get the job done right.
               </p>
             </div>
           </article>

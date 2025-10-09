@@ -1,13 +1,13 @@
 import { Building2, Calculator, Ruler } from 'lucide-react';
 import React from 'react'
 // import { Button } from '../ui/button';
-import { HeroCTA } from './HeroCTA';
+// import { HeroCTA } from './HeroCTA';
 // import { AdSlot } from './AdSlot';
 
 export default function Hero() {
-  const scrollToCalculator = () => {
-    document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' });
-  };
+  // const scrollToCalculator = () => {
+  //   document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' });
+  // };
   
   return (
     <>
