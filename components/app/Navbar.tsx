@@ -2,7 +2,7 @@
 
 import { Calculator } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ThemeToggle from "@/components/app/ThemeToggle";
+
 
 
 export default function Navbar() {
@@ -20,7 +20,7 @@ export default function Navbar() {
         </div>
         
         <div className="flex items-center gap-2">
-          <ThemeToggle />
+          
           <Button 
             onClick={scrollToCalculator}
             className="gradient-primary font-semibold"
