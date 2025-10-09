@@ -1,3 +1,4 @@
+// components/calculators/TankTrenchConcreteCalc.tsx
 "use client";
 
 import * as React from "react";
@@ -9,7 +10,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { Copy, RotateCcw, Info } from "lucide-react";
 
 // -----------------------------
@@ -277,7 +278,7 @@ export default function TrenchTankConcreteCalc() {
           {/* Global Controls */}
           <div className="mb-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
             <Field label="Units">
-              <Select value={unit} onValueChange={(v: LinearUnit) => setUnit(v)}>
+              <Select value={unit} onValueChange={(v) => setUnit(v as LinearUnit)}>
                 <SelectTrigger className="bg-slate-900 w-full">
                   <SelectValue placeholder="Choose unit" />
                 </SelectTrigger>

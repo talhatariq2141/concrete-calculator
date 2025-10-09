@@ -1,4 +1,4 @@
-// components/FootingConcreteCalc.tsx
+// components/calculators/FootingConcreteCalc.tsx
 "use client";
 
 import React, { useMemo, useState } from "react";
@@ -23,7 +23,8 @@ const inputBase =
   "bg-slate-900 text-white placeholder-slate-400 border border-transparent focus:border-teal-400 focus:outline-none rounded-lg h-11 px-3 w-full";
 const labelBase = "text-white text-sm font-medium";
 const group = "grid grid-cols-1 sm:grid-cols-2 gap-4";
-const card =  "bg-slate-800 rounded-2xl p-2 md:p-8 shadow-xl border border-slate-800";
+const card =
+  "bg-slate-800 rounded-2xl p-2 md:p-8 shadow-xl border border-slate-800";
 
 /* ----------------------------- */
 /* Types                         */
@@ -135,7 +136,7 @@ const UnitSelect = ({
   "aria-label": ariaLabel,
 }: {
   value: string;
-  onValueChange: (v: any) => void;
+  onValueChange: (v: string) => void; // ← no 'any'
   options: { value: string; label: string }[];
   "aria-label"?: string;
 }) => (
@@ -187,7 +188,7 @@ export default function FootingConcreteCalc() {
     const D = parseFloat(rect.depth || "0");
     const waste = Math.max(0, parseFloat(rect.wastePct || "0"));
 
-    if (L <= 0 || W <= 0 || D <= 0) return { m3: 0, withWaste: 0, ok: false };
+    if (L <= 0 || W <= 0 || D <= 0) return { m3: 0, withWaste: 0, ok: false as const };
 
     const Lm = toMeters(L, rect.unit);
     const Wm = toMeters(W, rect.unit);
@@ -195,7 +196,7 @@ export default function FootingConcreteCalc() {
 
     const m3 = Lm * Wm * Dm;
     const withWaste = m3 * (1 + waste / 100);
-    return { m3, withWaste, ok: true };
+    return { m3, withWaste, ok: true as const };
   }, [rect]);
 
   const circular = useMemo(() => {
@@ -203,33 +204,19 @@ export default function FootingConcreteCalc() {
     const D = parseFloat(circ.depth || "0");
     const waste = Math.max(0, parseFloat(circ.wastePct || "0"));
 
-    if (dia <= 0 || D <= 0) return { m3: 0, withWaste: 0, ok: false };
+    if (dia <= 0 || D <= 0) return { m3: 0, withWaste: 0, ok: false as const };
 
     const r_m = toMeters(dia, circ.unit) / 2;
     const d_m = toMeters(D, circ.unit);
 
     const m3 = Math.PI * r_m * r_m * d_m;
     const withWaste = m3 * (1 + waste / 100);
-    return { m3, withWaste, ok: true };
+    return { m3, withWaste, ok: true as const };
   }, [circ]);
 
   const active = tab === "rectangular" ? rectangular : circular;
 
-  const outputs = useMemo(() => {
-    const base = active.withWaste || 0;
-    return {
-      m3: m3To(base, "m3"),
-      ft3: m3To(base, "ft3"),
-      yd3: m3To(base, "yd3"),
-    };
-  }, [active]);
-
   const disabled = !(tab === "rectangular" ? rectangular.ok : circular.ok);
-
-  const resetAll = () => {
-    setRect({ length: "", width: "", depth: "", unit: "meters", wastePct: "5" });
-    setCirc({ diameter: "", depth: "", unit: "meters", wastePct: "5" });
-  };
 
   /* ----------------------------- */
   /* Render (UI only changes)      */
@@ -291,7 +278,7 @@ export default function FootingConcreteCalc() {
                     <UnitSelect
                       aria-label="Length unit"
                       value={rect.unit}
-                      onValueChange={(v: LinearUnit) => setRect((s) => ({ ...s, unit: v }))}
+                      onValueChange={(v) => setRect((s) => ({ ...s, unit: v as LinearUnit }))}
                       options={[
                         { value: "meters", label: "m" },
                         { value: "centimeters", label: "cm" },
@@ -313,7 +300,7 @@ export default function FootingConcreteCalc() {
                     <UnitSelect
                       aria-label="Width unit"
                       value={rect.unit}
-                      onValueChange={(v: LinearUnit) => setRect((s) => ({ ...s, unit: v }))}
+                      onValueChange={(v) => setRect((s) => ({ ...s, unit: v as LinearUnit }))}
                       options={[
                         { value: "meters", label: "m" },
                         { value: "centimeters", label: "cm" },
@@ -335,7 +322,7 @@ export default function FootingConcreteCalc() {
                     <UnitSelect
                       aria-label="Depth unit"
                       value={rect.unit}
-                      onValueChange={(v: LinearUnit) => setRect((s) => ({ ...s, unit: v }))}
+                      onValueChange={(v) => setRect((s) => ({ ...s, unit: v as LinearUnit }))}
                       options={[
                         { value: "meters", label: "m" },
                         { value: "centimeters", label: "cm" },
@@ -375,7 +362,7 @@ export default function FootingConcreteCalc() {
                     <UnitSelect
                       aria-label="Diameter unit"
                       value={circ.unit}
-                      onValueChange={(v: LinearUnit) => setCirc((s) => ({ ...s, unit: v }))}
+                      onValueChange={(v) => setCirc((s) => ({ ...s, unit: v as LinearUnit }))}
                       options={[
                         { value: "meters", label: "m" },
                         { value: "centimeters", label: "cm" },
@@ -397,7 +384,7 @@ export default function FootingConcreteCalc() {
                     <UnitSelect
                       aria-label="Depth unit"
                       value={circ.unit}
-                      onValueChange={(v: LinearUnit) => setCirc((s) => ({ ...s, unit: v }))}
+                      onValueChange={(v) => setCirc((s) => ({ ...s, unit: v as LinearUnit }))}
                       options={[
                         { value: "meters", label: "m" },
                         { value: "centimeters", label: "cm" },
@@ -429,7 +416,7 @@ export default function FootingConcreteCalc() {
               <UnitSelect
                 aria-label="Output unit"
                 value={displayUnit}
-                onValueChange={(v: VolumeUnit) => setDisplayUnit(v)}
+                onValueChange={(v) => setDisplayUnit(v as VolumeUnit)}
                 options={[
                   { value: "m3", label: "m³" },
                   { value: "yd3", label: "yd³" },
@@ -454,7 +441,8 @@ export default function FootingConcreteCalc() {
               <div className="rounded-xl bg-slate-800 p-3 border border-slate-700">
                 <p className="text-xs text-white/60">Waste Added</p>
                 <p className="text-lg font-semibold text-white">
-                  {fmt(m3To((active.withWaste || 0) - (active.m3 || 0), displayUnit))} {displayUnit}
+                  {fmt(m3To((active.withWaste || 0) - (active.m3 || 0), displayUnit))}{" "}
+                  {displayUnit}
                 </p>
               </div>
             </div>
@@ -506,9 +494,7 @@ export default function FootingConcreteCalc() {
                 to meters, compute <code>π × r² × D</code> with <code>r = diameter / 2</code>. Waste
                 is then added.
               </p>
-              <p>
-                Results default to m³ and can be toggled to ft³ or yd³ using the unit selector.
-              </p>
+              <p>Results default to m³ and can be toggled to ft³ or yd³ using the unit selector.</p>
             </div>
           </div>
         </div>

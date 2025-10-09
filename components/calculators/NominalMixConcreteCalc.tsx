@@ -1,3 +1,4 @@
+// components/calculators/NominalMixConcreteCalc.tsx
 "use client";
 
 import React from "react";
@@ -5,10 +6,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
-// import { Slider } from "@/components/ui/slider";
+// import { Slider } from "@/components/ui/slider"; // kept commented out to avoid "unused" warning
 import { Info } from "lucide-react";
 
 /*
@@ -43,14 +50,10 @@ import { Info } from "lucide-react";
   • All values are estimates—always verify with site conditions.
 */
 
-// -------------------------- Types --------------------------
 type UnitVol = "m3" | "ft3" | "yd3";
-
 type GradeKey = "M5" | "M7.5" | "M10" | "M15" | "M20" | "M25";
-
 type Mix = { c: number; s: number; a: number; wc: number };
 
-// --------------------- Constants / Data --------------------
 const MIX_MAP: Record<GradeKey, Mix> = {
   M5: { c: 1, s: 5, a: 10, wc: 0.65 },
   "M7.5": { c: 1, s: 4, a: 8, wc: 0.62 },
@@ -66,62 +69,59 @@ const VOL_TO_M3: Record<UnitVol, number> = {
   yd3: 0.764555, // 1 yd³ in m³
 };
 
-// ------------------------- Helpers -------------------------
 function fmt(n: number, d = 2) {
-  if (!isFinite(n)) return "-";
+  if (!Number.isFinite(n)) return "-";
   return new Intl.NumberFormat(undefined, { maximumFractionDigits: d }).format(n);
 }
-
 function clamp(n: number, min: number, max: number) {
   return Math.min(Math.max(n, min), max);
 }
 
-// ------------------------ Component ------------------------
 export default function NominalMixConcreteCalc() {
-  // ------- Inputs -------
+  // Inputs
   const [grade, setGrade] = React.useState<GradeKey>("M20");
   const [unitVol, setUnitVol] = React.useState<UnitVol>("m3");
   const [inputVol, setInputVol] = React.useState<string>("1");
 
   const [dryFactor, setDryFactor] = React.useState<number>(1.54);
-  const [wastagePct, setWastagePct] = React.useState<number>(2); // % extra materials
+  const [wastagePct, setWastagePct] = React.useState<number>(2); // %
 
   const [bagSizeKg, setBagSizeKg] = React.useState<number>(50);
 
-  const [rhoCement, setRhoCement] = React.useState<number>(1440); // kg/m³ (bulk for volume calc)
+  const [rhoCement, setRhoCement] = React.useState<number>(1440); // kg/m³
   const [rhoSand, setRhoSand] = React.useState<number>(1600); // kg/m³
   const [rhoAgg, setRhoAgg] = React.useState<number>(1500); // kg/m³
 
-  const [wcOverride, setWcOverride] = React.useState<string>(""); // allow custom w/c
+  const [wcOverride, setWcOverride] = React.useState<string>(""); // custom w/c
 
-  const [moistSandPct, setMoistSandPct] = React.useState<number>(2); // % surface moisture
-  const [moistAggPct, setMoistAggPct] = React.useState<number>(1); // % surface moisture
+  const [moistSandPct, setMoistSandPct] = React.useState<number>(2); // %
+  const [moistAggPct, setMoistAggPct] = React.useState<number>(1); // %
 
   const [showAdvanced, setShowAdvanced] = React.useState<boolean>(false);
   const [showNotes, setShowNotes] = React.useState<boolean>(false);
 
-  // ------- Derived mix & w/c -------
+  // Derived mix + w/c
   const mix = MIX_MAP[grade];
   const wc = wcOverride !== "" ? clamp(parseFloat(wcOverride) || mix.wc, 0.3, 0.75) : mix.wc;
   const partsSum = mix.c + mix.s + mix.a;
 
-  // ------- Core calculation -------
+  // Core calculation
   const result = React.useMemo(() => {
     const volEntered = parseFloat(inputVol);
-    const volM3 = (isFinite(volEntered) ? Math.max(volEntered, 0) : 0) * VOL_TO_M3[unitVol];
+    const volM3 = (Number.isFinite(volEntered) ? Math.max(volEntered, 0) : 0) * VOL_TO_M3[unitVol];
 
     // Dry volume used for batching (includes voids) + optional wastage
     const dryVol = volM3 * dryFactor;
     const dryVolWithWastage = dryVol * (1 + wastagePct / 100);
 
     // Volume split by nominal mix parts
-    const volCement = (mix.c / partsSum) * dryVolWithWastage; // m³ of cement (bulk for calc)
+    const volCement = (mix.c / partsSum) * dryVolWithWastage; // m³ of cement (bulk)
     const volSand = (mix.s / partsSum) * dryVolWithWastage; // m³
     const volAgg = (mix.a / partsSum) * dryVolWithWastage; // m³
 
     // Convert volumes to masses using editable bulk densities
     const massCementKg = volCement * rhoCement; // kg
-    const massSandKg = volSand * rhoSand; // kg (SSD basis approx.)
+    const massSandKg = volSand * rhoSand; // kg
     const massAggKg = volAgg * rhoAgg; // kg
 
     // Bags
@@ -130,7 +130,7 @@ export default function NominalMixConcreteCalc() {
     // Water from w/c ratio
     const waterKg = wc * massCementKg; // kg ~ liters
 
-    // Moisture corrections: add moisture to aggregates, subtract same water
+    // Moisture corrections
     const addedWaterFromSand = (moistSandPct / 100) * massSandKg;
     const addedWaterFromAgg = (moistAggPct / 100) * massAggKg;
 
@@ -157,13 +157,27 @@ export default function NominalMixConcreteCalc() {
       totalAddedWater,
       adjWaterKg,
     };
-  }, [inputVol, unitVol, dryFactor, wastagePct, mix, partsSum, rhoCement, rhoSand, rhoAgg, bagSizeKg, wc, moistSandPct, moistAggPct]);
+  }, [
+    inputVol,
+    unitVol,
+    dryFactor,
+    wastagePct,
+    mix,
+    partsSum,
+    rhoCement,
+    rhoSand,
+    rhoAgg,
+    bagSizeKg,
+    wc,
+    moistSandPct,
+    moistAggPct,
+  ]);
 
-  // ------- Display helpers -------
+  // Display helpers
   const volToFt3 = (m3: number) => m3 / VOL_TO_M3.ft3;
   const volToYd3 = (m3: number) => m3 / VOL_TO_M3.yd3;
 
-  // ------- UI -------
+  // UI
   return (
     <Card className="border shadow-sm rounded-2xl bg-slate-800 p-3">
       <CardHeader className="border-b bg-[var(--brand-muted)] rounded-t-2xl">
@@ -184,13 +198,14 @@ export default function NominalMixConcreteCalc() {
               <div>
                 <Label className="text-[var(--brand-primary)]">Grade</Label>
                 <Select value={grade} onValueChange={(v) => setGrade(v as GradeKey)}>
-                  <SelectTrigger className="mt-2 bg-slate-900 t-1">
+                  <SelectTrigger className="mt-2 bg-slate-900">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {Object.keys(MIX_MAP).map((g) => (
                       <SelectItem key={g} value={g}>
-                        {g} ( {MIX_MAP[g as GradeKey].c}:{MIX_MAP[g as GradeKey].s}:{MIX_MAP[g as GradeKey].a} )
+                        {g} ( {MIX_MAP[g as GradeKey].c}:{MIX_MAP[g as GradeKey].s}:
+                        {MIX_MAP[g as GradeKey].a} )
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -231,7 +246,9 @@ export default function NominalMixConcreteCalc() {
                     className="mt-2 bg-slate-900"
                   />
                 </div>
-                <p className="text-xs text-[var(--brand-subtle)] mt-1">Leave blank to use grade default.</p>
+                <p className="text-xs text-[var(--brand-subtle)] mt-1">
+                  Leave blank to use grade default.
+                </p>
               </div>
             </div>
 
@@ -247,7 +264,9 @@ export default function NominalMixConcreteCalc() {
                     className="mt-2 bg-slate-900"
                   />
                 </div>
-                <p className="text-xs text-[var(--brand-subtle)] mt-1">Typical 1.50–1.57; default 1.54.</p>
+                <p className="text-xs text-[var(--brand-subtle)] mt-1">
+                  Typical 1.50–1.57; default 1.54.
+                </p>
               </div>
               <div>
                 <Label className="text-[var(--brand-primary)]">Wastage (%)</Label>
@@ -259,7 +278,9 @@ export default function NominalMixConcreteCalc() {
                     className="mt-2 bg-slate-900"
                   />
                 </div>
-                <p className="text-xs text-[var(--brand-subtle)] mt-1">Extra allowance for spillage, etc.</p>
+                <p className="text-xs text-[var(--brand-subtle)] mt-1">
+                  Extra allowance for spillage, etc.
+                </p>
               </div>
               <div>
                 <Label className="text-[var(--brand-primary)]">Bag Size (kg)</Label>
@@ -316,7 +337,9 @@ export default function NominalMixConcreteCalc() {
                     className="mt-2 bg-slate-900"
                   />
                 </div>
-                <p className="text-xs text-[var(--brand-subtle)] mt-1">Free surface moisture in fine aggregate.</p>
+                <p className="text-xs text-[var(--brand-subtle)] mt-1">
+                  Free surface moisture in fine aggregate.
+                </p>
               </div>
               <div>
                 <Label className="text-[var(--brand-primary)]">Aggregate Moisture (%)</Label>
@@ -328,20 +351,26 @@ export default function NominalMixConcreteCalc() {
                     className="mt-2 bg-slate-900"
                   />
                 </div>
-                <p className="text-xs text-[var(--brand-subtle)] mt-1">Free surface moisture in coarse aggregate.</p>
+                <p className="text-xs text-[var(--brand-subtle)] mt-1">
+                  Free surface moisture in coarse aggregate.
+                </p>
               </div>
             </div>
 
             {/* Advanced toggle */}
             <div className="flex items-center gap-3 pt-2">
               <Switch checked={showAdvanced} onCheckedChange={setShowAdvanced} id="adv" />
-              <Label htmlFor="adv" className="text-[var(--brand-primary)]">Show derived volumes & SSD corrections</Label>
+              <Label htmlFor="adv" className="text-[var(--brand-primary)]">
+                Show derived volumes & SSD corrections
+              </Label>
             </div>
 
             {/* Notes toggle */}
             <div className="flex items-center gap-3">
               <Switch checked={showNotes} onCheckedChange={setShowNotes} id="notes" />
-              <Label htmlFor="notes" className="text-[var(--brand-primary)]">Show notes & assumptions</Label>
+              <Label htmlFor="notes" className="text-[var(--brand-primary)]">
+                Show notes & assumptions
+              </Label>
             </div>
           </div>
 
@@ -349,16 +378,21 @@ export default function NominalMixConcreteCalc() {
           <div className="lg:col-span-1">
             <Card className="border rounded-xl shadow-sm bg-slate-900">
               <CardHeader className="bg-[var(--brand-muted)] rounded-t-xl">
-                <CardTitle className="text-lg font-semibold text-teal-400">Results</CardTitle>
+                <CardTitle className="text-lg font-semibold text-teal-400">
+                  Results
+                </CardTitle>
               </CardHeader>
               <CardContent className="pt-4 space-y-3">
                 <div className="text-sm text-[var(--brand-subtle)]">
-                  <div className="flex items-center gap-2"><Info className="h-4 w-4" />
-                    <span>Mix {grade}: {mix.c}:{mix.s}:{mix.a} (w/c {fmt(wc, 2)})</span>
+                  <div className="flex items-center gap-2">
+                    <Info className="h-4 w-4" />
+                    <span>
+                      Mix {grade}: {mix.c}:{mix.s}:{mix.a} (w/c {fmt(wc, 2)})
+                    </span>
                   </div>
                 </div>
 
-                <Tabs defaultValue="bags" className="bg-teal-400w-full">
+                <Tabs defaultValue="bags" className="w-full">
                   <TabsList className="grid grid-cols-3">
                     <TabsTrigger value="bags">Bags</TabsTrigger>
                     <TabsTrigger value="mass">Mass</TabsTrigger>
@@ -366,7 +400,10 @@ export default function NominalMixConcreteCalc() {
                   </TabsList>
 
                   <TabsContent value="bags" className="mt-3">
-                    <ResultRow label={`Cement (bags @ ${fmt(bagSizeKg,0)} kg)`} value={fmt(result.bags, 2)} />
+                    <ResultRow
+                      label={`Cement (bags @ ${fmt(bagSizeKg, 0)} kg)`}
+                      value={fmt(result.bags, 2)}
+                    />
                     <ResultRow label="Water (L)" value={fmt(result.adjWaterKg, 0)} />
                   </TabsContent>
 
@@ -384,42 +421,89 @@ export default function NominalMixConcreteCalc() {
                     <div className="h-px bg-[var(--brand-border)] my-2" />
                     <ResultRow label="Input Volume (m³)" value={fmt(result.volM3, 3)} />
                     <ResultRow label="Dry Volume (m³)" value={fmt(result.dryVol, 3)} />
-                    <ResultRow label={`Dry + Wastage ${fmt(wastagePct,0)}% (m³)`} value={fmt(result.dryVolWithWastage, 3)} />
+                    <ResultRow
+                      label={`Dry + Wastage ${fmt(wastagePct, 0)}% (m³)`}
+                      value={fmt(result.dryVolWithWastage, 3)}
+                    />
                     <div className="text-xs text-[var(--brand-subtle)] mt-2">
-                        <p>≈ {fmt(volToFt3(result.dryVolWithWastage), 0)} ft³ • {fmt(volToYd3(result.dryVolWithWastage), 2)} yd³</p>
+                      <p>
+                        ≈ {fmt(volToFt3(result.dryVolWithWastage), 0)} ft³ •{" "}
+                        {fmt(volToYd3(result.dryVolWithWastage), 2)} yd³
+                      </p>
                     </div>
                   </TabsContent>
-                  </Tabs>
+                </Tabs>
 
                 {showAdvanced && (
-                <div className="pt-3 border-t">
-                    <p className="text-sm font-medium text-[var(--brand-primary)]">Moisture & Water Adjustments</p>
+                  <div className="pt-3 border-t">
+                    <p className="text-sm font-medium text-[var(--brand-primary)]">
+                      Moisture & Water Adjustments
+                    </p>
                     <div className="mt-2 space-y-1 text-sm text-[var(--brand-subtle)]">
-                    <div className="flex justify-between"><span>Water before adj. (L)</span><span>{fmt(result.waterKg, 0)}</span></div>
-                    <div className="flex justify-between"><span>Water from aggregates (L)</span><span>{fmt(result.totalAddedWater, 0)}</span></div>
-                    <div className="flex justify-between"><span>Water after adj. (L)</span><span>{fmt(result.adjWaterKg, 0)}</span></div>
+                      <div className="flex justify-between">
+                        <span>Water before adj. (L)</span>
+                        <span>{fmt(result.waterKg, 0)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Water from aggregates (L)</span>
+                        <span>{fmt(result.totalAddedWater, 0)}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Water after adj. (L)</span>
+                        <span>{fmt(result.adjWaterKg, 0)}</span>
+                      </div>
                     </div>
-                </div>
-            )}
+                  </div>
+                )}
 
                 {showNotes && (
-                <div className="pt-3 border-t text-xs text-[var(--brand-subtle)] space-y-2">
+                  <div className="pt-3 border-t text-xs text-[var(--brand-subtle)] space-y-2">
                     <p>
-                    This tool estimates quantities for nominal mixes using volume batching. For design mixes or structural members with strict strength requirements, use mix design as per IS 10262 / ACI.
+                      This tool estimates quantities for nominal mixes using volume batching. For
+                      design mixes or structural members with strict strength requirements, use mix
+                      design as per IS 10262 / ACI.
                     </p>
                     <ul className="list-disc pl-5 space-y-1">
-                    <li>Dry volume factor typically 1.50–1.57 to account for voids & bulking.</li>
-                    <li>W/C ratios are starting points; adjust for required workability & durability.</li>
-                    <li>Bulk densities vary by source; edit as per local materials.</li>
-                    <li>Moisture corrections assume free surface moisture; SSD conditions differ.</li>
+                      <li>
+                        Dry volume factor typically 1.50–1.57 to account for voids & bulking.
+                      </li>
+                      <li>
+                        W/C ratios are starting points; adjust for required workability &
+                        durability.
+                      </li>
+                      <li>Bulk densities vary by source; edit as per local materials.</li>
+                      <li>
+                        Moisture corrections assume free surface moisture; SSD conditions differ.
+                      </li>
                     </ul>
-                </div>
+                  </div>
                 )}
 
                 <div className="pt-4">
                   <Button
                     className="w-full bg-[var(--brand-accent)] hover:bg-[var(--brand-accent-dark)]"
-                    onClick={() => navigator.clipboard?.writeText(JSON.stringify({ grade, unitVol, inputVol, dryFactor, wastagePct, bagSizeKg, rhoCement, rhoSand, rhoAgg, wc, moistSandPct, moistAggPct }, null, 2))}
+                    onClick={() =>
+                      navigator.clipboard?.writeText(
+                        JSON.stringify(
+                          {
+                            grade,
+                            unitVol,
+                            inputVol,
+                            dryFactor,
+                            wastagePct,
+                            bagSizeKg,
+                            rhoCement,
+                            rhoSand,
+                            rhoAgg,
+                            wc,
+                            moistSandPct,
+                            moistAggPct,
+                          },
+                          null,
+                          2
+                        )
+                      )
+                    }
                   >
                     Copy Inputs JSON
                   </Button>
@@ -433,7 +517,6 @@ export default function NominalMixConcreteCalc() {
   );
 }
 
-// ---------------------- Small Components ----------------------
 function ResultRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between text-sm">

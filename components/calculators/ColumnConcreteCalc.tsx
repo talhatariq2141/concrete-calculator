@@ -101,9 +101,7 @@ const Field = ({
       {label}
     </Label>
     {children}
-    {hint ? (
-      <p className="text-xs text-slate-400">{hint}</p>
-    ) : null}
+    {hint ? <p className="text-xs text-slate-400">{hint}</p> : null}
   </div>
 );
 
@@ -139,7 +137,7 @@ const UnitSelect = ({
   "aria-label": ariaLabel,
 }: {
   value: string;
-  onValueChange: (v: any) => void;
+  onValueChange: (v: string) => void; // <-- no 'any'
   options: { value: string; label: string }[];
   "aria-label"?: string;
 }) => (
@@ -195,7 +193,7 @@ export default function ColumnConcreteCalc() {
     const waste = Math.max(0, parseFloat(rect.wastePct || "0"));
 
     if (L <= 0 || W <= 0 || H <= 0 || N <= 0)
-      return { perCol: 0, netTotal: 0, withWasteTotal: 0, ok: false };
+      return { perCol: 0, netTotal: 0, withWasteTotal: 0, ok: false as const };
 
     const Lm = toMeters(L, rect.unit);
     const Wm = toMeters(W, rect.unit);
@@ -205,7 +203,7 @@ export default function ColumnConcreteCalc() {
     const netTotal = perCol * N;
     const withWasteTotal = netTotal * (1 + waste / 100);
 
-    return { perCol, netTotal, withWasteTotal, ok: true, count: N, waste };
+    return { perCol, netTotal, withWasteTotal, ok: true as const, count: N, waste };
   }, [rect]);
 
   const circular = useMemo(() => {
@@ -215,7 +213,7 @@ export default function ColumnConcreteCalc() {
     const waste = Math.max(0, parseFloat(circ.wastePct || "0"));
 
     if (D <= 0 || H <= 0 || N <= 0)
-      return { perCol: 0, netTotal: 0, withWasteTotal: 0, ok: false };
+      return { perCol: 0, netTotal: 0, withWasteTotal: 0, ok: false as const };
 
     const r_m = toMeters(D, circ.unit) / 2;
     const h_m = toMeters(H, circ.unit);
@@ -224,35 +222,10 @@ export default function ColumnConcreteCalc() {
     const netTotal = perCol * N;
     const withWasteTotal = netTotal * (1 + waste / 100);
 
-    return { perCol, netTotal, withWasteTotal, ok: true, count: N, waste };
+    return { perCol, netTotal, withWasteTotal, ok: true as const, count: N, waste };
   }, [circ]);
 
   const active = tab === "rectangular" ? rectangular : circular;
-
-  const outputs = useMemo(() => {
-    const net = active.netTotal || 0;
-    const withWaste = active.withWasteTotal || 0;
-    const added = withWaste - net;
-
-    return {
-      net_m3: net,
-      withWaste_m3: withWaste,
-      added_m3: Math.max(0, added),
-      net: { m3: m3To(net, "m3"), ft3: m3To(net, "ft3"), yd3: m3To(net, "yd3") },
-      withWaste: {
-        m3: m3To(withWaste, "m3"),
-        ft3: m3To(withWaste, "ft3"),
-        yd3: m3To(withWaste, "yd3"),
-      },
-      added: {
-        m3: m3To(Math.max(0, added), "m3"),
-        ft3: m3To(Math.max(0, added), "ft3"),
-        yd3: m3To(Math.max(0, added), "yd3"),
-      },
-    };
-  }, [active]);
-
-  const disabled = !(tab === "rectangular" ? rectangular.ok : circular.ok);
 
   const resetAll = () => {
     setRect({
@@ -330,7 +303,7 @@ export default function ColumnConcreteCalc() {
                   <UnitSelect
                     aria-label="Length unit"
                     value={rect.unit}
-                    onValueChange={(v: LinearUnit) => setRect((s) => ({ ...s, unit: v }))}
+                    onValueChange={(v) => setRect((s) => ({ ...s, unit: v as LinearUnit }))}
                     options={[
                       { value: "meters", label: "m" },
                       { value: "centimeters", label: "cm" },
@@ -352,7 +325,7 @@ export default function ColumnConcreteCalc() {
                   <UnitSelect
                     aria-label="Width unit"
                     value={rect.unit}
-                    onValueChange={(v: LinearUnit) => setRect((s) => ({ ...s, unit: v }))}
+                    onValueChange={(v) => setRect((s) => ({ ...s, unit: v as LinearUnit }))}
                     options={[
                       { value: "meters", label: "m" },
                       { value: "centimeters", label: "cm" },
@@ -374,7 +347,7 @@ export default function ColumnConcreteCalc() {
                   <UnitSelect
                     aria-label="Height unit"
                     value={rect.unit}
-                    onValueChange={(v: LinearUnit) => setRect((s) => ({ ...s, unit: v }))}
+                    onValueChange={(v) => setRect((s) => ({ ...s, unit: v as LinearUnit }))}
                     options={[
                       { value: "meters", label: "m" },
                       { value: "centimeters", label: "cm" },
@@ -422,7 +395,7 @@ export default function ColumnConcreteCalc() {
                   <UnitSelect
                     aria-label="Diameter unit"
                     value={circ.unit}
-                    onValueChange={(v: LinearUnit) => setCirc((s) => ({ ...s, unit: v }))}
+                    onValueChange={(v) => setCirc((s) => ({ ...s, unit: v as LinearUnit }))}
                     options={[
                       { value: "meters", label: "m" },
                       { value: "centimeters", label: "cm" },
@@ -444,7 +417,7 @@ export default function ColumnConcreteCalc() {
                   <UnitSelect
                     aria-label="Height unit"
                     value={circ.unit}
-                    onValueChange={(v: LinearUnit) => setCirc((s) => ({ ...s, unit: v }))}
+                    onValueChange={(v) => setCirc((s) => ({ ...s, unit: v as LinearUnit }))}
                     options={[
                       { value: "meters", label: "m" },
                       { value: "centimeters", label: "cm" },
@@ -487,7 +460,7 @@ export default function ColumnConcreteCalc() {
               <UnitSelect
                 aria-label="Output unit"
                 value={displayUnit}
-                onValueChange={(v: VolumeUnit) => setDisplayUnit(v)}
+                onValueChange={(v) => setDisplayUnit(v as VolumeUnit)}
                 options={[
                   { value: "m3", label: "m³" },
                   { value: "yd3", label: "yd³" },
@@ -534,7 +507,7 @@ export default function ColumnConcreteCalc() {
           </div>
 
           <div className="flex gap-2">
-            {/* Behavior preserved: Calculate button remains omitted */}
+            {/* Behavior preserved: no separate Calculate button */}
             <Button
               type="button"
               variant="outline"

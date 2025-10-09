@@ -1,3 +1,4 @@
+// components/calculators/StaircaseConcreteCalc.tsx
 "use client";
 
 import * as React from "react";
@@ -181,8 +182,6 @@ export default function StaircaseConcreteCalc() {
     tlThk,
   ]);
 
-  const totalM3 = totals.m3;
-
   function copyBreakdown() {
     if (!totals.valid) return;
     const lines: string[] = [
@@ -226,10 +225,7 @@ export default function StaircaseConcreteCalc() {
   }
 
   return (
-    <Card
-      className="border-border shadow-sm bg-slate-800"
-      
-    >
+    <Card className="border-border shadow-sm bg-slate-800">
       <CardHeader className="pb-3">
         <div className="flex items-center justify-between gap-4">
           <div>
@@ -242,8 +238,8 @@ export default function StaircaseConcreteCalc() {
           </div>
           <div className="flex items-center gap-2 bg-slate-700 p-2 rounded-md">
             <Label className="text-sm text-[var(--brand-subtle)]">Units</Label>
-            <Select value={unit} onValueChange={(v: LinearUnit) => setUnit(v)}>
-              <SelectTrigger className="w-[120px] bg-slate-800 ">
+            <Select value={unit} onValueChange={(v) => setUnit(v as LinearUnit)}>
+              <SelectTrigger className="w-[120px] bg-slate-800">
                 <SelectValue placeholder="Units" />
               </SelectTrigger>
               <SelectContent>
@@ -263,7 +259,7 @@ export default function StaircaseConcreteCalc() {
       <CardContent className="pt-6">
         <Tabs
           value={mode}
-          onValueChange={(v: string) => setMode(v as Mode)}
+          onValueChange={(v) => setMode(v as Mode)}
           className="w-full"
         >
           <TabsList className="bg-slate-900 w-full p-1">

@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { Info, RefreshCcw, Calculator, Ruler } from "lucide-react";
+import { Info, RefreshCcw, Ruler } from "lucide-react";
 
 /* ----------------------------- */
 /* Design tokens (UI only)       */
@@ -23,13 +23,20 @@ const inputBase =
   "bg-slate-900 text-white placeholder-slate-400 border border-transparent mt-1 focus:border-teal-400 focus:outline-none rounded-lg h-11 px-3 w-full";
 const labelBase = "text-white text-sm";
 const group = "grid grid-cols-1 sm:grid-cols-3 gap-3";
-const card = "bg-slate-800 rounded-2xl p-4 md:p-4 shadow-xl border border-slate-700";
+const card =
+  "bg-slate-800 rounded-2xl p-4 md:p-4 shadow-xl border border-slate-700";
 
 /* ---------------------------------------------
    Types & Units (unchanged)
 --------------------------------------------- */
 
-type LinearUnit = "meters" | "centimeter" | "millimeter" | "yards" | "feet" | "inches";
+type LinearUnit =
+  | "meters"
+  | "centimeter"
+  | "millimeter"
+  | "yards"
+  | "feet"
+  | "inches";
 
 const linearUnitToMeters: Record<LinearUnit, number> = {
   meters: 1,
@@ -104,14 +111,32 @@ export default function BeamConcreteCalc() {
   const L_num = useMemo(() => Math.max(0, parseFloat(length) || 0), [length]);
   const b_num = useMemo(() => Math.max(0, parseFloat(width) || 0), [width]);
   const d_num = useMemo(() => Math.max(0, parseFloat(depth) || 0), [depth]);
-  const qty_num = useMemo(() => Math.max(0, Math.floor(Number(qty) || 0)), [qty]);
+  const qty_num = useMemo(
+    () => Math.max(0, Math.floor(Number(qty) || 0)),
+    [qty]
+  );
 
-  const waste_num = useMemo(() => clamp(parseFloat(wastePct) || 0, 0, 50), [wastePct]);
-  const dry_num = useMemo(() => clamp(parseFloat(dryFactor) || 1, 1, 2.5), [dryFactor]);
+  const waste_num = useMemo(
+    () => clamp(parseFloat(wastePct) || 0, 0, 50),
+    [wastePct]
+  );
+  const dry_num = useMemo(
+    () => clamp(parseFloat(dryFactor) || 1, 1, 2.5),
+    [dryFactor]
+  );
 
-  const vW_num = useMemo(() => Math.max(0, parseFloat(voidWidth) || 0), [voidWidth]);
-  const vD_num = useMemo(() => Math.max(0, parseFloat(voidDepth) || 0), [voidDepth]);
-  const vL_num = useMemo(() => Math.max(0, parseFloat(voidLength) || 0), [voidLength]);
+  const vW_num = useMemo(
+    () => Math.max(0, parseFloat(voidWidth) || 0),
+    [voidWidth]
+  );
+  const vD_num = useMemo(
+    () => Math.max(0, parseFloat(voidDepth) || 0),
+    [voidDepth]
+  );
+  const vL_num = useMemo(
+    () => Math.max(0, parseFloat(voidLength) || 0),
+    [voidLength]
+  );
 
   // Convert to meters
   const L_m = toMeters(L_num, unit);
@@ -139,9 +164,10 @@ export default function BeamConcreteCalc() {
   );
 
   // Totals
-  const totalWet_m3 = wetVolumePerBeam_m3 * Math.max(1, qty_num);
-  const totalWetWaste_m3 = wetWithWaste_m3 * Math.max(1, qty_num);
-  const totalDry_m3 = dryPerBeam_m3 * Math.max(1, qty_num);
+  const multiplier = Math.max(1, qty_num);
+  const totalWet_m3 = wetVolumePerBeam_m3 * multiplier;
+  const totalWetWaste_m3 = wetWithWaste_m3 * multiplier;
+  const totalDry_m3 = dryPerBeam_m3 * multiplier;
 
   // Conversions (display only)
   const m3_to_ft3 = 35.3146667;
@@ -171,7 +197,6 @@ export default function BeamConcreteCalc() {
         <CardHeader className="pb-2 p-0">
           <div className="rounded-2xl bg-slate-900 p-6 md:p-8 text-white flex items-center justify-between gap-3">
             <CardTitle className="text-3xl text-teal-400 font-bold tracking-tight flex items-center gap-2">
-              
               Beam Concrete Calculator
             </CardTitle>
             <div className="hidden sm:flex gap-2">
@@ -194,8 +219,8 @@ export default function BeamConcreteCalc() {
           </div>
           <p className="text-sm text-white/70 mt-3 px-6 md:px-8">
             Computes concrete volume for prismatic beams using{" "}
-            <span className="font-medium text-white">V = L × b × d</span>, with optional void
-            subtraction, waste allowance, and dry-volume factor.
+            <span className="font-medium text-white">V = L × b × d</span>, with
+            optional void subtraction, waste allowance, and dry-volume factor.
           </p>
         </CardHeader>
 
@@ -212,12 +237,24 @@ export default function BeamConcreteCalc() {
                   <SelectValue placeholder="Select unit" />
                 </SelectTrigger>
                 <SelectContent className="rounded-xl bg-slate-900 text-white border border-slate-700">
-                  <SelectItem value="meters" className="focus:bg-slate-800">Meters (m)</SelectItem>
-                  <SelectItem value="centimeter" className="focus:bg-slate-800">Centimeters (cm)</SelectItem>
-                  <SelectItem value="millimeter" className="focus:bg-slate-800">Millimeters (mm)</SelectItem>
-                  <SelectItem value="yards" className="focus:bg-slate-800">Yards (yd)</SelectItem>
-                  <SelectItem value="feet" className="focus:bg-slate-800">Feet (ft)</SelectItem>
-                  <SelectItem value="inches" className="focus:bg-slate-800">Inches (in)</SelectItem>
+                  <SelectItem value="meters" className="focus:bg-slate-800">
+                    Meters (m)
+                  </SelectItem>
+                  <SelectItem value="centimeter" className="focus:bg-slate-800">
+                    Centimeters (cm)
+                  </SelectItem>
+                  <SelectItem value="millimeter" className="focus:bg-slate-800">
+                    Millimeters (mm)
+                  </SelectItem>
+                  <SelectItem value="yards" className="focus:bg-slate-800">
+                    Yards (yd)
+                  </SelectItem>
+                  <SelectItem value="feet" className="focus:bg-slate-800">
+                    Feet (ft)
+                  </SelectItem>
+                  <SelectItem value="inches" className="focus:bg-slate-800">
+                    Inches (in)
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -230,6 +267,7 @@ export default function BeamConcreteCalc() {
                 onChange={(e) => setQty(e.target.value)}
                 placeholder="e.g., 1"
                 className={inputBase}
+                aria-label="Number of beams"
               />
             </div>
 
@@ -264,6 +302,7 @@ export default function BeamConcreteCalc() {
                 onChange={(e) => setLength(e.target.value)}
                 placeholder={`e.g., ${unit === "feet" ? "20" : "6"}`}
                 className={inputBase}
+                aria-label="Beam length"
               />
               <p className="text-xs text-white/60">In {unit}</p>
             </div>
@@ -276,6 +315,7 @@ export default function BeamConcreteCalc() {
                 onChange={(e) => setWidth(e.target.value)}
                 placeholder={`e.g., ${unit === "feet" ? "1" : "0.3"}`}
                 className={inputBase}
+                aria-label="Beam width"
               />
               <p className="text-xs text-white/60">In {unit}</p>
             </div>
@@ -288,6 +328,7 @@ export default function BeamConcreteCalc() {
                 onChange={(e) => setDepth(e.target.value)}
                 placeholder={`e.g., ${unit === "feet" ? "1.5" : "0.5"}`}
                 className={inputBase}
+                aria-label="Beam depth"
               />
               <p className="text-xs text-white/60">In {unit}</p>
             </div>
@@ -298,9 +339,12 @@ export default function BeamConcreteCalc() {
             <CardContent className="pt-6 space-y-4">
               <div className="flex items-center justify-between gap-2">
                 <div className="space-y-1">
-                  <Label className={`${labelBase} font-medium`}>Subtract a void (optional)</Label>
+                  <Label className={`${labelBase} font-medium`}>
+                    Subtract a void (optional)
+                  </Label>
                   <p className="text-xs text-white/60">
-                    Provide dimensions for a uniform void/duct to subtract from each beam.
+                    Provide dimensions for a uniform void/duct to subtract from
+                    each beam.
                   </p>
                 </div>
                 <Switch checked={hasVoid} onCheckedChange={setHasVoid} />
@@ -320,6 +364,7 @@ export default function BeamConcreteCalc() {
                     onChange={(e) => setVoidWidth(e.target.value)}
                     placeholder="0"
                     className={inputBase}
+                    aria-label="Void width"
                   />
                   <p className="text-xs text-white/60">In {unit}</p>
                 </div>
@@ -331,6 +376,7 @@ export default function BeamConcreteCalc() {
                     onChange={(e) => setVoidDepth(e.target.value)}
                     placeholder="0"
                     className={inputBase}
+                    aria-label="Void depth"
                   />
                   <p className="text-xs text-white/60">In {unit}</p>
                 </div>
@@ -342,6 +388,7 @@ export default function BeamConcreteCalc() {
                     onChange={(e) => setVoidLength(e.target.value)}
                     placeholder="0"
                     className={inputBase}
+                    aria-label="Void length"
                   />
                   <p className="text-xs text-white/60">In {unit}</p>
                 </div>
@@ -359,6 +406,7 @@ export default function BeamConcreteCalc() {
                 onChange={(e) => setWastePct(e.target.value)}
                 placeholder="0–50"
                 className={inputBase}
+                aria-label="Waste allowance percentage"
               />
               <p className="text-xs text-white/60">Typical: 5–10%</p>
             </div>
@@ -369,13 +417,17 @@ export default function BeamConcreteCalc() {
                 <Info className="h-3.5 w-3.5 text-white/60" />
               </Label>
               <div className="flex items-center gap-2">
-                <Switch checked={useDryFactor} onCheckedChange={setUseDryFactor} />
+                <Switch
+                  checked={useDryFactor}
+                  onCheckedChange={setUseDryFactor}
+                />
                 <Input
                   inputMode="decimal"
                   value={dryFactor}
                   onChange={(e) => setDryFactor(e.target.value)}
                   disabled={!useDryFactor}
                   className={cn(inputBase, !useDryFactor && "opacity-60")}
+                  aria-label="Dry volume factor"
                 />
               </div>
               <p className="text-xs text-white/60">
@@ -389,15 +441,21 @@ export default function BeamConcreteCalc() {
             <Tile title="Per-Beam Volume">
               <Row label="Wet (net)">{fmt(wetVolumePerBeam_m3)} m³</Row>
               <Row label="Wet + Waste">{fmt(wetWithWaste_m3)} m³</Row>
-              <Row label={useDryFactor ? "Dry (est.)" : "Dry (off)"}>{fmt(dryPerBeam_m3)} m³</Row>
+              <Row label={useDryFactor ? "Dry (est.)" : "Dry (off)"}>
+                {fmt(dryPerBeam_m3)} m³
+              </Row>
 
               <hr className="my-2 border-slate-800" />
 
-              <SmallLine label="Wet (ft³)">{fmt(wetVolumePerBeam_m3 * m3_to_ft3)}</SmallLine>
-              <SmallLine label="Wet (yd³)">{fmt(wetVolumePerBeam_m3 * m3_to_yd3)}</SmallLine>
+              <SmallLine label="Wet (ft³)">
+                {fmt(wetVolumePerBeam_m3 * m3_to_ft3)}
+              </SmallLine>
+              <SmallLine label="Wet (yd³)">
+                {fmt(wetVolumePerBeam_m3 * m3_to_yd3)}
+              </SmallLine>
             </Tile>
 
-            <Tile title={`Totals (× ${Math.max(1, qty_num)})`}>
+            <Tile title={`Totals (× ${multiplier})`}>
               <Row label="Total Wet (net)">{fmt(totalWet_m3)} m³</Row>
               <Row label="Total Wet + Waste">{fmt(totalWetWaste_m3)} m³</Row>
               <Row label={useDryFactor ? "Total Dry (est.)" : "Total Dry (off)"}>
@@ -406,8 +464,12 @@ export default function BeamConcreteCalc() {
 
               <hr className="my-2 border-slate-800" />
 
-              <SmallLine label="Wet (ft³)">{fmt(totalWet_m3 * m3_to_ft3)}</SmallLine>
-              <SmallLine label="Wet (yd³)">{fmt(totalWet_m3 * m3_to_yd3)}</SmallLine>
+              <SmallLine label="Wet (ft³)">
+                {fmt(totalWet_m3 * m3_to_ft3)}
+              </SmallLine>
+              <SmallLine label="Wet (yd³)">
+                {fmt(totalWet_m3 * m3_to_yd3)}
+              </SmallLine>
             </Tile>
 
             <Tile title="Notes">
@@ -416,13 +478,14 @@ export default function BeamConcreteCalc() {
                 <li>Void subtraction applies per beam.</li>
                 <li>Waste adds after net volume.</li>
                 <li>
-                  Dry factor (if enabled) multiplies the waste-adjusted wet volume for material
-                  estimating.
+                  Dry factor (if enabled) multiplies the waste-adjusted wet
+                  volume for material estimating.
                 </li>
               </ul>
               {invalidDims && (
                 <p className="text-xs text-red-300 mt-2">
-                  Enter non-zero dimensions and quantity. If void is enabled, its dimensions must also be non-zero.
+                  Enter non-zero dimensions and quantity. If void is enabled,
+                  its dimensions must also be non-zero.
                 </p>
               )}
             </Tile>
@@ -430,8 +493,6 @@ export default function BeamConcreteCalc() {
 
           {/* Footer Actions */}
           <div className="flex flex-col sm:flex-row gap-2 justify-end">
-            {/* Primary action spec calls for teal; this app has no 'Calculate' action,
-                so we leave Example/Reset as dark buttons to match other calculators. */}
             <Button
               onClick={handleExample}
               className="h-11 rounded-xl border border-slate-700 bg-slate-800 text-white hover:bg-slate-800/90"
@@ -457,7 +518,13 @@ export default function BeamConcreteCalc() {
    Small UI helpers (restyled only)
 --------------------------------------------- */
 
-function Tile({ title, children }: { title: string; children: React.ReactNode }) {
+function Tile({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <Card className="bg-slate-900 border border-slate-800 rounded-2xl">
       <CardHeader className="pb-2">
@@ -468,7 +535,13 @@ function Tile({ title, children }: { title: string; children: React.ReactNode })
   );
 }
 
-function Row({ label, children }: { label: string; children: React.ReactNode }) {
+function Row({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="flex items-center justify-between text-sm">
       <span className="text-white/70">{label}</span>
@@ -477,7 +550,13 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
   );
 }
 
-function SmallLine({ label, children }: { label: string; children: React.ReactNode }) {
+function SmallLine({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
   return (
     <div className="flex items-center justify-between text-xs">
       <span className="text-white/60">{label}</span>

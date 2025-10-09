@@ -29,7 +29,7 @@ export default function AboutPage() {
               <Award className="h-12 w-12 text-teal-400 mb-4" />
               <h2 className="text-2xl font-semibold text-white mb-3">Our Commitment</h2>
               <p className="text-slate-300">
-                We're committed to maintaining the highest standards of accuracy in our calculations while keeping our tool completely free and accessible to everyone.
+                We are committed to maintaining the highest standards of accuracy in our calculations while keeping our tool completely free and accessible to everyone.
               </p>
             </div>
 
@@ -60,7 +60,7 @@ export default function AboutPage() {
 
               <h3 className="text-2xl font-semibold text-white mb-4 mt-8">Industry-Standard Calculations</h3>
               <p className="text-slate-300 mb-4">
-                We use proven mathematical formulas and industry-standard conversion rates to ensure every calculation is precise. Whether you're working in feet, inches, or meters, our tool handles conversions seamlessly and accurately.
+                We use proven mathematical formulas and industry-standard conversion rates to ensure every calculation is precise. Whether you are working in feet, inches, or meters, our tool handles conversions seamlessly and accurately.
               </p>
 
               <h3 className="text-2xl font-semibold text-white mb-4 mt-8">Comprehensive Coverage</h3>
