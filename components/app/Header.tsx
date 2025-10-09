@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-import { Calculator, Menu, X } from 'lucide-react';
+import { Calculator, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   Sheet,

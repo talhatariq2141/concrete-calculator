@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
-import { Slider } from "@/components/ui/slider";
+// import { Slider } from "@/components/ui/slider";
 import { Info } from "lucide-react";
 
 /*
@@ -128,7 +128,7 @@ export default function NominalMixConcreteCalc() {
     const bags = bagSizeKg > 0 ? massCementKg / bagSizeKg : 0;
 
     // Water from w/c ratio
-    let waterKg = wc * massCementKg; // kg ~ liters
+    const waterKg = wc * massCementKg; // kg ~ liters
 
     // Moisture corrections: add moisture to aggregates, subtract same water
     const addedWaterFromSand = (moistSandPct / 100) * massSandKg;

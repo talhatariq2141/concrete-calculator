@@ -1,8 +1,8 @@
 import { Building2, Calculator, Ruler } from 'lucide-react';
 import React from 'react'
-import { Button } from '../ui/button';
+// import { Button } from '../ui/button';
 import { HeroCTA } from './HeroCTA';
-import { AdSlot } from './AdSlot';
+// import { AdSlot } from './AdSlot';
 
 export default function Hero() {
   const scrollToCalculator = () => {
@@ -26,7 +26,7 @@ export default function Hero() {
             <p className="text-lg sm:text-xl text-slate-300 max-w-3xl mx-auto mb-8">
               Calculate concrete volume instantly for slabs, beams, columns, footings, and walls. Get precise measurements in cubic yards and cubic meters with our easy-to-use calculator.
             </p>
-            <HeroCTA />
+            {/* <HeroCTA /> */}
           </div>
 
           {/* <div className="mt-12 flex justify-center">
