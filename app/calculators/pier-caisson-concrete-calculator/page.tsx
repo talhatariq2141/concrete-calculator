@@ -165,9 +165,7 @@ export default function PierCaissonCalculatorPage() {
             </p>
           </article>
 
-          <div className="lg:col-span-4">
-            <RightSidebar />
-          </div>
+          
         </div>
       </main>
     </>

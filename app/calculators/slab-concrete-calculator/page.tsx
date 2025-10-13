@@ -4,6 +4,7 @@ import React from "react";
 import RightSidebar from "@/components/app/RightSidebar";
 import type { Metadata } from "next";
 import SlabConcreteCalc from "@/components/calculators/SlabConcreteCalc";
+import { Box } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Slab Concrete Calculator - Concrete Calculator Max",
@@ -48,9 +49,27 @@ export default function SlabConcreteCalculatorPage() {
       
       <main className="container-xl py-6">
         
-        <div className="grid gap-8 lg:grid-cols-12">
+        <div className="flex">
           
           <article className="lg:col-span-8">
+
+            {/* Tile of the Calculator */}
+            <div className="mb-4 flex justify-between items-stard">
+            <div className="w-full/50 text-left">
+                <div className="flex item-center">
+                  <Box className="h-6 w-6 tex" />
+                  <h1 className="text-3xl font-bold">
+                  <span className="ml-1">Slab Concrete Calculator</span>                      
+                  </h1>
+                </div>
+                <p className="text-sm text-muted-foreground">Professional Grade Concrete Calculators for Builders, Contractors, Engineers and Architects </p>
+            </div>
+            <div className="flex flex-col text-right mb-4 flex justify-between">
+                <span className="text-lg font-bold font-mono text-primary dark:text-teal-400">55</span>
+                <p className="text-muted-foreground text-sm font-bold font-mono">Available</p>            
+            </div>
+      </div>
+
             <SlabConcreteCalc />
             <div className="my-10 h-px w-full bg-border" />
             <header className="mb-6 mt-8">
@@ -173,9 +192,7 @@ export default function SlabConcreteCalculatorPage() {
             
           </article>
 
-          <div className="lg:col-span-4">
-            <RightSidebar />
-          </div>
+          
         </div>
       </main>
     </>

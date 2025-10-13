@@ -2,6 +2,22 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Header } from "@/components/app/Header";
 import { Footer } from "@/components/app/Footer";
+import { ThemeProvider } from "@/components/app/theme-provider";
+import { JetBrains_Mono, Poppins } from "next/font/google";
+
+// Load both fonts with CSS variable bindings
+const jetbrains = JetBrains_Mono({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-jetbrains", // must match the variable name in globals.css
+});
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  display: "swap",
+  variable: "--font-poppins", // must match globals.css variable
+});
 
 export const metadata: Metadata = {
 metadataBase: new URL("https://concretecalculatormax.com"),
@@ -29,8 +45,18 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className="scroll-smooth">      
+    <html 
+        lang="en"
+        suppressContentEditableWarning 
+        className={`${jetbrains.variable} ${poppins.variable}`}
+        >      
       <body>
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
         <div className="min-h-screen bg-slate-900">        
           <Header />
             {children}
@@ -55,6 +81,7 @@ export default function RootLayout({
             }),
           }}
         />
+        </ThemeProvider>
 
       </body>
     </html>

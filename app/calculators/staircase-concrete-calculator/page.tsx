@@ -170,9 +170,7 @@ export default function StaircaseCalculatorPage() {
             </p>
           </article>
 
-          <div className="lg:col-span-4">
-            <RightSidebar />
-          </div>
+          
         </div>
       </main>
     </>
