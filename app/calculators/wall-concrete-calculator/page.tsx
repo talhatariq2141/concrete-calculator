@@ -2,8 +2,10 @@
 
 import React from "react";
 import type { Metadata } from "next";
-import RightSidebar from "@/components/app/RightSidebar";
 import WallConcreteCalc from "@/components/calculators/WallConcreteCalc";
+import { BrickWall } from "lucide-react";
+import WallConcreteCalcArticle from "@/components/calculators/articles/WallConcreteCalcArticle";
+import RelatedCalculators from "@/components/app/RelatedCalculators";
 
 export const metadata: Metadata = {
   title: "Wall Concrete Calculator - Concrete Calculator Max",
@@ -58,110 +60,41 @@ export default function WallConcreteCalculatorPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <main className="container-xl py-6">
-        <div className="grid gap-8 lg:grid-cols-12">
+      <main className="container-xl">
+        <div className="flex">
           <article className="lg:col-span-8">
-            {/* ===== Calculator Slot ===== */}
-            <WallConcreteCalc />
 
-            <div className="my-10 h-px w-full bg-border" />
-
-            <header className="mb-6 mt-8">
-              <h1 className="text-3xl font-bold text-[var(--brand-primary)]">
-                How to Calculate Concrete of a Wall
-              </h1>
-            </header>
-
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              Walls are one of the most common structural elements in buildings,
-              boundary structures, and retaining systems. To estimate the
-              concrete required, you need to calculate the net volume of the wall
-              and make adjustments for openings like doors or windows. Below is a
-              practical step-by-step guide.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 1: Work in Consistent Units</h2>
-            </div>
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              Convert all measurements into a single system. In metric, use{" "}
-              <strong>meters</strong> for length, height, and thickness. In
-              imperial, convert inches to feet. Consistency prevents errors in
-              volume estimation.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 2: Apply the Wall Volume Formula</h2>
-            </div>
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              The basic formula is:{" "}
-              <strong>V = L × H × T</strong>, where <em>L</em> is wall length,
-              <em>H</em> is height, and <em>T</em> is thickness.
-            </p>
-
-            <div className="mt-2 rounded-md bg-[var(--brand-muted)] p-4 text-sm text-[var(--brand-primary)] shadow-sm">
-              <p className="mt-2 text-[var(--brand-subtle)]">
-                <em>Example (Metric):</em> L = 10&nbsp;m, H = 3&nbsp;m, T =
-                0.20&nbsp;m → V = 10 × 3 × 0.20 ={" "}
-                <strong>6.0&nbsp;m³</strong>.
+            {/* Title and Description of Calculator */}
+            <div className="flex flex-col mb-4 justify-between">
+              <div className="w-full/50 text-left">
+                  <div className="flex item-start gap-2 sm:gap-3">
+                    <div className="p-1.5 sm:p-2 bg-primary/30 rounded-lg flex-shrink-0 items-center">
+                    <BrickWall className="h-5 w-5 text-green-400" />
+                    </div>
+                    <h1 className="text-lg sm:text-2xl lg:text-3xl text-slate-200 font-bold font-poppins tracking-tight leading-tight">Wall Concrete Calculator</h1>
+                  </div>
+                  {/* <div className="flex flex-col text-right mb-4 flex justify-between items-top">
+                      <span className="text-lg font-bold font-mono text-primary dark:text-teal-400">55</span>
+                      <p className="text-muted-foreground text-sm font-bold font-mono">Available</p>            
+                  </div>                   */}
+              </div>              
+              <p className="mt-3 ml-2 text-sm sm:text-base lg:text-lg text-slate-400 leading relaxed font-poppins">
+                Calculate wall concrete volume quickly and accurately with this Wall Concrete Calculator. Enter wall length, height, thickness and any openings (doors/windows) to get net volume in m³, ft³ or yd³ — includes unit conversions and a configurable waste allowance for precise ordering and cost estimates.
               </p>
             </div>
 
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 3: Subtract Openings</h2>
-            </div>
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              For walls with windows, doors, or vents, calculate each opening’s
-              volume using the same formula (width × height × thickness), then
-              subtract from the gross wall volume.
-            </p>
 
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 4: Multiply by Quantity</h2>
-            </div>
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              If your project includes multiple walls, multiply the net volume of
-              one wall by the total number of walls of the same dimension.
-            </p>
 
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 5: Add Waste Allowance</h2>
-            </div>
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              Always include <strong>5–10%</strong> extra volume to cover
-              over-excavation, spillage, or construction tolerances. This ensures
-              you won’t run short on pour day.
-            </p>
 
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Conversion Tips</h2>
-            </div>
-            <ul>
-              <li className="mt-2 ml-4">1 m³ = 35.315 ft³</li>
-              <li className="mt-2 ml-4">1 m³ = 1.308 yd³</li>
-              <li className="mt-2 ml-4">
-                Always order in supplier-preferred units (m³ or yd³).
-              </li>
-            </ul>
 
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Common Mistakes to Avoid</h2>
-            </div>
-            <ul>
-              <li className="mt-2 ml-4">Mixing metric and imperial units.</li>
-              <li className="mt-2 ml-4">
-                Forgetting to subtract openings like doors and windows.
-              </li>
-              <li className="mt-2 ml-4">Not adding waste allowance.</li>
-            </ul>
+            {/* ===== Calculator Slot ===== */}
+            <WallConcreteCalc />
 
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              In summary: calculate gross wall volume, subtract openings, multiply
-              by the number of walls, and add 5–10% for waste. Using a{" "}
-              <strong>Wall Concrete Calculator</strong> makes the process faster,
-              reduces errors, and ensures you order the right amount of concrete
-              for your construction project.
-            </p>
+            <WallConcreteCalcArticle />
+
+            <RelatedCalculators className="mt-8 mb-8" exclude={['wall']} />
+
+            
           </article>
 
           

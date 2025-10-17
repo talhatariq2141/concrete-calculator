@@ -2,8 +2,9 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import { ArrowRight, Box, Calculator, Link, Ruler, Volume2, Zap } from "lucide-react";
+import { ArrowRight, Box, Calculator, Ruler } from "lucide-react";
 import { Button } from "../ui/button";
+
 
 const flipWords = ["Builders", "Contractors", "Engineers", "Architects", "DIY Enthusiasts"];
 
@@ -19,6 +20,7 @@ export default function Hero2() {
 
   return (
     <section className=" relative flex flex-col items-center justify-center text-center py-24 px-6 bg-background text-white overflow-hidden">
+      
       {/* Badge */}
       <div className="mb-10">
         <span className="bg-green-800/40 text-green-300 text-sm font-poppins font-medium px-4 py-2 rounded-full">

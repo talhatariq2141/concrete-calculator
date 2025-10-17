@@ -2,6 +2,7 @@ import { Building2, Calculator, Ruler } from 'lucide-react';
 import React from 'react'
 import { ContainerTextFlip } from "@/components/ui/container-text-flip";
 
+
 export default function Hero() {
   // const scrollToCalculator = () => {
   //   document.getElementById('calculator')?.scrollIntoView({ behavior: 'smooth' });
@@ -9,8 +10,8 @@ export default function Hero() {
   
   return (
     <>
-      <section className="relative overflow-hidden bg-gradient-to-b from-background via background to-background/95 py-12 sm:py-20">
-        <div className="max-w-7xl mx-auto">
+      <section className="relative overflow-hidden bg-gradient-to-b from-background via background to-background/95 py-12 sm:py-20">        
+        <div className="max-w-7xl mx-auto">          
             <div className="flex justify-center mb-8">
             <div className="inline-flex gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
               <Calculator className="h-4 w-4 text-primary" />

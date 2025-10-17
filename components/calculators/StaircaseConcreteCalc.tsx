@@ -1,4 +1,3 @@
-// components/calculators/StaircaseConcreteCalc.tsx
 "use client";
 
 import * as React from "react";
@@ -22,17 +21,20 @@ import {
   Tabs,
   TabsList,
   TabsTrigger,
-  TabsContent,
 } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
+import { Info } from "lucide-react";
+
+/* =========================
+   Types, constants, helpers
+   (LOGIC UNCHANGED)
+========================= */
 
 type LinearUnit = "m" | "cm" | "mm" | "ft" | "in";
 type Mode = "waist" | "solid";
 
 const DENSITY_CONCRETE_KG_M3 = 2400; // normal-weight concrete
 
-// ---------- helpers ----------
 function toMeters(value: number, unit: LinearUnit): number {
   const map: Record<LinearUnit, number> = {
     m: 1,
@@ -65,6 +67,97 @@ function slopedLength(totalRun_m: number, totalRise_m: number): number {
   return Math.hypot(totalRun_m, totalRise_m);
 }
 
+/* =========================
+   UI tokens (styles only)
+========================= */
+const fieldInputClass =
+  "h-11 w-full rounded-sm border border-slate-700 bg-slate-700 text-white caret-white placeholder-slate-300 pr-12 focus-visible:ring-0 focus:border-teal-400";
+const selectTriggerClass =
+  "h-11 rounded-sm border border-slate-700 bg-slate-700 text-white data-[placeholder]:text-slate-300 focus-visible:ring-0 focus:border-teal-400";
+const selectContentClass = "rounded-sm border border-slate-700 bg-slate-900 text-white";
+const stepClass = "pt-6 mt-4 border-t border-slate-800";
+
+const unitAbbrev: Record<LinearUnit, string> = {
+  m: "m",
+  cm: "cm",
+  mm: "mm",
+  ft: "ft",
+  in: "in",
+};
+
+/* =========================
+   Small UI utilities
+========================= */
+const Field = ({
+  id,
+  label,
+  children,
+  hint,
+  subHint,
+}: {
+  id?: string;
+  label: string;
+  children: React.ReactNode;
+  hint?: string;
+  subHint?: string;
+}) => (
+  <div className="space-y-1.5">
+    <Label htmlFor={id} className="text-teal-500 text-sm font-medium">{label}</Label>
+    {children}
+    {hint ? <p className="text-xs text-slate-300">{hint}</p> : null}
+    {subHint ? <p className="text-[11px] text-white/60">{subHint}</p> : null}
+  </div>
+);
+
+const NumberInput = ({
+  id,
+  value,
+  onChange,
+  placeholder,
+  badge,
+  ariaLabel,
+  numeric,
+}: {
+  id?: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  badge?: string;
+  ariaLabel?: string;
+  numeric?: boolean;
+}) => (
+  <div className="relative">
+    <Input
+      id={id}
+      inputMode={numeric ? "numeric" : "decimal"}
+      type="text"
+      value={value}
+      onChange={(e) => {
+        const raw = e.target.value.replace(/,/g, "");
+        if (/^\d*\.?\d*$/.test(raw) || raw === "") onChange(raw);
+      }}
+      placeholder={placeholder}
+      className={fieldInputClass}
+      aria-label={ariaLabel}
+    />
+    {badge ? (
+      <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-200 text-xs">{badge}</span>
+    ) : null}
+  </div>
+);
+
+function KV({ k, v }: { k: string; v: string }) {
+  return (
+    <div className="flex items-center justify-between rounded-sm border border-slate-700 bg-slate-900 p-2 text-sm">
+      <span className="text-white/70">{k}</span>
+      <span className="text-teal-400 font-semibold">{v}</span>
+    </div>
+  );
+}
+
+/* =========================
+   Component (logic intact)
+========================= */
 export default function StaircaseConcreteCalc() {
   const [mode, setMode] = React.useState<Mode>("waist");
   const [unit, setUnit] = React.useState<LinearUnit>("m");
@@ -88,6 +181,9 @@ export default function StaircaseConcreteCalc() {
   const [tlLen, setTlLen] = React.useState<string>("1.2");
   const [tlWid, setTlWid] = React.useState<string>("1.2");
   const [tlThk, setTlThk] = React.useState<string>("0.15");
+
+  // UX: show results only after clicking Calculate
+  const [submitted, setSubmitted] = React.useState(false);
 
   // ---------- PURE derived compute (NO setState here) ----------
   const { errors, breakdown, totals } = React.useMemo(() => {
@@ -189,9 +285,7 @@ export default function StaircaseConcreteCalc() {
       `Mode: ${mode === "waist" ? "Waist-slab" : "Solid (mass) stairs"}`,
       "",
       "Breakdown (m³):",
-      ...Object.entries(breakdown).map(
-        ([k, v]) => `- ${k}: ${toFixedSmart(v)}`
-      ),
+      ...Object.entries(breakdown).map(([k, v]) => `- ${k}: ${toFixedSmart(v)}`),
       "",
       `Total: ${toFixedSmart(totals.m3)} m³`,
       `= ${toFixedSmart(totals.ft3)} ft³`,
@@ -202,7 +296,7 @@ export default function StaircaseConcreteCalc() {
     ];
     navigator.clipboard.writeText(lines.join("\n")).then(
       () => alert("Breakdown copied to clipboard ✅"),
-      () => alert("Copy failed. Please try again.")
+      () => alert("Copy failed. Please try again."),
     );
   }
 
@@ -222,361 +316,260 @@ export default function StaircaseConcreteCalc() {
     setTlLen("1.2");
     setTlWid("1.2");
     setTlThk("0.15");
+    setSubmitted(false);
   }
 
+  function onCalculate(e?: React.FormEvent) {
+    if (e) e.preventDefault();
+    setSubmitted(true);
+  }
+
+  /* =========================
+     RENDER (Step-based UX)
+  ========================= */
   return (
-    <Card className="border-border shadow-sm bg-slate-800">
-      <CardHeader className="pb-3">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <CardTitle className="text-2xl font-bold text-teal-400">
-              Staircase Concrete Calculator
-            </CardTitle>
-            <p className="text-[var(--brand-subtle)] mt-1 text-sm">
-              Estimate concrete volume for waist-slab or solid stairs with optional landings.
-            </p>
-          </div>
-          <div className="flex items-center gap-2 bg-slate-700 p-2 rounded-md">
-            <Label className="text-sm text-[var(--brand-subtle)]">Units</Label>
-            <Select value={unit} onValueChange={(v) => setUnit(v as LinearUnit)}>
-              <SelectTrigger className="w-[120px] bg-slate-800">
-                <SelectValue placeholder="Units" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="m">meters (m)</SelectItem>
-                <SelectItem value="cm">centimeters (cm)</SelectItem>
-                <SelectItem value="mm">millimeters (mm)</SelectItem>
-                <SelectItem value="ft">feet (ft)</SelectItem>
-                <SelectItem value="in">inches (in)</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
+    <Card className="font-poppins mx-auto w-full max-w-6xl rounded-sm border border-slate-700 bg-slate-900 shadow-md">
+      <CardHeader className="p-6 pb-3">
+        <CardTitle className="text-2xl font-bold text-teal-400 text-center">
+          Staircase Concrete Calculator
+        </CardTitle>
+        <p className="text-sm text-white/70 text-center">
+          Estimate concrete for waist-slab or solid stairs with optional landings. Results appear after you press
+          <span className="font-semibold text-white"> Calculate</span>.
+        </p>
       </CardHeader>
 
-      <Separator />
-
-      <CardContent className="pt-6">
-        <Tabs
-          value={mode}
-          onValueChange={(v) => setMode(v as Mode)}
-          className="w-full"
-        >
-          <TabsList className="bg-slate-900 w-full p-1">
-            <TabsTrigger value="waist" className="data-[state=active]:bg-teal-400 data-[state=active]:text-white">
-              Waist-Slab Stairs
-            </TabsTrigger>
-            <TabsTrigger value="solid" className="data-[state=active]:bg-teal-400 data-[state=active]:text-white">
-              Solid (Mass) Stairs
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Shared fields */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
-            <div className="space-y-2">
-              <Label htmlFor="steps">Number of Steps</Label>
-              <Input
-                id="steps"
-                inputMode="numeric"
-                value={steps}
-                onChange={(e) => setSteps(e.target.value)}
-                placeholder="e.g., 12"
-                className="bg-slate-900"
-              />
-              <p className="text-xs text-[var(--brand-subtle)]">
-                Count of risers (typical residential: 10–16)
-              </p>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="tread">Tread / Step Depth ({unit})</Label>
-              <Input
-                id="tread"
-                inputMode="decimal"
-                value={tread}
-                onChange={(e) => setTread(e.target.value)}
-                placeholder={`e.g., ${unit === "m" ? "0.28" : unit === "ft" ? "0.92" : ""}`}
-                className="bg-slate-900"
-              />
-              <p className="text-xs text-[var(--brand-subtle)]">Horizontal depth per step</p>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="riser">Riser / Step Height ({unit})</Label>
-              <Input
-                id="riser"
-                inputMode="decimal"
-                value={riser}
-                onChange={(e) => setRiser(e.target.value)}
-                placeholder={`e.g., ${unit === "m" ? "0.17" : unit === "ft" ? "0.56" : ""}`}
-                className="bg-slate-900"
-              />
-              <p className="text-xs text-[var(--brand-subtle)]">Vertical height per step</p>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="width">Stair Width ({unit})</Label>
-              <Input
-                id="width"
-                inputMode="decimal"
-                value={width}
-                onChange={(e) => setWidth(e.target.value)}
-                placeholder={`e.g., ${unit === "m" ? "1.2" : unit === "ft" ? "4" : ""}`}
-                className="bg-slate-900"
-              />
-              <p className="text-xs text-[var(--brand-subtle)]">Clear width of the flight</p>
-            </div>
-          </div>
-
-          {/* Waist slab specific */}
-          <TabsContent value="waist" className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-2 md:col-span-1">
-                <Label htmlFor="waist">Waist Thickness ({unit})</Label>
-                <Input
-                  id="waist"
-                  inputMode="decimal"
-                  value={waistThk}
-                  onChange={(e) => setWaistThk(e.target.value)}
-                  placeholder={`e.g., ${unit === "m" ? "0.15" : unit === "in" ? "6" : ""}`}
-                  className="bg-slate-900"
-                />
-                <p className="text-xs text-[var(--brand-subtle)]">
-                  Thickness of the inclined slab
-                </p>
-              </div>
-            </div>
-          </TabsContent>
-
-          {/* Solid stairs info */}
-          <TabsContent value="solid" className="mt-2">
-            <p className="text-sm text-[var(--brand-subtle)]">
-              Solid (mass) stairs approximate the flight as stacked rectangular steps.
-              This is conservative and typically yields a larger volume than waist-slab stairs.
-            </p>
-          </TabsContent>
-
-          {/* Landings */}
-          <div className="mt-8 space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-semibold text-[var(--brand-primary)]">
-                  Landings
-                </h3>
-                <p className="text-sm text-[var(--brand-subtle)]">
-                  Include optional rectangular top and bottom landings.
-                </p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Bottom Landing */}
-              <Card className="bg-slate-900 border-slate-700">
-                <CardHeader className="flex-row items-center justify-between gap-2 py-4">
-                  <div className="flex items-center gap-3">
-                    <Switch
-                      checked={hasBottomLanding}
-                      onCheckedChange={setHasBottomLanding}
-                      id="bl-switch"
-                    />
-                    <Label htmlFor="bl-switch" className="text-base">
-                      Bottom Landing
-                    </Label>
-                  </div>
-                </CardHeader>
-                <Separator />
-                <CardContent className="pt-4">
-                  <div
-                    className={`grid grid-cols-1 md:grid-cols-3 gap-4 ${
-                      hasBottomLanding ? "" : "opacity-50 pointer-events-none"
-                    }`}
-                  >
-                    <div className="space-y-2">
-                      <Label>Length ({unit})</Label>
-                      <Input
-                        inputMode="decimal"
-                        value={blLen}
-                        onChange={(e) => setBlLen(e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Width ({unit})</Label>
-                      <Input
-                        inputMode="decimal"
-                        value={blWid}
-                        onChange={(e) => setBlWid(e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Thickness ({unit})</Label>
-                      <Input
-                        inputMode="decimal"
-                        value={blThk}
-                        onChange={(e) => setBlThk(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Top Landing */}
-              <Card className="bg-slate-900 border-slate-700">
-                <CardHeader className="flex-row items-center justify-between gap-2 py-4">
-                  <div className="flex items-center gap-3">
-                    <Switch
-                      checked={hasTopLanding}
-                      onCheckedChange={setHasTopLanding}
-                      id="tl-switch"
-                    />
-                    <Label htmlFor="tl-switch" className="text-base">
-                      Top Landing
-                    </Label>
-                  </div>
-                </CardHeader>
-                <Separator />
-                <CardContent className="pt-4">
-                  <div
-                    className={`grid grid-cols-1 md:grid-cols-3 gap-4 ${
-                      hasTopLanding ? "" : "opacity-50 pointer-events-none"
-                    }`}
-                  >
-                    <div className="space-y-2">
-                      <Label>Length ({unit})</Label>
-                      <Input
-                        inputMode="decimal"
-                        value={tlLen}
-                        onChange={(e) => setTlLen(e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Width ({unit})</Label>
-                      <Input
-                        inputMode="decimal"
-                        value={tlWid}
-                        onChange={(e) => setTlWid(e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label>Thickness ({unit})</Label>
-                      <Input
-                        inputMode="decimal"
-                        value={tlThk}
-                        onChange={(e) => setTlThk(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </Tabs>
-
-        {/* Errors */}
-        {errors.length > 0 && (
-          <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-            <p className="font-semibold mb-1">Please fix the following:</p>
-            <ul className="list-disc pl-5 space-y-1">
-              {errors.map((e, i) => (
-                <li key={i}>{e}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* Results */}
-        <div className="mt-8">
-          <h3 className="text-lg font-semibold text-[var(--brand-primary)]">
-            Results
-          </h3>
-          <div className="mt-3 grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <Card className="border-slate-700 bg-teal-900">
-              <CardContent className="pt-4">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[var(--brand-subtle)]">Total Volume</span>
-                    <span className="font-semibold">{toFixedSmart(totals.m3)} m³</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[var(--brand-subtle)]">Cubic Feet</span>
-                    <span className="font-semibold">{toFixedSmart(totals.ft3)} ft³</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[var(--brand-subtle)]">Cubic Yards</span>
-                    <span className="font-semibold">{toFixedSmart(totals.yd3)} yd³</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[var(--brand-subtle)]">Liters</span>
-                    <span className="font-semibold">{toFixedSmart(totals.liters)} L</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-slate-700 bg-teal-900">
-              <CardContent className="pt-4">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[var(--brand-subtle)]">Weight (approx.)</span>
-                    <span className="font-semibold">
-                      {toFixedSmart(totals.kg)} kg
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-[var(--brand-subtle)]">Metric Tons</span>
-                    <span className="font-semibold">
-                      {toFixedSmart(totals.tonnes)} t
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card className="border-slate-700 bg-teal-900">
-              <CardContent className="pt-4">
-                <div className="space-y-1">
-                  <p className="text-sm text-[var(--brand-subtle)]">Breakdown (m³)</p>
-                  <ul className="text-sm space-y-1">
-                    {Object.entries(breakdown).length > 0 ? (
-                      Object.entries(breakdown).map(([k, v]) => (
-                        <li key={k} className="flex items-center justify-between">
-                          <span>{k}</span>
-                          <span className="font-medium">{toFixedSmart(v)}</span>
-                        </li>
-                      ))
-                    ) : (
-                      <li className="text-[var(--brand-subtle)]">—</li>
-                    )}
-                  </ul>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="mt-4 flex flex-wrap gap-3">
-            <Button
-              onClick={copyBreakdown}
-              className="bg-[var(--brand-accent)] hover:bg-[var(--brand-accent-dark)]"
-              disabled={!totals.valid}
-            >
-              Copy Breakdown
-            </Button>
-            <Button
-              variant="outline"
-              onClick={resetAll}
-              className="border-[var(--brand-border)]"
-            >
-              Reset
-            </Button>
-          </div>
-
-          <p className="mt-3 text-xs text-[var(--brand-subtle)]">
-            Notes: Waist-slab model uses{" "}
-            <span className="font-medium">waist thickness × width × sloped length</span> +
-            triangular step wedges{" "}
-            <span className="font-medium">0.5 × tread × riser × width × steps</span>. Landings are
-            rectangular prisms. Results are approximate; verify against project drawings.
+      <CardContent className="p-6 pt-0">
+        {/* Info strip */}
+        <div className="rounded-sm border border-slate-700 bg-slate-900 p-3 flex items-start gap-2">
+          <Info className="mt-0.5 h-4 w-4 text-teal-400" />
+          <p className="text-sm text-slate-300">
+            Waist-slab model uses <code className="text-slate-200">waist × width × sloped length</code> plus triangular step wedges
+            <code className="text-slate-200"> 0.5 × tread × riser × width × steps</code>. Landings are rectangular prisms.
           </p>
         </div>
+
+        <form onSubmit={onCalculate} className="space-y-0">
+          {/* STEP 1 — Choose Units & Mode */}
+          <section className={stepClass} aria-labelledby="step1">
+            <h3 id="step1" className="text-sm font-semibold text-white/80">Step 1 — Choose Units & Mode</h3>
+            <div className="mt-2 grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div>
+                <Field label="Units" hint={`All dimensions below will use ${unitAbbrev[unit]}.`}>
+                  <Select value={unit} onValueChange={(v) => { setUnit(v as LinearUnit); setSubmitted(false); }}>
+                    <SelectTrigger className={selectTriggerClass} aria-label="Units">
+                      <SelectValue placeholder="Units" />
+                    </SelectTrigger>
+                    <SelectContent className={selectContentClass}>
+                      <SelectItem value="m" className="text-white">meters (m)</SelectItem>
+                      <SelectItem value="cm" className="text-white">centimeters (cm)</SelectItem>
+                      <SelectItem value="mm" className="text-white">millimeters (mm)</SelectItem>
+                      <SelectItem value="ft" className="text-white">feet (ft)</SelectItem>
+                      <SelectItem value="in" className="text-white">inches (in)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </Field>
+              </div>
+
+              <div>
+                <Field label="Stair Type" hint="Switch between waist-slab and solid (mass) stairs.">
+                  <Tabs value={mode} onValueChange={(v) => { setMode(v as Mode); setSubmitted(false); }} className="w-full">
+                    <TabsList className="grid w-full grid-cols-2 rounded-sm bg-slate-900 p-1">
+                      <TabsTrigger value="waist" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Waist-Slab</TabsTrigger>
+                      <TabsTrigger value="solid" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Solid (Mass)</TabsTrigger>
+                    </TabsList>
+                  </Tabs>
+                </Field>
+              </div>
+            </div>
+          </section>
+
+          {/* STEP 2 — Core Dimensions */}
+          <section className={stepClass} aria-labelledby="step2">
+            <h3 id="step2" className="text-sm font-semibold text-white/80">Step 2 — Core Dimensions</h3>
+            <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Field id="steps" label="Number of Steps" hint="Count of risers." subHint="Typical residential: 10–16">
+                <NumberInput id="steps" value={steps} onChange={(v) => { setSteps(v); setSubmitted(false); }} placeholder="e.g., 12" numeric ariaLabel="Number of steps" />
+              </Field>
+
+              <Field id="tread" label={`Tread / Step Depth`} hint="Horizontal depth per step." subHint={unit === 'in' ? 'Typical 10–12 in' : unit === 'ft' ? 'Typical 0.8–1.0 ft' : 'Typical 0.25–0.32 m'}>
+                <NumberInput id="tread" value={tread} onChange={(v) => { setTread(v); setSubmitted(false); }} placeholder={unit === 'm' ? '0.28' : unit === 'ft' ? '0.92' : ''} badge={unitAbbrev[unit]} ariaLabel="Tread depth" />
+              </Field>
+
+              <Field id="riser" label={`Riser / Step Height`} hint="Vertical height per step." subHint={unit === 'in' ? 'Typical 6–7.5 in' : unit === 'ft' ? 'Typical 0.5–0.65 ft' : 'Typical 0.15–0.20 m'}>
+                <NumberInput id="riser" value={riser} onChange={(v) => { setRiser(v); setSubmitted(false); }} placeholder={unit === 'm' ? '0.17' : unit === 'ft' ? '0.56' : ''} badge={unitAbbrev[unit]} ariaLabel="Riser height" />
+              </Field>
+
+              <Field id="width" label={`Stair Width`} hint="Clear width of the flight." subHint={unit === 'in' ? 'Typical 36–48 in' : unit === 'ft' ? 'Typical 3–4 ft' : 'Typical 0.9–1.2 m'}>
+                <NumberInput id="width" value={width} onChange={(v) => { setWidth(v); setSubmitted(false); }} placeholder={unit === 'm' ? '1.2' : unit === 'ft' ? '4' : ''} badge={unitAbbrev[unit]} ariaLabel="Stair width" />
+              </Field>
+            </div>
+
+            {mode === "waist" && (
+              <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-6">
+                <Field id="waist" label={`Waist Thickness`} hint="Thickness of the inclined slab." subHint={unit === 'in' ? 'Typical ~6 in' : unit === 'ft' ? 'Typical ~0.5 ft' : 'Typical ~0.15 m'}>
+                  <NumberInput id="waist" value={waistThk} onChange={(v) => { setWaistThk(v); setSubmitted(false); }} placeholder={unit === 'm' ? '0.15' : unit === 'in' ? '6' : ''} badge={unitAbbrev[unit]} ariaLabel="Waist thickness" />
+                </Field>
+              </div>
+            )}
+          </section>
+
+          {/* STEP 3 — Optional Parameters (Landings) */}
+          <section className={stepClass} aria-labelledby="step3">
+            <h3 id="step3" className="text-sm font-semibold text-white/80">Step 3 — Optional Parameters</h3>
+
+            {/* Bottom Landing */}
+            <div className="mt-2 rounded-sm border border-slate-700 bg-slate-900 p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h4 className="text-white font-semibold">Bottom Landing</h4>
+                  <p className="text-xs text-slate-300">Include a rectangular bottom landing slab.</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Switch checked={hasBottomLanding} onCheckedChange={(v) => { setHasBottomLanding(v); setSubmitted(false); }} />
+                  <span className="text-sm text-white">{hasBottomLanding ? "Enabled" : "Disabled"}</span>
+                </div>
+              </div>
+              <div className={`mt-4 grid grid-cols-1 sm:grid-cols-3 gap-6 ${hasBottomLanding ? '' : 'opacity-50 pointer-events-none'}`}>
+                <Field label={`Length`}>
+                  <NumberInput value={blLen} onChange={(v) => { setBlLen(v); setSubmitted(false); }} badge={unitAbbrev[unit]} ariaLabel="Bottom landing length" />
+                </Field>
+                <Field label={`Width`}>
+                  <NumberInput value={blWid} onChange={(v) => { setBlWid(v); setSubmitted(false); }} badge={unitAbbrev[unit]} ariaLabel="Bottom landing width" />
+                </Field>
+                <Field label={`Thickness`}>
+                  <NumberInput value={blThk} onChange={(v) => { setBlThk(v); setSubmitted(false); }} badge={unitAbbrev[unit]} ariaLabel="Bottom landing thickness" />
+                </Field>
+              </div>
+            </div>
+
+            {/* Top Landing */}
+            <div className="mt-4 rounded-sm border border-slate-700 bg-slate-900 p-4">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <h4 className="text-white font-semibold">Top Landing</h4>
+                  <p className="text-xs text-slate-300">Include a rectangular top landing slab.</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Switch checked={hasTopLanding} onCheckedChange={(v) => { setHasTopLanding(v); setSubmitted(false); }} />
+                  <span className="text-sm text-white">{hasTopLanding ? "Enabled" : "Disabled"}</span>
+                </div>
+              </div>
+              <div className={`mt-4 grid grid-cols-1 sm:grid-cols-3 gap-6 ${hasTopLanding ? '' : 'opacity-50 pointer-events-none'}`}>
+                <Field label={`Length`}>
+                  <NumberInput value={tlLen} onChange={(v) => { setTlLen(v); setSubmitted(false); }} badge={unitAbbrev[unit]} ariaLabel="Top landing length" />
+                </Field>
+                <Field label={`Width`}>
+                  <NumberInput value={tlWid} onChange={(v) => { setTlWid(v); setSubmitted(false); }} badge={unitAbbrev[unit]} ariaLabel="Top landing width" />
+                </Field>
+                <Field label={`Thickness`}>
+                  <NumberInput value={tlThk} onChange={(v) => { setTlThk(v); setSubmitted(false); }} badge={unitAbbrev[unit]} ariaLabel="Top landing thickness" />
+                </Field>
+              </div>
+            </div>
+          </section>
+
+          {/* STEP 4 — Actions */}
+          <section className={stepClass} aria-labelledby="step4">
+            <h3 id="step4" className="text-sm font-semibold text-white/80">Step 4 — Actions</h3>
+            <div className="mt-2 flex flex-col sm:flex-row gap-2">
+              <Button type="submit" className="h-11 rounded-sm bg-teal-400 text-slate-900 font-semibold hover:bg-teal-300 focus-visible:ring-0">Calculate</Button>
+              <Button type="button" onClick={resetAll} className="h-11 rounded-sm bg-slate-500 text-white hover:bg-slate-400">Reset</Button>
+              <Button type="button" onClick={copyBreakdown} className="h-11 rounded-sm bg-slate-700 text-white hover:bg-slate-600">Copy Breakdown</Button>
+            </div>
+          </section>
+        </form>
+
+        {/* Results (hidden until Calculate) */}
+        {!submitted ? (
+          <p className="mt-4 text-sm text-white/70">Enter values above and press <span className="font-semibold">Calculate</span> to reveal results.</p>
+        ) : !totals.valid ? (
+          <div className="mt-4 rounded-sm border border-red-300 bg-red-950/20 p-4 text-sm text-red-300">
+            <p className="mb-1 font-semibold">Please fix the following:</p>
+            <ul className="list-disc pl-5 space-y-1">
+              {errors.map((e, i) => (<li key={i}>{e}</li>))}
+            </ul>
+          </div>
+        ) : (
+          <>
+            {/* Inputs Summary */}
+            <div className={`${stepClass} rounded-sm bg-slate-900 border border-slate-700 p-4`}>
+              <div className="mb-2 text-sm font-semibold text-white">Inputs Summary</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                <KV k="Type" v={mode === 'waist' ? 'Waist-slab' : 'Solid (mass)'} />
+                <KV k="Units" v={unitAbbrev[unit]} />
+                <KV k="Steps" v={`${steps}`} />
+                <KV k="Tread" v={`${tread} ${unitAbbrev[unit]}`} />
+                <KV k="Riser" v={`${riser} ${unitAbbrev[unit]}`} />
+                <KV k="Width" v={`${width} ${unitAbbrev[unit]}`} />
+                {mode === 'waist' && <KV k="Waist" v={`${waistThk} ${unitAbbrev[unit]}`} />}
+                <KV k="Bottom Landing" v={hasBottomLanding ? `${blLen}×${blWid}×${blThk} ${unitAbbrev[unit]}` : 'No'} />
+                <KV k="Top Landing" v={hasTopLanding ? `${tlLen}×${tlWid}×${tlThk} ${unitAbbrev[unit]}` : 'No'} />
+              </div>
+            </div>
+
+            {/* Result tiles */}
+            <div className={`${stepClass} grid grid-cols-1 lg:grid-cols-3 gap-4 border-none`}>
+              <div className="rounded-sm border border-slate-700 bg-slate-900 p-4">
+                <p className="text-xs uppercase text-white/70">Total Volume</p>
+                <div className="mt-2 space-y-1.5 text-sm">
+                  <div className="flex items-center justify-between"><span className="text-white/70">m³</span><span className="text-teal-400 font-semibold">{toFixedSmart(totals.m3)}</span></div>
+                  <div className="flex items-center justify-between"><span className="text-white/70">ft³</span><span className="text-teal-400 font-semibold">{toFixedSmart(totals.ft3)}</span></div>
+                  <div className="flex items-center justify-between"><span className="text-white/70">yd³</span><span className="text-teal-400 font-semibold">{toFixedSmart(totals.yd3)}</span></div>
+                  <div className="flex items-center justify-between"><span className="text-white/70">liters</span><span className="text-teal-400 font-semibold">{toFixedSmart(totals.liters)}</span></div>
+                </div>
+              </div>
+
+              <div className="rounded-sm border border-slate-700 bg-slate-900 p-4">
+                <p className="text-xs uppercase text-white/70">Weight (approx.)</p>
+                <div className="mt-2 space-y-1.5 text-sm">
+                  <div className="flex items-center justify-between"><span className="text-white/70">kg</span><span className="text-teal-400 font-semibold">{toFixedSmart(totals.kg)}</span></div>
+                  <div className="flex items-center justify-between"><span className="text-white/70">metric tons</span><span className="text-teal-400 font-semibold">{toFixedSmart(totals.tonnes)}</span></div>
+                </div>
+              </div>
+
+              <div className="rounded-sm border border-slate-700 bg-slate-900 p-4">
+                <p className="text-xs uppercase text-white/70">Breakdown (m³)</p>
+                <ul className="mt-2 text-sm space-y-1">
+                  {Object.entries(breakdown).length > 0 ? (
+                    Object.entries(breakdown).map(([k, v]) => (
+                      <li key={k} className="flex items-center justify-between">
+                        <span className="text-white/80">{k}</span>
+                        <span className="text-teal-400 font-medium">{toFixedSmart(v)}</span>
+                      </li>
+                    ))
+                  ) : (
+                    <li className="text-white/60">—</li>
+                  )}
+                </ul>
+              </div>
+            </div>
+
+            {/* Cubic Yards helper */}
+            <div className="rounded-sm border border-slate-700 bg-slate-900 p-4">
+              <div className="mb-2 text-sm font-semibold text-white">Cubic Yards (for ordering)</div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <div className="text-xs uppercase text-white/70">yd³ (net)</div>
+                  <div className="mt-1 text-xl font-semibold text-teal-400">{toFixedSmart(totals.yd3, 3)} yd³</div>
+                </div>
+                <div>
+                  <div className="text-xs uppercase text-white/70">yd³ (+5%)</div>
+                  <div className="mt-1 text-xl font-semibold text-teal-400">{toFixedSmart(totals.yd3 * 1.05, 3)} yd³</div>
+                </div>
+                <div>
+                  <div className="text-xs uppercase text-white/70">yd³ (+10%)</div>
+                  <div className="mt-1 text-xl font-semibold text-teal-400">{toFixedSmart(totals.yd3 * 1.1, 3)} yd³</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Notes */}
+            <p className="text-xs text-white/70 mt-2">
+              Results are approximate; verify against project drawings. Keep all inputs in the same unit ({unitAbbrev[unit]}).
+            </p>
+          </>
+        )}
       </CardContent>
     </Card>
   );

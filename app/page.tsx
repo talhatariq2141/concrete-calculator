@@ -2,8 +2,6 @@
 
 import React from "react";
 
-import HeroHome from "@/components/app/HeroHome";
-import { CalculatorForm } from "@/components/app/HomeCalcForm";
 import { HomepageArticle } from "@/components/app/HomepageArticle";
 import { HomepageFAQs } from "@/components/app/HomepageFAQs";
 import FaqJsonLd from "@/components/seo/FaqJsonLd";

@@ -1,3 +1,4 @@
+import SidebarQuickLinks from "@/components/app/QuickLinks";
 import type { Metadata } from "next";
 
 
@@ -40,12 +41,13 @@ export default function RootLayout({
           className="hidden lg:block w-80 bg-teal-400 dark:bg-background border-1 border-border dark:border-slate-800"
           style={{
             position: "sticky",
-            top: "64px",
-            height: "calc(-4rem + 100vh)",
+            top: "0",
+            height: "calc(100vh)",
           }}
         >
             {/* Sidebar content can go here */}
-            <div className="h-full w-full">
+            <div className="h-full w-full p-5">
+              <SidebarQuickLinks />
 
             </div>
         </div>

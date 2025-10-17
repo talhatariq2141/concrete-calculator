@@ -3,10 +3,11 @@
 // Returns a single string suitable for React `className`.
 
 type ClassValue = string | number | ClassDictionary | ClassArray | undefined | null | false;
-interface ClassDictionary {
-  [id: string]: any;
-}
-interface ClassArray extends Array<ClassValue> {}
+// A dictionary where keys are class names and values indicate whether to include them.
+// Use a narrow union instead of `any` to satisfy the linter.
+type ClassDictionary = Record<string, boolean | number | string | undefined | null>;
+// Array of allowed class value items.
+type ClassArray = ClassValue[];
 
 export function cn(...inputs: ClassValue[]): string {
   const classes: string[] = [];

@@ -46,7 +46,7 @@ const CALCULATORS: CalcCard[] = [
   { id: "calculators/wall-concrete-calculator", title: "Wall Concrete Calculator", desc: "Vertical concrete wall volumes, single or multi-segment.", category: "Volume", icon: BrickWall },
   { id: "calculators/pier-caisson-concrete-calculator", title: "Pier / Caisson Concrete Calculator", desc: "Cylindrical shafts and drilled piers by length.", category: "Volume", icon: Box },
   { id: "calculators/staircase-concrete-calculator", title: "Staircase Concrete Calculator", desc: "Flights, landings, risers, and treads volume.", category: "Volume", icon: Boxes },
-  { id: "calculators/tank-or-trench-concrete-calculator", title: "Staircase Concrete Calculator", desc: "", category: "Volume", icon: Boxes },
+  { id: "calculators/tank-or-trench-concrete-calculator", title: "Tank or Trench Concrete Calc", desc: "Calculate concrete volume for tanks or trench structures easily.", category: "Volume", icon: Boxes },
   { id: "calculators/nominal-mix-m5-m25-calculator", title: "Nominal Mix M5-M25 Calculator", desc: "Nominal Mix M5-M25 Calculator", category: "Mix", icon: Boxes },
 ];
 
@@ -54,16 +54,16 @@ const CATEGORIES: Category[] = ["All", "Volume", "Rebar", "Masonry", "Cost", "Mi
 const flipWords = ["Builders", "Contractors", "Engineers", "Architects", "DIY Enthusiasts"];
 
 export default function CalculatorsPage() {
-// flip word section javascript
+  // flip word section javascript
   const [index, setIndex] = React.useState(0);
 
   React.useEffect(() => {
-     const interval = setInterval(() => {
+    const interval = setInterval(() => {
       setIndex((prev) => (prev + 1) % flipWords.length);
     }, 2500);
     return () => clearInterval(interval);
   }, []);
-// end flip word javascript
+  // end flip word javascript
 
   const [query, setQuery] = React.useState("");
   const [category, setCategory] = React.useState<Category>("All");
@@ -86,30 +86,32 @@ export default function CalculatorsPage() {
     <>
       {/* Search + Filter Row */}
       <div className="mb-4 flex justify-between items-stard">
-            <div className="w-full/50 text-left">
-                <h1 className="text-2xl font-bold">
-                <span>Free Concrete Calculators for</span>
-                    <motion.span
-                    key={index}
-                    className="mt-2 ml-4 bg-gradient-to-r from-teal-400 via-cyan-400 to-blue-500 text-transparent bg-clip-text"
-                    initial={{ rotateX: 90, opacity: 0 }}
-                    animate={{ rotateX: 0, opacity: 1 }}
-                    exit={{ rotateX: -90, opacity: 0 }}
-                    transition={{ duration: 0.6, ease: "easeInOut" }}
-                    >
-                    {flipWords[index]}
-                    </motion.span>
-                </h1>
-                <p className="text-sm text-muted-foreground">Professional Grade Concrete Calculators for Builders, Contractors, Engineers and Architects </p>
-            </div>
-            <div className="flex flex-col text-right mb-4 flex justify-between">
-                <span className="text-lg font-bold font-mono text-primary dark:text-teal-400">55</span>
-                <p className="text-muted-foreground text-sm font-bold font-mono">Available</p>            
-            </div>
+        <div className="w-full/50 text-left">
+          <h1 className="text-2xl font-bold">
+            <span>Free Concrete Calculators for</span>
+            <motion.span
+              key={index}
+              className="mt-2 ml-4 bg-gradient-to-r from-teal-400 via-cyan-400 to-blue-500 text-transparent bg-clip-text"
+              initial={{ rotateX: 90, opacity: 0 }}
+              animate={{ rotateX: 0, opacity: 1 }}
+              exit={{ rotateX: -90, opacity: 0 }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
+            >
+              {flipWords[index]}
+            </motion.span>
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            Professional Grade Concrete Calculators for Builders, Contractors, Engineers and Architects
+          </p>
+        </div>
+
+        {/* The portion where total number of calculators in each category will be displayed
+            upon selection of any category in the dropdown box */}
+        <CountBadge count={filtered.length} />
+        {/* end of total calculators display */}
       </div>
-      
+
       <div className="mt-5 grid grid-cols-1 sm:grid-cols-3 gap-3">
-                
         <div className="sm:col-span-1">
           <div className="relative">
             <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -140,7 +142,7 @@ export default function CalculatorsPage() {
       {/* Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 mt-6">
         {filtered.length === 0 ? (
-          <Card className="col-span-full border-slate-800 bg-slate-900/60 p-6 text-sm text-slate-300">
+          <Card className="col-span-full border-slate-800 bg-slate-900/60 p-6 text-base text-slate-300">
             No calculators match your search. Try a different keyword or switch category.
           </Card>
         ) : (
@@ -151,16 +153,30 @@ export default function CalculatorsPage() {
   );
 }
 
+/** Dynamic count badge (keeps your existing typography and layout) */
+function CountBadge({ count }: { count: number }) {
+  return (
+    <div className="flex flex-col text-right mb-4 justify-between">
+      <span className="text-lg font-bold font-mono text-primary dark:text-teal-400">{count}</span>
+      <p className="text-muted-foreground text-xs font-bold font-mono">Calculators Available</p>
+    </div>
+  );
+}
+
 function CalculatorCard({ card }: { card: CalcCard }) {
   const Icon = card.icon ?? Calculator;
 
   return (
-    <Link
-      href={`/${card.id}`}
-      aria-label={card.title}
-      className="group block"
-    >
-      <div className="relative flex h-full flex-col rounded-sm border border-slate-900 bg-background transition-all duration-200  hover:border-teal-400/60 hover:-translate-y-1 hover:shadow-lg">
+    <Link href={`/${card.id}`} aria-label={card.title} className="group block">
+      <div
+        className="
+          relative flex h-full flex-col rounded-sm
+          border border-slate-900
+          bg-gradient-to-br from-slate-800/60 via-slate-900/40 to-slate-900/20
+          transition-all duration-200
+          hover:border-teal-400/60 hover:-translate-y-1 hover:shadow-lg
+        "
+      >
         {/* Hover mini action (top-right) */}
         <span className="pointer-events-none absolute right-4 top-4 inline-flex items-center gap-1 text-xs text-slate-300 opacity-0 translate-x-1 group-hover:text-primary group-hover:opacity-100 group-hover:translate-x-0 transition-all">
           Open <ArrowRight className="h-3.5 w-3.5" />
@@ -187,11 +203,10 @@ function CalculatorCard({ card }: { card: CalcCard }) {
 
         {/* Footer */}
         <div className="mt-4 border-t border-slate-800 px-5 py-4 flex items-center justify-between">
-            <p className="mt-2 text-xs sm:text-sm text-slate-500 line-clamp-3">{card.desc}</p>
+          <p className="mt-2 text-xs sm:text-sm text-slate-500 line-clamp-3">{card.desc}</p>
           {/* <span className="inline-flex items-center rounded-full bg-slate-800 px-3 py-1 text-[11px] sm:text-xs text-slate-300">
             {card.category}
           </span> */}
-          
         </div>
       </div>
     </Link>

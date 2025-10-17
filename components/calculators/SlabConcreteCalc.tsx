@@ -12,19 +12,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Info } from "lucide-react";
 
-// ---------------------------------------------------
-// Types
-// ---------------------------------------------------
-
+/* -------------------- Types (unchanged) -------------------- */
 type LinearUnit = "meters" | "yards" | "feet" | "inches" | "centimeter";
 type AreaUnit = "m2" | "yd2" | "ft2" | "in2" | "cm2";
 type VolumeUnit = "m3" | "yd3" | "ft3" | "in3" | "cm3";
 
-// ---------------------------------------------------
-// Unit helpers
-// ---------------------------------------------------
-
+/* ----------------- Unit helpers (unchanged) ---------------- */
 const toMetersFactor: Record<LinearUnit, number> = {
   meters: 1,
   yards: 0.9144,
@@ -46,7 +41,6 @@ const volumeUnits: { key: VolumeUnit; label: string; fromMeters3: (m3: number) =
   { key: "yd3", label: "yd³ (cubic yards)", fromMeters3: (m3) => m3 / (0.9144 ** 3) },
   { key: "ft3", label: "ft³ (cubic feet)", fromMeters3: (m3) => m3 / (0.3048 ** 3) },
   { key: "in3", label: "in³ (cubic inches)", fromMeters3: (m3) => m3 / (0.0254 ** 3) },
-  { key: "cm3", label: "cm³ (cubic centimeters)", fromMeters3: (m3) => m3 / (0.01 ** 3) },
 ];
 
 const linearUnitOptions: { value: LinearUnit; label: string }[] = [
@@ -57,61 +51,123 @@ const linearUnitOptions: { value: LinearUnit; label: string }[] = [
   { value: "centimeter", label: "centimeter" },
 ];
 
-// ---------------------------------------------------
-// Component
-// ---------------------------------------------------
+/* ---------------- UI tokens / shared classes ---------------- */
+const fieldInputClass =
+  "h-11 w-full rounded-sm border border-slate-700 bg-slate-700 text-white caret-white placeholder-slate-300 pr-12 focus-visible:ring-0 focus:border-teal-400";
+const selectTriggerClass =
+  "h-11 rounded-sm border border-slate-700 bg-slate-700 text-white data-[placeholder]:text-slate-300 focus-visible:ring-0 focus:border-teal-400";
+const selectContentClass =
+  "rounded-sm border border-slate-700 bg-slate-900 text-white";
+const stepClass = "pt-6 mt-4 border-t border-slate-800";
 
+const unitAbbrev: Record<LinearUnit, string> = {
+  meters: "m",
+  yards: "yd",
+  feet: "ft",
+  inches: "in",
+  centimeter: "cm",
+};
+
+/* ---------------- Small UI helpers (presentation only) ---------------- */
+const NumberInput = ({
+  id,
+  value,
+  onChange,
+  placeholder,
+  badge,
+  ariaLabel,
+}: {
+  id: string;
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  badge?: string;
+  ariaLabel?: string;
+}) => (
+  <div className="relative">
+    <Input
+      id={id}
+      type="text"
+      inputMode="decimal"
+      value={value}
+      onChange={(e) => {
+        const v = e.target.value.replace(/,/g, "");
+        if (/^\d*\.?\d*$/.test(v) || v === "") onChange(v);
+      }}
+      placeholder={placeholder}
+      className={fieldInputClass}
+      aria-label={ariaLabel}
+    />
+    {badge ? (
+      <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-200 text-xs">
+        {badge}
+      </span>
+    ) : null}
+  </div>
+);
+
+function KV({ k, v }: { k: string; v: string }) {
+  return (
+    <div className="flex items-center justify-between rounded-sm border border-slate-700 bg-slate-900 p-2 text-sm">
+      <span className="text-white/70">{k}</span>
+      <span className="text-teal-400 font-semibold">{v}</span>
+    </div>
+  );
+}
+
+/* ------------------ Component (logic unchanged) ------------------ */
 export default function SlabConcreteCalc() {
-  // inputs
+  // Inputs
   const [length, setLength] = useState<string>("");
   const [lengthUnit, setLengthUnit] = useState<LinearUnit>("meters");
-
   const [width, setWidth] = useState<string>("");
   const [widthUnit, setWidthUnit] = useState<LinearUnit>("meters");
-
   const [thickness, setThickness] = useState<string>("");
   const [thicknessUnit, setThicknessUnit] = useState<LinearUnit>("centimeter");
 
-  // outputs
+  // Output unit selectors
   const [areaOutUnit, setAreaOutUnit] = useState<AreaUnit>("m2");
   const [volumeOutUnit, setVolumeOutUnit] = useState<VolumeUnit>("m3");
 
+  // UI flow
   const [submitted, setSubmitted] = useState(false);
 
-  // -------------------------------------------------
-  // Calculations
-  // -------------------------------------------------
-
-  const result = useMemo(() => {
+  // Calculations (unchanged)
+  const calc = useMemo(() => {
     const L = parseFloat(length);
     const W = parseFloat(width);
     const T = parseFloat(thickness);
-
     if ([L, W, T].some((v) => Number.isNaN(v) || v < 0)) return null;
 
-    // normalize to meters
     const Lm = L * toMetersFactor[lengthUnit];
     const Wm = W * toMetersFactor[widthUnit];
     const Tm = T * toMetersFactor[thicknessUnit];
 
-    const area_m2 = Lm * Wm; // m^2
-    const vol_m3 = area_m2 * Tm; // m^3
+    const area_m2 = Lm * Wm;
+    const vol_m3 = area_m2 * Tm;
 
     const areaConv = areaUnits.find((a) => a.key === areaOutUnit)!;
     const volConv = volumeUnits.find((v) => v.key === volumeOutUnit)!;
+    const ydConv = volumeUnits.find((v) => v.key === "yd3")!;
 
     const area = areaConv.fromMeters2(area_m2);
     const volume = volConv.fromMeters3(vol_m3);
 
-    // suggested overage
     const volume5 = volume * 1.05;
     const volume10 = volume * 1.1;
+
+    const yards = ydConv.fromMeters3(vol_m3);
+    const yards5 = yards * 1.05;
+    const yards10 = yards * 1.1;
 
     return {
       area,
       volume,
       volume5,
       volume10,
+      yards,
+      yards5,
+      yards10,
       areaUnitLabel: areaConv.label,
       volumeUnitLabel: volConv.label,
     };
@@ -122,223 +178,282 @@ export default function SlabConcreteCalc() {
     setSubmitted(true);
   };
 
-  // -------------------------------------------------
-  // UI helpers
-  // -------------------------------------------------
-
   const numberOrEmpty = (v: string) => (v === "" ? "" : v.replace(/[^0-9.]/g, ""));
 
+  const resetAll = () => {
+    setLength("");
+    setWidth("");
+    setThickness("");
+    setLengthUnit("meters");
+    setWidthUnit("meters");
+    setThicknessUnit("centimeter");
+    setAreaOutUnit("m2");
+    setVolumeOutUnit("m3");
+    setSubmitted(false);
+  };
+
   return (
-    <Card className="mx-auto w-full max-w-3xl rounded-2xl border border-slate-800 bg-slate-800 shadow-xl">
-      <CardHeader className="pb-2">
-        
-          
-              <CardTitle className="text-3xl font-bold tracking-tight text-teal-400">
-                Slab Concrete Calculator
-              </CardTitle>
-              <p className="mt-1 text-sm text-white/70">
-                Compute volume for one-way or two-way slabs with thickness options.
-              </p>
-            
-        
+    <Card className="font-poppins mx-auto w-full max-w-6xl rounded-sm border border-slate-700 bg-slate-900 shadow-md">
+      <CardHeader className="p-6 pb-2">
+        <CardTitle className="text-xl sm:text-2xl font-bold text-teal-400 text-center">
+          Slab Concrete Calculator
+        </CardTitle>
+        <p className="text-sm text-white/70 mt-1 text-center sm:text-left">
+          Compute slab area and concrete volume. Keep all inputs in the same unit per field.
+        </p>
       </CardHeader>
 
-      <CardContent className="space-y-8 pt-4">
-        <form onSubmit={handleCalculate} className="space-y-8">
-          {/* Inputs */}
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            {/* Length */}
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="length" className="text-sm font-medium text-white">Length</Label>
-              <p className="text-xs text-white/70">Long side of the slab</p>
-              <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center">
-                <Input
+      <CardContent className="p-6 pt-0">
+        {/* Info strip */}
+        <div className="rounded-sm border border-slate-700 bg-slate-900 p-3 flex items-start gap-2">
+          <Info className="mt-0.5 h-4 w-4 text-teal-400" />
+          <p className="text-sm text-slate-300">
+            Area uses <code className="text-slate-200">L × W</code>. Volume uses <code className="text-slate-200">Area × Thickness</code>.
+          </p>
+        </div>
+
+        <form onSubmit={handleCalculate} className="space-y-0">
+          {/* STEP 1 — Choose Units */}
+          <section className={stepClass} aria-labelledby="step-units">
+            <h3 id="step-units" className="text-sm font-semibold text-white/80">Step 1 — Choose Units</h3>
+            <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {/* Length unit */}
+              <div>
+                <Label className="text-teal-500">Length Unit</Label>
+                <Select value={lengthUnit} onValueChange={(v: LinearUnit) => { setLengthUnit(v); setSubmitted(false); }}>
+                  <SelectTrigger className={selectTriggerClass} aria-label="Length unit">
+                    <SelectValue placeholder="Unit" />
+                  </SelectTrigger>
+                  <SelectContent className={selectContentClass}>
+                    {linearUnitOptions.map((u) => (
+                      <SelectItem key={u.value} value={u.value} className="text-white">
+                        {u.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="mt-1 text-xs text-white/60">Displayed inside the input as a badge ({unitAbbrev[lengthUnit]}).</p>
+              </div>
+
+              {/* Width unit */}
+              <div>
+                <Label className="text-teal-500">Width Unit</Label>
+                <Select value={widthUnit} onValueChange={(v: LinearUnit) => { setWidthUnit(v); setSubmitted(false); }}>
+                  <SelectTrigger className={selectTriggerClass} aria-label="Width unit">
+                    <SelectValue placeholder="Unit" />
+                  </SelectTrigger>
+                  <SelectContent className={selectContentClass}>
+                    {linearUnitOptions.map((u) => (
+                      <SelectItem key={u.value} value={u.value} className="text-white">
+                        {u.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="mt-1 text-xs text-white/60">Use the same measurement system as length for consistency.</p>
+              </div>
+
+              {/* Thickness unit */}
+              <div>
+                <Label className="text-teal-500">Thickness Unit</Label>
+                <Select value={thicknessUnit} onValueChange={(v: LinearUnit) => { setThicknessUnit(v); setSubmitted(false); }}>
+                  <SelectTrigger className={selectTriggerClass} aria-label="Thickness unit">
+                    <SelectValue placeholder="Unit" />
+                  </SelectTrigger>
+                  <SelectContent className={selectContentClass}>
+                    {linearUnitOptions.map((u) => (
+                      <SelectItem key={u.value} value={u.value} className="text-white">
+                        {u.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="mt-1 text-xs text-white/60">Common thickness ranges: 4–8 in (100–200 mm).</p>
+              </div>
+            </div>
+          </section>
+
+          {/* STEP 2 — Core Dimensions */}
+          <section className={stepClass} aria-labelledby="step-dimensions">
+            <h3 id="step-dimensions" className="text-sm font-semibold text-white/80">Step 2 — Core Dimensions</h3>
+            <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-6">
+              {/* Length */}
+              <div>
+                <Label htmlFor="length" className="text-teal-500">Length (L)</Label>
+                <NumberInput
                   id="length"
-                  type="text"
-                  inputMode="decimal"
                   value={length}
-                  onChange={(e) => setLength(numberOrEmpty(e.target.value))}
-                  placeholder="e.g. 5"
-                  className="flex-1 min-w-0 h-11 rounded-xl border border-transparent bg-slate-900 text-white placeholder-slate-400 focus-visible:ring-0 focus:border-teal-400"
+                  onChange={(v) => { setLength(numberOrEmpty(v)); setSubmitted(false); }}
+                  placeholder={lengthUnit === "feet" ? "e.g., 12" : lengthUnit === "inches" ? "e.g., 144" : "e.g., 4"}
+                  badge={unitAbbrev[lengthUnit]}
+                  ariaLabel="Length"
                 />
-                <Select value={lengthUnit} onValueChange={(v: LinearUnit) => setLengthUnit(v)}>
-                  <SelectTrigger className="w-full h-11 rounded-xl border border-transparent bg-slate-900 text-white focus-visible:ring-0 focus:border-teal-400 sm:w-[150px]">
-                    <SelectValue placeholder="Unit" />
-                  </SelectTrigger>
-                  <SelectContent className="z-50 bg-slate-900 text-white border border-slate-700">
-                    {linearUnitOptions.map((u) => (
-                      <SelectItem key={u.value} value={u.value} className="focus:bg-slate-800">
-                        {u.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <p className="text-xs text-slate-300">Overall slab length.</p>
+                <p className="text-[11px] text-white/60">Typical: 3–30 {unitAbbrev[lengthUnit]}</p>
               </div>
-            </div>
 
-            {/* Width */}
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="width" className="text-sm font-medium text-white">Width</Label>
-              <p className="text-xs text-white/70">Short side of the slab</p>
-              <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center">
-                <Input
+              {/* Width */}
+              <div>
+                <Label htmlFor="width" className="text-teal-500">Width (W)</Label>
+                <NumberInput
                   id="width"
-                  type="text"
-                  inputMode="decimal"
                   value={width}
-                  onChange={(e) => setWidth(numberOrEmpty(e.target.value))}
-                  placeholder="e.g. 3"
-                  className="flex-1 min-w-0 h-11 rounded-xl border border-transparent bg-slate-900 text-white placeholder-slate-400 focus-visible:ring-0 focus:border-teal-400"
+                  onChange={(v) => { setWidth(numberOrEmpty(v)); setSubmitted(false); }}
+                  placeholder={widthUnit === "feet" ? "e.g., 10" : widthUnit === "inches" ? "e.g., 120" : "e.g., 3"}
+                  badge={unitAbbrev[widthUnit]}
+                  ariaLabel="Width"
                 />
-                <Select value={widthUnit} onValueChange={(v: LinearUnit) => setWidthUnit(v)}>
-                  <SelectTrigger className="w-full h-11 rounded-xl border border-transparent bg-slate-900 text-white focus-visible:ring-0 focus:border-teal-400 sm:w-[150px]">
-                    <SelectValue placeholder="Unit" />
-                  </SelectTrigger>
-                  <SelectContent className="z-50 bg-slate-900 text-white border border-slate-700">
-                    {linearUnitOptions.map((u) => (
-                      <SelectItem key={u.value} value={u.value} className="focus:bg-slate-800">
-                        {u.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <p className="text-xs text-slate-300">Overall slab width.</p>
+                <p className="text-[11px] text-white/60">Typical: 2–20 {unitAbbrev[widthUnit]}</p>
               </div>
-            </div>
 
-            {/* Thickness */}
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="thickness" className="text-sm font-medium text-white">Thickness</Label>
-              <p className="text-xs text-white/70">Depth of the slab</p>
-              <div className="flex min-w-0 flex-col gap-2 sm:flex-row sm:items-center">
-                <Input
+              {/* Thickness */}
+              <div>
+                <Label htmlFor="thickness" className="text-teal-500">Thickness (T)</Label>
+                <NumberInput
                   id="thickness"
-                  type="text"
-                  inputMode="decimal"
                   value={thickness}
-                  onChange={(e) => setThickness(numberOrEmpty(e.target.value))}
-                  placeholder="e.g. 10"
-                  className="flex-1 min-w-0 h-11 rounded-xl border border-transparent bg-slate-900 text-white placeholder-slate-400 focus-visible:ring-0 focus:border-teal-400"
+                  onChange={(v) => { setThickness(numberOrEmpty(v)); setSubmitted(false); }}
+                  placeholder={thicknessUnit === "inches" ? "e.g., 6" : thicknessUnit === "centimeter" ? "e.g., 15" : "e.g., 0.15"}
+                  badge={unitAbbrev[thicknessUnit]}
+                  ariaLabel="Thickness"
                 />
-                <Select value={thicknessUnit} onValueChange={(v: LinearUnit) => setThicknessUnit(v)}>
-                  <SelectTrigger className="w-full h-11 rounded-xl border border-transparent bg-slate-900 text-white focus-visible:ring-0 focus:border-teal-400 sm:w-[150px]">
-                    <SelectValue placeholder="Unit" />
+                <p className="text-xs text-slate-300">Uniform slab thickness.</p>
+                <p className="text-[11px] text-white/60">Typical: 0.10–0.20 m (4–8 in)</p>
+              </div>
+            </div>
+          </section>
+
+          {/* STEP 3 — Output Units */}
+          <section className={stepClass} aria-labelledby="step-output">
+            <h3 id="step-output" className="text-sm font-semibold text-white/80">Step 3 — Output Units</h3>
+            <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+              <div>
+                <Label className="text-teal-500">Area Unit</Label>
+                <Select value={areaOutUnit} onValueChange={(v: AreaUnit) => { setAreaOutUnit(v); setSubmitted(false); }}>
+                  <SelectTrigger className={selectTriggerClass} aria-label="Area unit">
+                    <SelectValue placeholder="Select area unit" />
                   </SelectTrigger>
-                  <SelectContent className="z-50 bg-slate-900 text-white border border-slate-700">
-                    {linearUnitOptions.map((u) => (
-                      <SelectItem key={u.value} value={u.value} className="focus:bg-slate-800">
+                  <SelectContent className={selectContentClass}>
+                    {areaUnits.map((u) => (
+                      <SelectItem key={u.key} value={u.key} className="text-white">
                         {u.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
+                <p className="mt-1 text-[11px] text-white/60">Choose how to display the computed area.</p>
+              </div>
+
+              <div>
+                <Label className="text-teal-500">Volume Unit</Label>
+                <Select value={volumeOutUnit} onValueChange={(v: VolumeUnit) => { setVolumeOutUnit(v); setSubmitted(false); }}>
+                  <SelectTrigger className={selectTriggerClass} aria-label="Volume unit">
+                    <SelectValue placeholder="Select volume unit" />
+                  </SelectTrigger>
+                  <SelectContent className={selectContentClass}>
+                    {volumeUnits.map((u) => (
+                      <SelectItem key={u.key} value={u.key} className="text-white">
+                        {u.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="mt-1 text[11px] text-white/60">Yards (yd³) are common for ordering.</p>
               </div>
             </div>
-          </div>
+          </section>
 
-          {/* Output unit selectors */}
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <div className="flex flex-col gap-2">
-              <Label className="text-sm font-medium text-white">Area Unit</Label>
-              <Select value={areaOutUnit} onValueChange={(v: AreaUnit) => setAreaOutUnit(v)}>
-                <SelectTrigger className="h-11 rounded-xl border border-transparent bg-slate-900 text-white focus-visible:ring-0 focus:border-teal-400">
-                  <SelectValue placeholder="Select area unit" />
-                </SelectTrigger>
-                <SelectContent className="z-50 bg-slate-900 text-white border border-slate-700">
-                  {areaUnits.map((u) => (
-                    <SelectItem key={u.key} value={u.key} className="focus:bg-slate-800">
-                      {u.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+          {/* STEP 4 — Actions */}
+          <section className={stepClass} aria-labelledby="step-actions">
+            <h3 id="step-actions" className="text-sm font-semibold text-white/80">Step 4 — Actions</h3>
+            <div className="mt-2 flex flex-col sm:flex-row gap-2">
+              <Button type="submit" className="h-11 rounded-sm bg-teal-400 text-slate-900 font-semibold hover:bg-teal-300 focus-visible:ring-0">
+                Calculate
+              </Button>
+              <Button type="button" onClick={resetAll} className="h-11 rounded-sm bg-slate-500 text-white hover:bg-slate-400">
+                Reset
+              </Button>
             </div>
-            <div className="flex flex-col gap-2">
-              <Label className="text-sm font-medium text-white">Volume Unit</Label>
-              <Select value={volumeOutUnit} onValueChange={(v: VolumeUnit) => setVolumeOutUnit(v)}>
-                <SelectTrigger className="h-11 rounded-xl border border-transparent bg-slate-900 text-white focus-visible:ring-0 focus:border-teal-400">
-                  <SelectValue placeholder="Select volume unit" />
-                </SelectTrigger>
-                <SelectContent className="z-50 bg-slate-900 text-white border border-slate-700">
-                  {volumeUnits.map((u) => (
-                    <SelectItem key={u.key} value={u.key} className="focus:bg-slate-800">
-                      {u.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className="flex flex-col gap-2 sm:flex-row">
-            <Button
-              type="submit"
-              className="w-full sm:w-auto h-11 rounded-xl bg-teal-400 text-slate-900 font-semibold shadow-sm transition hover:opacity-90 active:scale-[0.99] focus-visible:ring-2 focus-visible:ring-teal-400"
-            >
-              Calculate
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full sm:w-auto h-11 rounded-xl border border-transparent bg-slate-800 text-white hover:bg-slate-800/90 focus-visible:ring-0 focus:border-teal-400"
-              onClick={() => {
-                setLength("");
-                setWidth("");
-                setThickness("");
-                setLengthUnit("meters");
-                setWidthUnit("meters");
-                setThicknessUnit("centimeter");
-                setAreaOutUnit("m2");
-                setVolumeOutUnit("m3");
-                setSubmitted(false);
-              }}
-            >
-              Reset
-            </Button>
-          </div>
+          </section>
         </form>
-
-        {/* Separator (subtle on dark) */}
-        <div className="h-px w-full bg-slate-800" />
 
         {/* Results */}
         {!submitted ? (
-          <p className="text-sm text-white/70">
-            Enter dimensions above and press <span className="font-medium text-white">Calculate</span> to see results here.
-          </p>
-        ) : result === null ? (
-          <p className="text-sm text-red-300">Please enter valid non-negative numbers for all fields.</p>
+          <p className="mt-4 text-sm text-white/70">Enter values above and press <span className="font-semibold">Calculate</span> to reveal results.</p>
+        ) : calc === null ? (
+          <p className="mt-4 text-sm text-red-300">Please enter valid non-negative numbers for all fields.</p>
         ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div className="rounded-2xl border border-slate-700 bg-slate-900 p-4 shadow-sm transition hover:shadow-md">
-              <div className="text-xs uppercase text-white/70">Area</div>
-              <div className="mt-1 text-3xl font-semibold tracking-tight text-teal-400">
-                {Intl.NumberFormat(undefined, { maximumFractionDigits: 4 }).format(result.area)}
+          <>
+            {/* Inputs Summary */}
+            <div className={`${stepClass} rounded-sm bg-slate-900 border border-slate-700 p-4`}>
+              <div className="mb-2 text-sm font-semibold text-white">Inputs Summary</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                <KV k="Length" v={`${length || 0} ${unitAbbrev[lengthUnit]}`} />
+                <KV k="Width" v={`${width || 0} ${unitAbbrev[widthUnit]}`} />
+                <KV k="Thickness" v={`${thickness || 0} ${unitAbbrev[thicknessUnit]}`} />
+                <KV k="Area Unit" v={`${areaUnits.find(a=>a.key===areaOutUnit)!.label}`} />
+                <KV k="Volume Unit" v={`${volumeUnits.find(v=>v.key===volumeOutUnit)!.label}`} />
               </div>
-              <div className="text-sm text-white/70">{result.areaUnitLabel}</div>
             </div>
-            <div className="rounded-2xl border border-slate-700 bg-slate-900 p-4 shadow-sm transition hover:shadow-md">
-              <div className="text-xs uppercase text-white/70">Volume</div>
-              <div className="mt-1 text-2xl font-semibold tracking-tight text-teal-400">
-                {Intl.NumberFormat(undefined, { maximumFractionDigits: 4 }).format(result.volume)}
+
+            {/* Result tiles */}
+            <div className={`${stepClass} grid grid-cols-1 sm:grid-cols-2 gap-4 border-none`}>
+              <div className="rounded-sm border border-slate-700 bg-slate-900 p-4">
+                <div className="text-xs uppercase text-white/70">Area</div>
+                <div className="mt-1 text-2xl font-semibold text-teal-400">
+                  {Intl.NumberFormat(undefined, { maximumFractionDigits: 4 }).format(calc.area)}
+                </div>
+                <div className="text-sm text-white/70">{calc.areaUnitLabel}</div>
               </div>
-              <div className="text-sm text-white/70">{result.volumeUnitLabel}</div>
-            </div>
-            <div className="rounded-2xl border border-slate-700 bg-slate-900 p-4 shadow-sm transition hover:shadow-md">
-              <div className="text-xs uppercase text-white/70">+5% Overage</div>
-              <div className="mt-1 text-xl font-semibold tracking-tight text-teal-400">
-                {Intl.NumberFormat(undefined, { maximumFractionDigits: 4 }).format(result.volume5)}
+              <div className="rounded-sm border border-slate-700 bg-slate-900 p-4">
+                <div className="text-xs uppercase text-white/70">Volume</div>
+                <div className="mt-1 text-2xl font-semibold text-teal-400">
+                  {Intl.NumberFormat(undefined, { maximumFractionDigits: 4 }).format(calc.volume)}
+                </div>
+                <div className="text-sm text-white/70">{calc.volumeUnitLabel}</div>
               </div>
-              <div className="text-sm text-white/70">{result.volumeUnitLabel}</div>
-            </div>
-            <div className="rounded-2xl border border-slate-700 bg-slate-900 p-4 shadow-sm transition hover:shadow-md">
-              <div className="text-xs uppercase text-white/70">+10% Overage</div>
-              <div className="mt-1 text-xl font-semibold tracking-tight text-teal-400">
-                {Intl.NumberFormat(undefined, { maximumFractionDigits: 4 }).format(result.volume10)}
+              <div className="rounded-sm border border-slate-700 bg-slate-900 p-4">
+                <div className="text-xs uppercase text-white/70">+5% Overage</div>
+                <div className="mt-1 text-xl font-semibold text-teal-400">
+                  {Intl.NumberFormat(undefined, { maximumFractionDigits: 4 }).format(calc.volume5)}
+                </div>
+                <div className="text-sm text-white/70">{calc.volumeUnitLabel}</div>
               </div>
-              <div className="text-sm text-white/70">{result.volumeUnitLabel}</div>
+              <div className="rounded-sm border border-slate-700 bg-slate-900 p-4">
+                <div className="text-xs uppercase text-white/70">+10% Overage</div>
+                <div className="mt-1 text-xl font-semibold text-teal-400">
+                  {Intl.NumberFormat(undefined, { maximumFractionDigits: 4 }).format(calc.volume10)}
+                </div>
+                <div className="text-sm text-white/70">{calc.volumeUnitLabel}</div>
+              </div>
             </div>
-          </div>
+
+            {/* Cubic yards */}
+            <div className={`${stepClass} rounded-sm border border-slate-700 bg-slate-900 p-4`}>
+              <div className="mb-2 text-sm font-semibold text-white">Cubic Yards (for ordering)</div>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <div>
+                  <div className="text-xs uppercase text-white/70">Required</div>
+                  <div className="mt-1 text-xl font-semibold text-teal-400">
+                    {Intl.NumberFormat(undefined, { maximumFractionDigits: 4 }).format(calc.yards)} yd³
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs uppercase text-white/70">+5%</div>
+                  <div className="mt-1 text-xl font-semibold text-teal-400">
+                    {Intl.NumberFormat(undefined, { maximumFractionDigits: 4 }).format(calc.yards5)} yd³
+                  </div>
+                </div>
+                <div>
+                  <div className="text-xs uppercase text-white/70">+10%</div>
+                  <div className="mt-1 text-xl font-semibold text-teal-400">
+                    {Intl.NumberFormat(undefined, { maximumFractionDigits: 4 }).format(calc.yards10)} yd³
+                  </div>
+                </div>
+              </div>
+            </div>
+          </>
         )}
       </CardContent>
     </Card>

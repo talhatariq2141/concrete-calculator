@@ -14,7 +14,7 @@ import {
 export function Header() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const isHomePage = pathname === '/';
+  // const isHomePage = pathname === '/';
 
 
   return (
