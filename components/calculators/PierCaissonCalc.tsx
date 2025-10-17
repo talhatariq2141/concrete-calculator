@@ -1,4 +1,5 @@
-// components/PierCaissonCalc.tsx
+// components/calculators/PierCaissonConcreteCalc.tsx
+
 "use client";
 
 import * as React from "react";
@@ -15,20 +16,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { Info } from "lucide-react";
 
-/* -----------------------------
-   UI TOKENS (use as provided)
------------------------------ */
-const inputBase =
-  "bg-slate-900 text-white placeholder-slate-400 border border-transparent focus:border-teal-400 focus:outline-none rounded-lg h-11 px-3 w-full";
-const labelBase = "text-white text-sm font-medium";
-const group = "grid grid-cols-1 sm:grid-cols-2 gap-4";
-const card =
-  "bg-slate-800 rounded-2xl p-4 md:p-6 shadow-xl border border-slate-800"; // lowered padding
-
-/* -----------------------------
-   Types / Units
------------------------------ */
+/* ---------------------------------------------
+   Types / Units (logic unchanged)
+--------------------------------------------- */
 type LinearUnit = "m" | "cm" | "mm" | "ft" | "in";
 
 type Inputs = {
@@ -50,9 +42,9 @@ type Results = {
   totalWaste: { m3: number; yd3: number; ft3: number };
 } | null;
 
-/* -----------------------------
+/* ---------------------------------------------
    Helpers (math unchanged)
------------------------------ */
+--------------------------------------------- */
 const toMeters = (v: number, u: LinearUnit) => {
   switch (u) {
     case "m":
@@ -81,29 +73,51 @@ const frustumVolume = (topDia_m: number, bottomDia_m: number, height_m: number) 
 
 const toYd3 = (m3: number) => m3 * 1.30795062;
 const toFt3 = (m3: number) => m3 * 35.3146667;
-const fmt = (n: number) =>
-  Number.isFinite(n) ? n.toLocaleString(undefined, { maximumFractionDigits: 4 }) : "—";
 
-/* -----------------------------
+const fmt = (n: number, d = 4) =>
+  Number.isFinite(n) ? n.toLocaleString(undefined, { maximumFractionDigits: d }) : "—";
+
+/* ---------------------------------------------
+   UI tokens (styles only)
+--------------------------------------------- */
+const fieldInputClass =
+  "h-11 w-full rounded-sm border border-slate-700 bg-slate-700 text-white caret-white placeholder-slate-300 pr-12 focus-visible:ring-0 focus:border-teal-400";
+const selectTriggerClass =
+  "h-11 rounded-sm border border-slate-700 bg-slate-700 text-white data-[placeholder]:text-slate-300 focus-visible:ring-0 focus:border-teal-400";
+const selectContentClass = "rounded-sm border border-slate-700 bg-slate-900 text-white";
+const stepClass = "pt-6 mt-4 border-t border-slate-800";
+
+const unitAbbrev: Record<LinearUnit, string> = {
+  m: "m",
+  cm: "cm",
+  mm: "mm",
+  ft: "ft",
+  in: "in",
+};
+
+/* ---------------------------------------------
    Small UI primitives
------------------------------ */
+--------------------------------------------- */
 const Field = ({
   id,
   label,
   hint,
+  subHint,
   children,
 }: {
   id?: string;
   label: string;
   hint?: string;
+  subHint?: string;
   children: React.ReactNode;
 }) => (
-  <div className="space-y-1">
-    <Label htmlFor={id} className={labelBase}>
+  <div className="space-y-1.5">
+    <Label htmlFor={id} className="text-teal-500 text-sm font-medium">
       {label}
     </Label>
     {children}
-    {hint ? <p className="text-xs text-slate-400">{hint}</p> : null}
+    {hint ? <p className="text-xs text-slate-300">{hint}</p> : null}
+    {subHint ? <p className="text-[11px] text-white/60">{subHint}</p> : null}
   </div>
 );
 
@@ -112,22 +126,39 @@ const NumberInput = ({
   value,
   onChange,
   placeholder,
-  numeric = false,
+  badge,
+  ariaLabel,
+  numeric,
 }: {
   id?: string;
   value: string;
   onChange: (v: string) => void;
   placeholder?: string;
+  badge?: string; // right-side unit badge
+  ariaLabel?: string;
   numeric?: boolean;
 }) => (
-  <Input
-    id={id}
-    inputMode={numeric ? "numeric" : "decimal"}
-    value={value}
-    onChange={(e) => onChange(e.target.value)}
-    placeholder={placeholder}
-    className={inputBase}
-  />
+  <div className="relative">
+    <Input
+      id={id}
+      inputMode={numeric ? "numeric" : "decimal"}
+      type="text"
+      value={value}
+      onChange={(e) => {
+        const raw = e.target.value.replace(/,/g, "");
+        // allow only numbers + dot
+        if (/^\d*\.?\d*$/.test(raw) || raw === "") onChange(raw);
+      }}
+      placeholder={placeholder}
+      className={fieldInputClass}
+      aria-label={ariaLabel}
+    />
+    {badge ? (
+      <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-200 text-xs">
+        {badge}
+      </span>
+    ) : null}
+  </div>
 );
 
 const UnitSelect = ({
@@ -138,15 +169,15 @@ const UnitSelect = ({
   onValueChange: (v: LinearUnit) => void;
 }) => (
   <Select value={value} onValueChange={(v) => onValueChange(v as LinearUnit)}>
-    <SelectTrigger className={inputBase}>
+    <SelectTrigger className={selectTriggerClass} aria-label="Units">
       <SelectValue placeholder="Units" />
     </SelectTrigger>
-    <SelectContent className="bg-slate-900 text-white border border-slate-700">
-      {["m", "cm", "mm", "ft", "in"].map((u) => (
+    <SelectContent className={selectContentClass}>
+      {(["m", "cm", "mm", "ft", "in"] as LinearUnit[]).map((u) => (
         <SelectItem
           key={u}
           value={u}
-          className="data-[highlighted]:bg-slate-800 data-[state=checked]:bg-slate-800"
+          className="text-white data-[highlighted]:bg-slate-800 data-[state=checked]:bg-slate-800"
         >
           {u}
         </SelectItem>
@@ -155,10 +186,10 @@ const UnitSelect = ({
   </Select>
 );
 
-/* -----------------------------
-   Component
------------------------------ */
-export default function PierCaissonCalc() {
+/* ---------------------------------------------
+   Component (logic intact; UX refactor)
+--------------------------------------------- */
+export default function PierCaissonConcreteCalc() {
   const [inputs, setInputs] = useState<Inputs>({
     unit: "m",
     diameter: "0.6",
@@ -172,6 +203,7 @@ export default function PierCaissonCalc() {
   });
 
   const [results, setResults] = useState<Results>(null);
+  const [submitted, setSubmitted] = useState(false);
 
   const canCalculate = useMemo(() => {
     const d = parseFloat(inputs.diameter);
@@ -187,7 +219,8 @@ export default function PierCaissonCalc() {
     return true;
   }, [inputs]);
 
-  const onCalculate = () => {
+  const onCalculate = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     const d = parseFloat(inputs.diameter);
     const h = parseFloat(inputs.depth);
     const n = parseFloat(inputs.qty);
@@ -221,6 +254,7 @@ export default function PierCaissonCalc() {
     };
 
     setResults(r);
+    setSubmitted(true);
   };
 
   const reset = () => {
@@ -236,208 +270,318 @@ export default function PierCaissonCalc() {
       bellHeight: "0.4",
     });
     setResults(null);
+    setSubmitted(false);
   };
 
   return (
-    <Card className={`${card} overflow-hidden`}>
-      <CardHeader className="p-3 md:p-4">
-        <CardTitle className="text-xl md:text-2xl font-bold text-teal-400">
+    <Card className="font-poppins mx-auto w-full max-w-6xl rounded-sm border border-slate-700 bg-slate-900 shadow-md overflow-hidden">
+      <CardHeader className="p-6 pb-2">
+        <CardTitle className="text-2xl font-bold text-teal-400 text-center">
           Pier / Caisson Concrete Calculator
         </CardTitle>
+        <p className="text-sm text-white/70 mt-1 text-center">
+          Calculate concrete for straight shafts with optional belled bases. Results appear after you press
+          <span className="font-semibold"> Calculate</span>.
+        </p>
       </CardHeader>
 
-      <CardContent className="space-y-4 p-3 md:p-4">
-        {/* Unit + Waste */}
-        <section className={group}>
-          <Field label="Input Unit">
-            <UnitSelect
-              value={inputs.unit}
-              onValueChange={(unit) => setInputs((s) => ({ ...s, unit }))}
-            />
-          </Field>
-          <Field label="Waste / Overage (%)" hint="Typical allowance: 5–10%">
-            <NumberInput
-              value={inputs.wastePct}
-              onChange={(v) => setInputs((s) => ({ ...s, wastePct: v }))}
-              placeholder="5"
-            />
-          </Field>
+      <CardContent className="p-6 pt-0">
+        {/* Info strip */}
+        <div className="rounded-sm border border-slate-700 bg-slate-900 p-3 flex items-start gap-2">
+          <Info className="mt-0.5 h-4 w-4 text-teal-400" />
+          <p className="text-sm text-slate-300">
+            Keep all inputs in the <span className="text-white font-medium">same unit</span>. Shaft volume uses
+            <code className="mx-1 text-slate-200">π r² h</code>; belled base uses frustum formula
+            <code className="mx-1 text-slate-200">(π h / 3)(R₁² + R₁R₂ + R₂²)</code>.
+          </p>
+        </div>
+
+        {/* STEP 1 — Units & Waste */}
+        <section className={stepClass} aria-labelledby="step1">
+          <h3 id="step1" className="text-sm font-semibold text-white/80">Step 1 — Choose Units</h3>
+          <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl">
+            <div>
+              <Field label="Input Unit">
+                <UnitSelect
+                  value={inputs.unit}
+                  onValueChange={(unit) => {
+                    setInputs((s) => ({ ...s, unit }));
+                    setSubmitted(false);
+                  }}
+                />
+              </Field>
+              <p className="mt-1 text-xs text-white/60">All dimensions below will be interpreted in <span className="text-white">{unitAbbrev[inputs.unit]}</span>.</p>
+            </div>
+            <div>
+              <Field label="Waste / Overage (%)" hint="Adds extra volume to cover spillage, uneven base, etc." subHint="Typical 5–10%">
+                <NumberInput
+                  value={inputs.wastePct}
+                  onChange={(v) => {
+                    setInputs((s) => ({ ...s, wastePct: v }));
+                    setSubmitted(false);
+                  }}
+                  placeholder="5"
+                  badge="%"
+                  ariaLabel="Waste allowance percent"
+                />
+              </Field>
+            </div>
+          </div>
         </section>
 
-        {/* Shaft */}
-        <section className="rounded-xl border border-slate-700 bg-slate-700 p-3 md:p-4">
-          <h3 className="text-white font-semibold">Shaft (Cylinder)</h3>
-          <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <Field label={`Diameter (${inputs.unit})`}>
+        {/* STEP 2 — Core Dimensions */}
+        <section className={stepClass} aria-labelledby="step2">
+          <h3 id="step2" className="text-sm font-semibold text-white/80">Step 2 — Core Dimensions</h3>
+          <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <Field id="dia" label={`Shaft Diameter (D)`} hint="Full diameter of the cylindrical shaft." subHint={`Typical 0.45–1.2 ${unitAbbrev[inputs.unit]}`}>
               <NumberInput
+                id="dia"
                 value={inputs.diameter}
-                onChange={(v) => setInputs((s) => ({ ...s, diameter: v }))}
-                placeholder={inputs.unit === "m" ? "0.6" : ""}
+                onChange={(v) => {
+                  setInputs((s) => ({ ...s, diameter: v }));
+                  setSubmitted(false);
+                }}
+                placeholder={inputs.unit === "ft" ? "e.g., 2" : "e.g., 0.6"}
+                badge={unitAbbrev[inputs.unit]}
+                ariaLabel="Shaft diameter"
               />
             </Field>
-            <Field label={`Depth (${inputs.unit})`}>
+
+            <Field id="depth" label={`Shaft Depth (H)`} hint="Vertical depth/length of the cylindrical shaft." subHint={`Typical 2–6 ${unitAbbrev[inputs.unit]}`}>
               <NumberInput
+                id="depth"
                 value={inputs.depth}
-                onChange={(v) => setInputs((s) => ({ ...s, depth: v }))}
-                placeholder={inputs.unit === "m" ? "3" : ""}
+                onChange={(v) => {
+                  setInputs((s) => ({ ...s, depth: v }));
+                  setSubmitted(false);
+                }}
+                placeholder={inputs.unit === "ft" ? "e.g., 10" : "e.g., 3"}
+                badge={unitAbbrev[inputs.unit]}
+                ariaLabel="Shaft depth"
               />
             </Field>
-            <Field label="Quantity (No. of Piers)">
+
+            <Field id="qty" label="Quantity (No. of Piers)" hint="Enter identical piers with same dimensions.">
               <NumberInput
+                id="qty"
                 value={inputs.qty}
-                onChange={(v) => setInputs((s) => ({ ...s, qty: v }))}
+                onChange={(v) => {
+                  const clean = v.replace(/[^0-9]/g, "");
+                  setInputs((s) => ({ ...s, qty: clean }));
+                  setSubmitted(false);
+                }}
                 placeholder="4"
                 numeric
+                ariaLabel="Quantity of piers"
               />
             </Field>
           </div>
         </section>
 
-        {/* Bell Toggle */}
-        <section className="flex items-center justify-between gap-3">
-          <div>
-            <h4 className="text-white font-semibold">Belled Base (Optional)</h4>
-            <p className="text-xs md:text-sm text-slate-300">
-              Adds a frustum volume at the bottom (useful for belled caissons).
-            </p>
+        {/* STEP 3 — Optional: Belled Base */}
+        <section className={stepClass} aria-labelledby="step3">
+          <h3 id="step3" className="text-sm font-semibold text-white/80">Step 3 — Optional Parameters</h3>
+          <div className="mt-2 flex items-center justify-between gap-3 rounded-sm border border-slate-700 bg-slate-900 p-4">
+            <div>
+              <h4 className="text-white font-semibold">Belled Base</h4>
+              <p className="text-xs md:text-sm text-slate-300">Adds a frustum volume at the bottom (useful for belled caissons).</p>
+            </div>
+            <div className="flex items-center gap-2">
+              <Switch
+                checked={inputs.hasBell}
+                onCheckedChange={(v) => {
+                  setInputs((s) => ({ ...s, hasBell: v }));
+                  setSubmitted(false);
+                }}
+              />
+              <span className="text-sm text-white">{inputs.hasBell ? "Enabled" : "Disabled"}</span>
+            </div>
           </div>
-          <div className="flex items-center gap-2 bg-slate-700 p-2 rounded-lg">
-            <Switch
-              checked={inputs.hasBell}
-              onCheckedChange={(v) => setInputs((s) => ({ ...s, hasBell: v }))}
-            />
-            <span className="text-sm text-white">{inputs.hasBell ? "Enabled" : "Disabled"}</span>
-          </div>
-        </section>
 
-        {/* Bell inputs */}
-        {inputs.hasBell && (
-          <section className="rounded-xl border border-slate-700 bg-slate-700 p-3 md:p-4">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              <Field label={`Top Diameter (${inputs.unit})`} hint="Often equals shaft diameter">
+          {inputs.hasBell && (
+            <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <Field id="bellTop" label={`Bell Top Diameter`} hint="Often equals shaft diameter." subHint={`Typical 0.6–1.2 ${unitAbbrev[inputs.unit]}`}>
                 <NumberInput
+                  id="bellTop"
                   value={inputs.bellTopDia}
-                  onChange={(v) => setInputs((s) => ({ ...s, bellTopDia: v }))}
-                  placeholder={inputs.unit === "m" ? "0.6" : ""}
+                  onChange={(v) => {
+                    setInputs((s) => ({ ...s, bellTopDia: v }));
+                    setSubmitted(false);
+                  }}
+                  placeholder={inputs.unit === "ft" ? "e.g., 2" : "e.g., 0.6"}
+                  badge={unitAbbrev[inputs.unit]}
+                  ariaLabel="Bell top diameter"
                 />
               </Field>
-              <Field label={`Bottom Diameter (${inputs.unit})`}>
+
+              <Field id="bellBottom" label={`Bell Bottom Diameter`} subHint={`Typical 0.8–1.5 ${unitAbbrev[inputs.unit]}`}>
                 <NumberInput
+                  id="bellBottom"
                   value={inputs.bellBottomDia}
-                  onChange={(v) => setInputs((s) => ({ ...s, bellBottomDia: v }))}
-                  placeholder={inputs.unit === "m" ? "1.0" : ""}
+                  onChange={(v) => {
+                    setInputs((s) => ({ ...s, bellBottomDia: v }));
+                    setSubmitted(false);
+                  }}
+                  placeholder={inputs.unit === "ft" ? "e.g., 3.5" : "e.g., 1.0"}
+                  badge={unitAbbrev[inputs.unit]}
+                  ariaLabel="Bell bottom diameter"
                 />
               </Field>
-              <Field label={`Bell Height (${inputs.unit})`}>
+
+              <Field id="bellHeight" label={`Bell Height`} subHint={`Typical 0.3–0.6 ${unitAbbrev[inputs.unit]}`}>
                 <NumberInput
+                  id="bellHeight"
                   value={inputs.bellHeight}
-                  onChange={(v) => setInputs((s) => ({ ...s, bellHeight: v }))}
-                  placeholder={inputs.unit === "m" ? "0.4" : ""}
+                  onChange={(v) => {
+                    setInputs((s) => ({ ...s, bellHeight: v }));
+                    setSubmitted(false);
+                  }}
+                  placeholder={inputs.unit === "ft" ? "e.g., 1.5" : "e.g., 0.4"}
+                  badge={unitAbbrev[inputs.unit]}
+                  ariaLabel="Bell height"
                 />
               </Field>
             </div>
-          </section>
-        )}
-
-        {/* Actions */}
-        <section className="flex flex-wrap gap-2">
-          <Button
-            className="h-11 px-5 rounded-lg bg-teal-400 text-slate-900 font-semibold hover:opacity-90"
-            type="button"
-            onClick={onCalculate}
-            disabled={!canCalculate}
-          >
-            Calculate
-          </Button>
-          <Button
-            className="h-11 px-5 rounded-lg border border-slate-700 bg-slate-900 text-white hover:bg-slate-900/90"
-            variant="outline"
-            type="button"
-            onClick={reset}
-          >
-            Reset
-          </Button>
+          )}
         </section>
 
-        {/* Results */}
-        {results && (
-          <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* Per Pier */}
-            <div className="rounded-xl border border-slate-700 bg-slate-900 p-3 md:p-4">
-              <h5 className="text-teal-400 font-semibold">Per Pier</h5>
-              <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
-                <div className="text-slate-300">Net (m³)</div>
-                <div className="text-right text-white font-medium">{fmt(results.perPier.m3)}</div>
-                <div className="text-slate-300">Net (yd³)</div>
-                <div className="text-right text-white font-medium">{fmt(results.perPier.yd3)}</div>
-                <div className="text-slate-300">Net (ft³)</div>
-                <div className="text-right text-white font-medium">{fmt(results.perPier.ft3)}</div>
+        {/* STEP 4 — Actions */}
+        <section className={stepClass} aria-labelledby="step4">
+          <h3 id="step4" className="text-sm font-semibold text-white/80">Step 4 — Actions</h3>
+          <form onSubmit={onCalculate} className="mt-2 flex flex-col sm:flex-row gap-2">
+            <Button
+              type="submit"
+              className="h-11 rounded-sm bg-teal-400 text-slate-900 font-semibold hover:bg-teal-300 focus-visible:ring-0"
+              disabled={!canCalculate}
+            >
+              Calculate
+            </Button>
+            <Button
+              type="button"
+              onClick={reset}
+              className="h-11 rounded-sm bg-slate-500 text-white hover:bg-slate-400"
+            >
+              Reset
+            </Button>
+          </form>
+        </section>
 
-                <div className="col-span-2 mt-2 border-t border-slate-700" />
-                <div className="text-slate-300">With Waste (m³)</div>
-                <div className="text-right text-white font-semibold">
-                  {fmt(results.perPierWaste.m3)}
-                </div>
-                <div className="text-slate-300">With Waste (yd³)</div>
-                <div className="text-right text-white font-semibold">
-                  {fmt(results.perPierWaste.yd3)}
-                </div>
-                <div className="text-slate-300">With Waste (ft³)</div>
-                <div className="text-right text-white font-semibold">
-                  {fmt(results.perPierWaste.ft3)}
-                </div>
+        {/* Results (hidden until Calculate) */}
+        {!submitted ? (
+          <p className="mt-4 text-sm text-white/70">Enter values above and press <span className="font-semibold">Calculate</span> to reveal results.</p>
+        ) : !results ? (
+          <p className="mt-4 text-sm text-red-300">Please enter valid positive numbers for all required fields.</p>
+        ) : (
+          <>
+            {/* Inputs Summary */}
+            <div className={`${stepClass} rounded-sm bg-slate-900 border border-slate-700 p-4`}>
+              <div className="mb-2 text-sm font-semibold text-white">Inputs Summary</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
+                <KV k="Units" v={unitAbbrev[inputs.unit]} />
+                <KV k="Shaft Dia" v={`${inputs.diameter} ${unitAbbrev[inputs.unit]}`} />
+                <KV k="Shaft Depth" v={`${inputs.depth} ${unitAbbrev[inputs.unit]}`} />
+                <KV k="Quantity" v={`${inputs.qty}`} />
+                <KV k="Waste" v={`${inputs.wastePct}%`} />
+                <KV k="Belled Base" v={inputs.hasBell ? "Yes" : "No"} />
+                {inputs.hasBell && (
+                  <>
+                    <KV k="Bell Top Dia" v={`${inputs.bellTopDia} ${unitAbbrev[inputs.unit]}`} />
+                    <KV k="Bell Bottom Dia" v={`${inputs.bellBottomDia} ${unitAbbrev[inputs.unit]}`} />
+                    <KV k="Bell Height" v={`${inputs.bellHeight} ${unitAbbrev[inputs.unit]}`} />
+                  </>
+                )}
               </div>
             </div>
 
-            {/* Total */}
-            <div className="rounded-xl border border-slate-700 bg-slate-900 p-3 md:p-4">
-              <h5 className="text-teal-400 font-semibold">
-                Total ({parseFloat(inputs.qty) || 0} pier{parseFloat(inputs.qty) === 1 ? "" : "s"})
-              </h5>
-              <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
-                <div className="text-slate-300">Net (m³)</div>
-                <div className="text-right text-white font-medium">{fmt(results.total.m3)}</div>
-                <div className="text-slate-300">Net (yd³)</div>
-                <div className="text-right text-white font-medium">{fmt(results.total.yd3)}</div>
-                <div className="text-slate-300">Net (ft³)</div>
-                <div className="text-right text-white font-medium">{fmt(results.total.ft3)}</div>
+            {/* Result tiles */}
+            <section className={`${stepClass} grid grid-cols-1 lg:grid-cols-2 gap-4 border-none`}>
+              {/* Per Pier */}
+              <div className="rounded-sm border border-slate-700 bg-slate-900 p-4">
+                <h5 className="text-white font-semibold">Per Pier</h5>
+                <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
+                  <div className="text-white/70">Net (m³)</div>
+                  <div className="text-right text-teal-400 font-semibold">{fmt(results.perPier.m3)}</div>
+                  <div className="text-white/70">Net (yd³)</div>
+                  <div className="text-right text-teal-400 font-semibold">{fmt(results.perPier.yd3)}</div>
+                  <div className="text-white/70">Net (ft³)</div>
+                  <div className="text-right text-teal-400 font-semibold">{fmt(results.perPier.ft3)}</div>
 
-                <div className="col-span-2 mt-2 border-t border-slate-700" />
-                <div className="text-slate-300">With Waste (m³)</div>
-                <div className="text-right text-white font-semibold">
-                  {fmt(results.totalWaste.m3)}
-                </div>
-                <div className="text-slate-300">With Waste (yd³)</div>
-                <div className="text-right text-white font-semibold">
-                  {fmt(results.totalWaste.yd3)}
-                </div>
-                <div className="text-slate-300">With Waste (ft³)</div>
-                <div className="text-right text-white font-semibold">
-                  {fmt(results.totalWaste.ft3)}
+                  <div className="col-span-2 mt-2 border-t border-slate-700" />
+                  <div className="text-white/70">With Waste (m³)</div>
+                  <div className="text-right text-teal-400 font-bold">{fmt(results.perPierWaste.m3)}</div>
+                  <div className="text-white/70">With Waste (yd³)</div>
+                  <div className="text-right text-teal-400 font-bold">{fmt(results.perPierWaste.yd3)}</div>
+                  <div className="text-white/70">With Waste (ft³)</div>
+                  <div className="text-right text-teal-400 font-bold">{fmt(results.perPierWaste.ft3)}</div>
                 </div>
               </div>
-            </div>
-          </section>
+
+              {/* Total */}
+              <div className="rounded-sm border border-slate-700 bg-slate-900 p-4">
+                <h5 className="text-white font-semibold">
+                  Total ({parseFloat(inputs.qty) || 0} pier{parseFloat(inputs.qty) === 1 ? "" : "s"})
+                </h5>
+                <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
+                  <div className="text-white/70">Net (m³)</div>
+                  <div className="text-right text-teal-400 font-semibold">{fmt(results.total.m3)}</div>
+                  <div className="text-white/70">Net (yd³)</div>
+                  <div className="text-right text-teal-400 font-semibold">{fmt(results.total.yd3)}</div>
+                  <div className="text-white/70">Net (ft³)</div>
+                  <div className="text-right text-teal-400 font-semibold">{fmt(results.total.ft3)}</div>
+
+                  <div className="col-span-2 mt-2 border-t border-slate-700" />
+                  <div className="text-white/70">With Waste (m³)</div>
+                  <div className="text-right text-teal-400 font-bold">{fmt(results.totalWaste.m3)}</div>
+                  <div className="text-white/70">With Waste (yd³)</div>
+                  <div className="text-right text-teal-400 font-bold">{fmt(results.totalWaste.yd3)}</div>
+                  <div className="text-white/70">With Waste (ft³)</div>
+                  <div className="text-right text-teal-400 font-bold">{fmt(results.totalWaste.ft3)}</div>
+                </div>
+              </div>
+            </section>
+
+            {/* Cubic Yards helper */}
+            <section className="rounded-sm border border-slate-700 bg-slate-900 p-4">
+              <div className="mb-2 text-sm font-semibold text-white">Cubic Yards (for ordering)</div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <div className="text-xs uppercase text-white/70">yd³ (with waste)</div>
+                  <div className="mt-1 text-xl font-semibold text-teal-400">{fmt(results.totalWaste.yd3, 3)} yd³</div>
+                </div>
+                <div>
+                  <div className="text-xs uppercase text-white/70">yd³ (+5%)</div>
+                  <div className="mt-1 text-xl font-semibold text-teal-400">{fmt(results.totalWaste.yd3 * 1.05, 3)} yd³</div>
+                </div>
+                <div>
+                  <div className="text-xs uppercase text-white/70">yd³ (+10%)</div>
+                  <div className="mt-1 text-xl font-semibold text-teal-400">{fmt(results.totalWaste.yd3 * 1.1, 3)} yd³</div>
+                </div>
+              </div>
+            </section>
+          </>
         )}
 
-        {/* Formula helper (tiny, unobtrusive) */}
-        <section className="rounded-xl border border-slate-700 bg-slate-900 p-3 md:p-4">
+        {/* Formula helper */}
+        <section className="rounded-sm border border-slate-700 bg-slate-900 p-4 mt-4">
           <h6 className="text-white font-semibold">Formulas Used</h6>
           <ul className="mt-2 list-disc pl-5 text-xs text-slate-300">
-            <li>
-              Shaft (cylinder): <span className="text-white">V = π r² h</span>
-            </li>
+            <li>Shaft (cylinder): <span className="text-white">V = π r² h</span></li>
             {inputs.hasBell && (
-              <li>
-                Bell (frustum):{" "}
-                <span className="text-white">
-                  V = (π h / 3) (R₁² + R₁R₂ + R₂²)
-                </span>
-              </li>
+              <li>Bell (frustum): <span className="text-white">V = (π h / 3) (R₁² + R₁R₂ + R₂²)</span></li>
             )}
           </ul>
         </section>
       </CardContent>
     </Card>
+  );
+}
+
+/* ---------------------- small UI helpers ---------------------- */
+function KV({ k, v }: { k: string; v: string }) {
+  return (
+    <div className="flex items-center justify-between rounded-sm border border-slate-700 bg-slate-900 p-2">
+      <span className="text-white/70">{k}</span>
+      <span className="text-teal-400 font-semibold">{v}</span>
+    </div>
   );
 }

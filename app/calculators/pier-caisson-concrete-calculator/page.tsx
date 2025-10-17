@@ -2,8 +2,10 @@
 
 import React from "react";
 import type { Metadata } from "next";
-import RightSidebar from "@/components/app/RightSidebar";
 import PierCaissonCalc from "@/components/calculators/PierCaissonCalc";
+import { Box } from "lucide-react";
+import PierCaissonConcreteCalcArticle from "@/components/calculators/articles/PierCaissonConcreteCalcArticle";
+import RelatedCalculators from "@/components/app/RelatedCalculators";
 
 export const metadata: Metadata = {
   title: "Pier / Caisson Concrete Calculator - Concrete Calculator Max",
@@ -59,116 +61,47 @@ export default function PierCaissonCalculatorPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <main className="container-xl py-6">
-        <div className="grid gap-8 lg:grid-cols-12">
+      <main className="container-xl">
+
+          <div className="flex">
+        
           <article className="lg:col-span-8">
+
+            {/* Title and Description of Calculator */}
+            <div className="flex flex-col mb-4 justify-between">
+              <div className="w-full/50 text-left">
+                  <div className="flex item-start gap-2 sm:gap-3">
+                    <div className="p-1.5 sm:p-2 bg-primary/30 rounded-lg flex-shrink-0 items-center">
+                    <Box className="h-5 w-5 text-green-400" />
+                    </div>
+                    <h1 className="text-lg sm:text-2xl lg:text-3xl text-slate-200 font-bold font-poppins tracking-tight leading-tight">Pier Caisson Concrete Calculator</h1>
+                  </div>
+                  {/* <div className="flex flex-col text-right mb-4 flex justify-between items-top">
+                      <span className="text-lg font-bold font-mono text-primary dark:text-teal-400">55</span>
+                      <p className="text-muted-foreground text-sm font-bold font-mono">Available</p>            
+                  </div>                   */}
+              </div>              
+              <p className="mt-3 ml-2 text-sm sm:text-base lg:text-lg text-slate-400 leading relaxed font-poppins">
+                Calculate concrete volumes for piers and caissons quickly and accurately. Supports cylindrical and belled‑base formulas, unit conversions (m³ / yd³), quantity multipliers and 5–10% waste allowance — ideal for contractors and engineers to order the right amount of concrete.
+              </p>
+            </div>
+
+
+
             {/* ===== Calculator Slot ===== */}
             <PierCaissonCalc />
 
-            <div className="my-10 h-px w-full bg-border" />
+            <PierCaissonConcreteCalcArticle />
 
-            <header className="mb-6 mt-8">
-              <h1 className="text-3xl font-bold text-[var(--brand-primary)]">
-                How to Calculate Concrete of Pier and Caisson
-              </h1>
-            </header>
+            <RelatedCalculators className="mt-8 mb-8" exclude={['pier-caisson']} />
 
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              Piers and caissons are deep foundation elements used where soil conditions
-              require heavy load-bearing capacity. Both are cylindrical in shape, and
-              their volume is based on simple geometric formulas. Below is a practical
-              workflow to calculate pier or caisson concrete accurately, including for
-              belled bases and waste allowance.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 1: Work in Consistent Units</h2>
-            </div>
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              Convert all inputs to a single system before calculating. In metric, use{" "}
-              <strong>meters</strong> for depth and diameter; in imperial, convert inches
-              to feet. This prevents errors in final volume.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 2: Apply the Cylinder Formula</h2>
-            </div>
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              For a straight shaft pier or caisson, volume is calculated as:{" "}
-              <strong>V = π × r² × h</strong>, where <em>r</em> is radius and <em>h</em>{" "}
-              is depth.
-            </p>
-
-            <div className="mt-2 rounded-md bg-[var(--brand-muted)] p-4 text-sm text-[var(--brand-primary)] shadow-sm">
-              <p className="mt-2 text-[var(--brand-subtle)]">
-                <em>Example (Metric):</em> D = 1.2&nbsp;m, h = 10&nbsp;m → r = 0.6&nbsp;m →
-                V = 3.1416 × 0.6² × 10 = <strong>11.31&nbsp;m³</strong>.
-              </p>
-              <p className="mt-2 text-[var(--brand-subtle)]">
-                For 6 piers: 11.31 × 6 = <strong>67.86&nbsp;m³</strong>.
-              </p>
-            </div>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 3: Include a Belled Base if Applicable</h2>
-            </div>
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              Caissons often have a widened base for added stability. Use the frustum
-              formula:{" "}
-              <strong>
-                V = (πh / 3) × (R<sub>1</sub>² + R<sub>1</sub>R<sub>2</sub> + R<sub>2</sub>²)
-              </strong>{" "}
-              where R<sub>1</sub> is the top radius and R<sub>2</sub> is the bottom radius
-              of the bell.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 4: Multiply by Quantity</h2>
-            </div>
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              Multiply the per-unit concrete volume by the total number of piers or
-              caissons required for your foundation plan.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 5: Add Waste Allowance</h2>
-            </div>
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              Always add <strong>5–10%</strong> extra to account for over-excavation,
-              spillage, or pump line losses. This ensures you won’t fall short on pour
-              day.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Conversion Tips</h2>
-            </div>
-            <ul>
-              <li className="mt-2 ml-4">1 m³ = 35.315 ft³</li>
-              <li className="mt-2 ml-4">1 m³ = 1.308 yd³</li>
-              <li className="mt-2 ml-4">Always order in supplier-preferred units (m³ or yd³).</li>
-            </ul>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Common Mistakes to Avoid</h2>
-            </div>
-            <ul>
-              <li className="mt-2 ml-4">Mixing metric and imperial units.</li>
-              <li className="mt-2 ml-4">Forgetting to include belled base volume.</li>
-              <li className="mt-2 ml-4">Not adding waste allowance.</li>
-            </ul>
-
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              In summary: calculate shaft volume with <strong>V = πr²h</strong>, add bell
-              volume if required, multiply by number of units, and include 5–10% waste. A
-              pier/caisson calculator makes this process faster, reduces human error, and
-              ensures you order the right amount of concrete for your foundation.
-            </p>
+            
           </article>
 
-          <div className="lg:col-span-4">
-            <RightSidebar />
           </div>
-        </div>
+
+          
+        
       </main>
     </>
   );

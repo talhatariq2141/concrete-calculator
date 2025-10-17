@@ -2,8 +2,10 @@
 
 import React from "react";
 import type { Metadata } from "next";
-import RightSidebar from "@/components/app/RightSidebar";
 import ColumnConcreteCalc from "@/components/calculators/ColumnConcreteCalc";
+import { Columns2 } from "lucide-react";
+import ColumnConcreteCalcArticle from "@/components/calculators/articles/ColumnConcreteCalcArticle";
+import RelatedCalculators from "@/components/app/RelatedCalculators";
 
 export const metadata: Metadata = {
   title: "Column Concrete Calculator - Concrete Calculator Max",
@@ -61,142 +63,43 @@ export default function ColumnConcreteCalculatorPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       
-      <main className="container-xl py-6">
-        <div className="grid gap-8 lg:grid-cols-12">
+      <main className="container-xl">
+        <div className="flex">
           <article className="lg:col-span-8">
+            
+            {/* Title and Description of Calculator */}
+            <div className="flex flex-col mb-4 justify-between">
+              <div className="w-full/50 text-left">
+                  <div className="flex item-start gap-2 sm:gap-3">
+                    <div className="p-1.5 sm:p-2 bg-primary/30 rounded-lg flex-shrink-0 items-center">
+                    <Columns2 className="h-5 w-5 text-green-400" />
+                    </div>
+                    <h1 className="text-lg sm:text-2xl lg:text-3xl text-slate-200 font-bold font-poppins tracking-tight leading-tight">Column Concrete Calculator</h1>
+                  </div>
+                  {/* <div className="flex flex-col text-right mb-4 flex justify-between items-top">
+                      <span className="text-lg font-bold font-mono text-primary dark:text-teal-400">55</span>
+                      <p className="text-muted-foreground text-sm font-bold font-mono">Available</p>            
+                  </div>                   */}
+              </div>              
+              <p className="mt-3 ml-2 text-sm sm:text-base lg:text-lg text-slate-400 leading relaxed font-poppins">
+                Easily estimate the concrete volume needed for rectangular, square, or circular columns. Enter your dimensions, choose units, and get instant results with waste and dry-volume options.
+              </p>
+            </div>
+
+
+
+
+
+
             {/* ===== Calculator Slot (add later) ===== */}
             <ColumnConcreteCalc />
 
-            <div className="my-10 h-px w-full bg-border" />
-
-            <header className="mb-6 mt-8">
-              <h1 className="text-3xl font-bold text-[var(--brand-primary)]">
-                How to Calculate Concrete of a Column?
-              </h1>
-            </header>
-
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              This guide shows the exact formulas and a field-tested workflow to estimate
-              concrete for columns—both rectangular/square and circular—plus sensible
-              allowances so you can order confidently and avoid shortfalls.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 1: Normalize All Dimensions</h2>
-            </div>
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              Work in a single unit system. In metric, use meters (m) for length/width/height
-              (or diameter/height). In imperial, convert inches to feet before multiplying.
-              Mixed units are the quickest way to misorder concrete.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 2: Choose the Correct Area Formula</h2>
-            </div>
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              Column wet volume is <strong>V = Area × Height</strong>. Use the right
-              cross-section area:
-            </p>
-            <ul>
-              <li className="mt-2 ml-4">
-                <strong>Rectangular/Square:</strong> <code>Area = Length × Width</code>
-              </li>
-              <li className="mt-2 ml-4">
-                <strong>Circular:</strong> <code>Area = π × (Diameter ÷ 2)²</code>
-              </li>
-            </ul>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 3: Compute the Volume</h2>
-            </div>
-            <div className="mt-2 rounded-md bg-[var(--brand-muted)] p-4 text-sm text-[var(--brand-primary)] shadow-sm">
-              <p className="mt-2 text-[var(--brand-subtle)]">
-                <em>Example (Rectangular, metric):</em> L = 0.40&nbsp;m, W = 0.30&nbsp;m,
-                H = 3&nbsp;m → Area = 0.40 × 0.30 = 0.12&nbsp;m² → V = 0.12 × 3 =
-                <strong> 0.36&nbsp;m³</strong>.
-              </p>
-              <p className="mt-2 text-[var(--brand-subtle)]">
-                <em>Example (Circular, metric):</em> D = 0.50&nbsp;m, H = 3&nbsp;m → Area =
-                π × (0.25)² = 0.19635&nbsp;m² → V = 0.19635 × 3 =
-                <strong> 0.589&nbsp;m³</strong>.
-              </p>
-              <p className="mt-2 text-[var(--brand-subtle)]">
-                <em>Imperial tip:</em> Compute in <strong>ft³</strong> first, then ÷ 27
-                to get <strong>yd³</strong>.
-              </p>
-            </div>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 4: Account for Openings (Rare) &amp; Cover</h2>
-            </div>
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              Most columns are solid—no volume subtraction needed. If sleeves/embedded
-              conduits create continuous voids, estimate each void volume and subtract it
-              from the gross volume. Reinforcement steel does <em>not</em> require any
-              subtraction in typical estimating.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 5: Add a Waste Allowance</h2>
-            </div>
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              Apply a realistic buffer—typically <strong>5–10%</strong>—after all
-              subtractions. Tighter formwork and experienced crews lean toward 5%; congested
-              rebar, tall lifts, or pump placement may justify 8–10%.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 6 (Optional): Convert to Dry Volume for Mix Breakdown</h2>
-            </div>
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              For material splits (cement/sand/aggregate), multiply wet volume (after waste)
-              by a dry-volume factor (often <strong>1.50–1.54</strong>). For ready-mix
-              orders, you usually only need wet volume plus waste.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Pro Tips from Site Experience</h2>
-            </div>
-            <ul>
-              <li className="mt-2 ml-4">
-                <strong>Verify form size:</strong> Measure the formed cross-section (clear
-                of cover) and the actual story height at site.
-              </li>
-              <li className="mt-2 ml-4">
-                <strong>Segment unusual shapes:</strong> For chamfers or flares, split
-                into simple shapes and sum volumes.
-              </li>
-              <li className="mt-2 ml-4">
-                <strong>Match supplier units:</strong> Order in <strong>m³</strong> (metric)
-                or <strong>yd³</strong> (U.S.) to avoid last-minute conversions.
-              </li>
-            </ul>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Common Mistakes to Avoid</h2>
-            </div>
-            <ul>
-              <li className="mt-2 ml-4">Mixing units before multiplying.</li>
-              <li className="mt-2 ml-4">
-                Adding waste <em>before</em> subtracting any voids.
-              </li>
-              <li className="mt-2 ml-4">
-                Using a dry-volume factor when placing a ready-mix order (it’s for material
-                breakdowns, not wet-volume purchases).
-              </li>
-            </ul>
-
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              In short: compute <strong>V = Area × Height</strong> with consistent units,
-              subtract rare openings, then add a sensible waste buffer. For speed and fewer
-              errors, run your numbers in a unit-aware column calculator and compare supplier
-              quotes with confidence.
-            </p>
+            <ColumnConcreteCalcArticle />
+            <RelatedCalculators className="mt-8 mb-8" exclude={['column']} />
+        
           </article>
 
-          <div className="lg:col-span-4">
-            <RightSidebar />
-          </div>
+          
         </div>
       </main>
     </>

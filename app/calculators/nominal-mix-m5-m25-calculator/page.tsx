@@ -2,8 +2,10 @@
 
 import React from "react";
 import type { Metadata } from "next";
-import RightSidebar from "@/components/app/RightSidebar";
 import NominalMixConcreteCalc from "@/components/calculators/NominalMixConcreteCalc";
+import { Boxes } from "lucide-react";
+import NominalMixConcreteCalcArticle from "@/components/calculators/articles/NominalMixConcreteCalcArticle";
+import RelatedCalculators from "@/components/app/RelatedCalculators";
 
 export const metadata: Metadata = {
   title: "Nominal Mix (M5–M25) Concrete Calculator - Concrete Calculator Max",
@@ -59,92 +61,48 @@ export default function NominalMixCalculatorPage() {
       />
 
 
-      <main className="container-xl py-6">
-        <div className="grid gap-8 lg:grid-cols-12">
+      <main className="container-xl">
+
+          <div className="flex">
+        
           <article className="lg:col-span-8">
-            {/* ===== Calculator Slot ===== */}
-            <NominalMixConcreteCalc />
 
-            <div className="my-10 h-px w-full bg-border" />
-
-            <header className="mb-6 mt-8">
-              <h1 className="text-3xl font-bold text-[var(--brand-primary)]">
-                How to Calculate Concrete for Nominal Mix (M5–M25)
-              </h1>
-            </header>
-
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              Nominal mix concrete is prepared using fixed volumetric ratios of cement, sand, and coarse aggregate. It is commonly used up to grade M25 for general construction works. Below is a practical method for estimating quantities of cement, sand, aggregate, and water for any nominal grade, along with key tips and worked examples.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 1: Know the Mix Ratios</h2>
-            </div>
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              Standard nominal mix ratios are defined in IS 456 for grades up to M25: M5 (1:5:10), M7.5 (1:4:8), M10 (1:3:6), M15 (1:2:4), M20 (1:1.5:3), M25 (1:1:2). These ratios indicate cement : sand : aggregate parts by volume.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 2: Convert Wet Volume to Dry Volume</h2>
-            </div>
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              Multiply the target wet volume by a <strong>dry volume factor</strong> (typically 1.50–1.57; use 1.54 as default) and add a small wastage allowance (2–5%). This accounts for voids and bulking of sand.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 3: Split Volume by Mix Parts</h2>
-            </div>
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              Divide the dry volume into cement, sand, and aggregate volumes using the ratio parts. For example, in M20 (1:1.5:3), the total parts = 5.5. Cement = (1/5.5) × Dry Volume, Sand = (1.5/5.5) × Dry Volume, Aggregate = (3/5.5) × Dry Volume.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 4: Convert Volumes to Mass</h2>
-            </div>
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              Multiply volumes by material bulk densities (cement ≈ 1440 kg/m³, sand ≈ 1600 kg/m³, aggregate ≈ 1500 kg/m³). Cement mass can be divided by 50 to get the number of bags.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 5: Calculate Water Requirement</h2>
-            </div>
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              Water is computed using the water–cement ratio. For example, if w/c = 0.5 and cement = 400 kg, then water = 0.5 × 400 = 200 liters. Adjust for moisture in aggregates if necessary.
-            </p>
-
-            <div className="mt-2 rounded-md bg-[var(--brand-muted)] p-4 text-sm text-[var(--brand-primary)] shadow-sm">
-              <p className="mt-2 text-[var(--brand-subtle)]">
-                <em>Worked Example (M20):</em> For 1 m³ wet volume, Dry Volume = 1 × 1.54 × 1.02 = 1.57 m³. Parts = 5.5. Cement = 0.286 m³ × 1440 = 412 kg (≈ 8.2 bags). Sand = 0.429 m³ × 1600 = 686 kg. Aggregate = 0.857 m³ × 1500 = 1286 kg. Water = 0.5 × 412 = 206 L.
+            {/* Title and Description of Calculator */}
+            <div className="flex flex-col mb-4 justify-between">
+              <div className="w-full/50 text-left">
+                  <div className="flex item-start gap-2 sm:gap-3">
+                    <div className="p-1.5 sm:p-2 bg-primary/30 rounded-lg flex-shrink-0 items-center">
+                    <Boxes className="h-5 w-5 text-green-400" />
+                    </div>
+                    <h1 className="text-lg sm:text-2xl lg:text-3xl text-slate-200 font-bold font-poppins tracking-tight leading-tight">Nominal Mix M5-M25 Calculator</h1>
+                  </div>
+                  {/* <div className="flex flex-col text-right mb-4 flex justify-between items-top">
+                      <span className="text-lg font-bold font-mono text-primary dark:text-teal-400">55</span>
+                      <p className="text-muted-foreground text-sm font-bold font-mono">Available</p>            
+                  </div>                   */}
+              </div>              
+              <p className="mt-3 ml-2 text-sm sm:text-base lg:text-lg text-slate-400 leading relaxed font-poppins">
+                Quickly estimate cement, sand, aggregate, and water for Nominal Mix grades M5–M25 with this Nominal Mix Calculator. Enter wet volume and grade to get dry-volume adjusted quantities, bag counts, and recommended water–cement ratios for accurate material estimation and efficient site ordering.
               </p>
             </div>
 
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Conversion Tips</h2>
-            </div>
-            <ul>
-              <li className="mt-2 ml-4">1 m³ = 35.315 ft³</li>
-              <li className="mt-2 ml-4">1 m³ = 1.308 yd³</li>
-              <li className="mt-2 ml-4">Order in the unit your supplier provides (m³, ft³, or yd³).</li>
-            </ul>
 
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Common Mistakes to Avoid</h2>
-            </div>
-            <ul>
-              <li className="mt-2 ml-4">Using nominal mixes above M25 (design mix required).</li>
-              <li className="mt-2 ml-4">Mixing metric and imperial units.</li>
-              <li className="mt-2 ml-4">Not accounting for wastage or aggregate moisture.</li>
-            </ul>
 
-            <p className="mt-2 text-[var(--brand-subtle)]">
-              In summary: select grade and ratio, calculate dry volume, split into parts, convert to mass, and apply water–cement ratio. The calculator automates this process, minimizes errors, and ensures accurate material estimation for site use.
-            </p>
+
+
+            {/* ===== Calculator Slot ===== */}
+            <NominalMixConcreteCalc />
+
+            <NominalMixConcreteCalcArticle />
+
+            <RelatedCalculators className="mt-8 mb-8" exclude={['nominal-mix']} />
           </article>
 
-          <div className="lg:col-span-4">
-            <RightSidebar />
+
           </div>
-        </div>
+
+          
+        
       </main>
     </>
   );

@@ -2,8 +2,10 @@
 
 import React from "react";
 import type { Metadata } from "next";
-import RightSidebar from "@/components/app/RightSidebar";
 import BeamConcreteCalc from "@/components/calculators/BeamConcreteCalc";
+import { Container } from "lucide-react";
+import BeamConcreteCalcArticle from "@/components/calculators/articles/BeamConcreteCalcArticle";
+import RelatedCalculators from "@/components/app/RelatedCalculators";
 
 
 export const metadata: Metadata = {
@@ -58,137 +60,36 @@ export default function BeamConcreteCalculatorPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       
-      <main className="container-xl py-6">
-        <div className="grid gap-8 lg:grid-cols-12">
-          <article className="lg:col-span-8">
-            {/* ===== Calculator Slot (add later) ===== */}
-            <BeamConcreteCalc />
+      <main className="container-xl">
+        <div className="flex">
+          
+            <article className="lg:col-span-8">
+              {/* Title and Description of Calculator */}
+              <div className="mb-4 flex justify-between items-start">
+                <div className="w-full/50 text-left">
+                    <div className="flex item-start gap-2 sm:gap-3">
+                      <div className="p-1.5 sm:p-2 bg-primary/30 rounded-lg flex-shrink-0 items-center">
+                      <Container className="h-5 w-5 text-green-400" />
+                      </div>
+                      <h1 className="text-lg sm:text-2xl lg:text-3xl font-bold font-poppins tracking-tight leading-tight">Beam Concrete Calculator</h1>
+                    </div>
+                    <p className="mt-3 text-sm sm:text-base lg:text-lg text-slate-400 leading relaxed font poppins">Estimate concrete for slabs, patios, and floors.</p>
+                </div>
+                <div className="flex flex-col text-right mb-4 flex justify-between">
+                    <span className="text-lg font-bold font-mono text-primary dark:text-teal-400">55</span>
+                    <p className="text-muted-foreground text-sm font-bold font-mono">Available</p>            
+                </div>
+              </div>
+              {/* ===== Calculator Slot (add later) ===== */}
+              <BeamConcreteCalc />
 
-            <div className="my-10 h-px w-full bg-border" />
+              <BeamConcreteCalcArticle />
+              <RelatedCalculators className="mt-8 mb-8" exclude={['beam']} />
+              
+            </article>
 
-            <header className="mb-6 mt-8">
-              <h1 className="text-3xl font-bold text-white mb-6">
-                How to Calculate Concrete of a Beam?
-              </h1>
-            </header>
-
-            <p className="text-slate-300 text-lg mb-6">
-              Need an accurate concrete takeoff for a reinforced beam? This guide
-              shows the exact formula, a field-tested sequence, and the small
-              adjustments pros use for voids, waste, and material estimating—so you
-              can order confidently and avoid shortfalls.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2 className="text-2xl font-semibold text-white mb-4 mt-8" >Step 1: Normalize All Dimensions</h2>
-            </div>
-            <p className="text-slate-300 mb-4">
-              Work in a single unit system. In metric, use meters (m) for length,
-              width (breadth), and depth (height). In imperial, convert inches to
-              feet before multiplying. Mixed units are the fastest way to over- or
-              under-order concrete.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2 className="text-2xl font-semibold text-white mb-4 mt-8">Step 2: Use the Beam Volume Formula</h2>
-            </div>
-            <p className="text-slate-300 mb-4">
-              For a prismatic rectangular beam, the wet volume is{" "}
-              <code>V = L × b × d</code>. Keep units consistent: meters give{" "}
-              <strong>m³</strong> directly; feet give <strong>ft³</strong>, which
-              you can convert to <strong>yd³</strong> by dividing by 27.
-            </p>
-            <div className="mt-2 rounded-md bg-slate-800 p-4 text-sm shadow-sm">
-              <p className="text-teal-400 mb-4">
-                <em>Example (metric):</em> L = 6&nbsp;m, b = 0.30&nbsp;m, d =
-                0.50&nbsp;m → 6 × 0.30 × 0.50 = <strong>0.90&nbsp;m³</strong>.
-              </p>
-              <p className="text-teal-400 mb-4">
-                <em>Example (imperial):</em> Convert all dimensions to feet, multiply
-                to get <strong>ft³</strong>, then ÷ 27 to get{" "}
-                <strong>yd³</strong>.
-              </p>
-            </div>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2 className="text-2xl font-semibold text-white mb-4 mt-8">Step 3: Subtract Voids or Ducts (If Any)</h2>
-            </div>
-            <p className="text-slate-300 mb-4">
-              If a uniform opening runs through the beam, compute{" "}
-              <code>V<sub>void</sub> = L<sub>v</sub> × b<sub>v</sub> × d<sub>v</sub></code>{" "}
-              and subtract it from the gross volume. For non-uniform features,
-              break them into simple blocks and subtract each.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2>Step 4: Add a Waste Allowance</h2>
-            </div>
-            <p className="text-slate-300 mb-4">
-              After void subtraction, apply a realistic buffer—typically{" "}
-              <strong>5–10%</strong>—to cover spillage, honeycombing fixes, or
-              minor dimensional drift. Smaller, well-controlled pours lean toward
-              5%; complex, congested reinforcement may justify 8–10%.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2 className="text-2xl font-semibold text-white mb-4 mt-8">Step 5 (Optional): Convert to Dry Volume for Mix Breakdown</h2>
-            </div>
-            <p className="text-slate-300 mb-4">
-              If you’re estimating constituent materials (cement, sand, aggregate),
-              multiply the waste-adjusted wet volume by a dry-volume factor (often{" "}
-              <strong>1.50–1.54</strong>). For ready-mix orders, you usually{" "}
-              <em>don’t</em> need this—just provide wet volume plus waste.
-            </p>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2 className="text-2xl font-semibold text-white mb-4 mt-8">Pro Tips from Site Experience</h2>
-            </div>
-            <ul>
-              <li className=" mt-2 ml-4">
-                <strong>Measure at the formwork:</strong> Field dimensions can vary
-                from drawings—verify length between supports and actual formed
-                width/depth.
-              </li>
-              <li className=" mt-2 ml-4">
-                <strong>Segment unusual shapes:</strong> For haunches, nibs, or
-                flared supports, split into rectangles/triangles and sum volumes.
-              </li>
-              <li className=" mt-2 ml-4">
-                <strong>Match supplier units:</strong> Quote in <strong>m³</strong>{" "}
-                (metric) or <strong>yd³</strong> (U.S.) to avoid last-minute
-                conversions at the plant.
-              </li>
-            </ul>
-
-            <div className="mt-2 text-xl font-bold prose max-w-none">
-              <h2 className="text-2xl font-semibold text-white mb-4 mt-8">Common Mistakes to Avoid</h2>
-            </div>
-            <ul>
-              <li className=" mt-2 ml-4">
-                Mixing units (e.g., feet for length and meters for depth) before
-                multiplying.
-              </li>
-              <li className=" mt-2 ml-4">
-                Adding waste <em>before</em> subtracting voids—the correct order is
-                gross → subtract voids → add waste.
-              </li>
-              <li className=" mt-2 ml-4">
-                Using a dry-volume factor when placing a ready-mix order (it’s for
-                material breakdowns, not wet-volume purchases).
-              </li>
-            </ul>
-
-            <p className="text-slate-300 mb-4">
-              In short: keep units consistent, compute{" "}
-              <strong>V = L × b × d</strong>, subtract any openings, then add a
-              sensible buffer. For speed and fewer mistakes, run your numbers in a
-              unit-aware beam calculator and compare supplier quotes with confidence.
-            </p>
-          </article>
-
-          <div className="lg:col-span-4">
-            <RightSidebar />
-          </div>
+            
+          
         </div>
       </main>
 

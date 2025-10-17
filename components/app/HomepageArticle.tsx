@@ -3,7 +3,7 @@ import React from 'react'
 
 export const HomepageArticle = () => {
   return (
-    <article className="py-10 px-4 sm:px-6 lg:px-8 bg-slate-900">
+    <article className="py-10 px-4 sm:px-6 lg:px-8 bg-background">
       <div className="max-w-4xl mx-auto prose prose-invert prose-slate">
         <h2 className="text-3xl font-bold text-white mb-6">How to Calculate Concrete for Your Construction Project</h2>
 
@@ -44,26 +44,26 @@ export const HomepageArticle = () => {
         </p>
 
         <h3 className="text-2xl font-semibold text-white mb-4 mt-8">Tips for Accurate Concrete Estimation</h3>
-        <div className="bg-slate-800 border border-slate-700 rounded-lg p-6 mb-6">
+        <div className="bg-primary/20 rounded-lg p-6 mb-6">
           <ul className="space-y-3 text-slate-300">
             <li className="flex items-start">
-              <CheckCircle className="h-5 w-5 text-teal-400 mr-3 mt-0.5 flex-shrink-0" />
+              <CheckCircle className="h-5 w-5 text-primary mr-3 mt-0.5 flex-shrink-0" />
               <span>Measure twice, calculate once. Verify all dimensions before ordering concrete.</span>
             </li>
             <li className="flex items-start">
-              <CheckCircle className="h-5 w-5 text-teal-400 mr-3 mt-0.5 flex-shrink-0" />
+              <CheckCircle className="h-5 w-5 text-primary mr-3 mt-0.5 flex-shrink-0" />
               <span>Use consistent units throughout your calculations to avoid conversion errors.</span>
             </li>
             <li className="flex items-start">
-              <CheckCircle className="h-5 w-5 text-teal-400 mr-3 mt-0.5 flex-shrink-0" />
+              <CheckCircle className="h-5 w-5 text-primary mr-3 mt-0.5 flex-shrink-0" />
               <span>Account for irregular shapes by breaking them into simpler rectangular sections.</span>
             </li>
             <li className="flex items-start">
-              <CheckCircle className="h-5 w-5 text-teal-400 mr-3 mt-0.5 flex-shrink-0" />
+              <CheckCircle className="h-5 w-5 text-primary mr-3 mt-0.5 flex-shrink-0" />
               <span>Consult with your concrete supplier about their minimum order requirements.</span>
             </li>
             <li className="flex items-start">
-              <CheckCircle className="h-5 w-5 text-teal-400 mr-3 mt-0.5 flex-shrink-0" />
+              <CheckCircle className="h-5 w-5 text-primary mr-3 mt-0.5 flex-shrink-0" />
               <span>Consider the concrete strength grade required for your specific application.</span>
             </li>
           </ul>
