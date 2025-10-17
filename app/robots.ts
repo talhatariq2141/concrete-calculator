@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: [],
     },
-    sitemap: 'https://concrete-calculator.com/sitemap.xml',
+    sitemap: 'https://concretecalculatormax.com/sitemap.xml',
   };
 }
