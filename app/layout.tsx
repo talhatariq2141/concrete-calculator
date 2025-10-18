@@ -4,6 +4,7 @@ import { Header } from "@/components/app/Header";
 import { Footer } from "@/components/app/Footer";
 import { ThemeProvider } from "@/components/app/theme-provider";
 import { JetBrains_Mono, Poppins } from "next/font/google";
+import { Analytics } from '@vercel/analytics/next';
 
 // Load both fonts with CSS variable bindings
 const jetbrains = JetBrains_Mono({
@@ -82,6 +83,7 @@ export default function RootLayout({
           }}
         />
         </ThemeProvider>
+        <Analytics />
 
       </body>
     </html>
