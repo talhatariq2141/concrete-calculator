@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import { Header } from "@/components/app/Header";
 import { Footer } from "@/components/app/Footer";
@@ -50,21 +51,9 @@ export default function RootLayout({
         lang="en"
         suppressContentEditableWarning 
         className={`${jetbrains.variable} ${poppins.variable}`}
-        >      
-      <body>
-        <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
-          >
-        <div className="min-h-screen bg-slate-900">        
-          <Header />
-            {children}
-          <Footer />        
-        </div>
-
-        {/* Site JSON-LD */}
+        >
+      <head>
+          {/* Site JSON-LD */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -82,9 +71,26 @@ export default function RootLayout({
             }),
           }}
         />
+
+        {/* Ahref Analytics Script */}
+        <script src="https://analytics.ahrefs.com/analytics.js" data-key="AC8Pc7sS5c2kpF5jtd2qKw" async></script>
+
+      </head>      
+      <body>
+        <ThemeProvider
+            attribute="class"
+            defaultTheme="dark"
+            enableSystem
+            disableTransitionOnChange
+          >
+          <div className="min-h-screen bg-slate-900">        
+            <Header />
+              {children}
+            <Footer />        
+          </div>        
         </ThemeProvider>
         <Analytics />
-
+        
       </body>
     </html>
   );
