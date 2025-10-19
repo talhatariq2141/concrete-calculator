@@ -75,6 +75,7 @@ export default function RootLayout({
 
         {/* Ahref Analytics Script */}
         <script src="https://analytics.ahrefs.com/analytics.js" data-key="AC8Pc7sS5c2kpF5jtd2qKw" async></script>
+        <meta name="msvalidate.01" content="1CD2FCEA3D1A7CE25462E9DDC3234B05" />
 
       </head>      
       <body>
