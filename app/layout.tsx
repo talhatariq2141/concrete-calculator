@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
+import { GoogleAnalytics } from '@next/third-parties/google'
 import "./globals.css";
 import { Header } from "@/components/app/Header";
 import { Footer } from "@/components/app/Footer";
@@ -54,7 +55,7 @@ export default function RootLayout({
         className={`${jetbrains.variable} ${poppins.variable}`}
         >
       <head>
-          {/* Site JSON-LD */}
+        {/* Site JSON-LD */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -95,6 +96,7 @@ export default function RootLayout({
         <SpeedInsights />
         
       </body>
+      <GoogleAnalytics gaId="G-3KLHD7BGFD" />
     </html>
   );
 }
