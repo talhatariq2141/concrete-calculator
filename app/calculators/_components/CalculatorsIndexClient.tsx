@@ -73,7 +73,7 @@ export default function CalculatorsIndexClient() {
       {/* Breadcrumbs (visible UX + internal links) */}
       <nav aria-label="Breadcrumb" className="mb-3 text-sm text-slate-400">
         <ol className="flex gap-2">
-          <li><a className="hover:underline" href="/">Home</a></li>
+          <li><Link className="hover:underline" href="/">Home</Link></li>
           <li>/</li>
           <li aria-current="page" className="text-slate-200">Calculators</li>
         </ol>
