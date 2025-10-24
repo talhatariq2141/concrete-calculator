@@ -9,6 +9,7 @@
 // -----------------------------------------------------------------------------
 
 import React from "react";
+import Link from "next/link";
 import type { Metadata } from "next";
 import BeamConcreteCalc from "@/components/calculators/BeamConcreteCalc";
 import { Container } from "lucide-react";
@@ -214,19 +215,19 @@ export default function BeamConcreteCalculatorPage() {
       <main className="container-xl">
         {/* Visible breadcrumbs (match BreadcrumbList above) */}
         <nav aria-label="Breadcrumb" className="mb-3 text-sm text-slate-400">
-          <ol className="flex gap-2">
+          <ol className="flex items-center flex-wrap gap-1">
             <li>
-              <a className="hover:underline" href="/">
+              <Link href="/" className="hover:underline">
                 Home
-              </a>
+              </Link>
             </li>
-            <li>/</li>
+            <li className="px-1 text-slate-500">/</li>
             <li>
-              <a className="hover:underline" href="/calculators">
+              <Link href="/calculators" className="hover:underline">
                 Calculators
-              </a>
+              </Link>
             </li>
-            <li>/</li>
+            <li className="px-1 text-slate-500">/</li>
             <li aria-current="page" className="text-slate-200">
               Beam Concrete Calculator
             </li>

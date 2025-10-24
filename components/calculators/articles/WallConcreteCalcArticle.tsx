@@ -7,12 +7,10 @@ import {
   Ruler,
   Square,
   Layers,
-  ClipboardList,
   Printer,
   DoorClosed,
   DollarSign,
   Droplets,
-  Package,
 } from "lucide-react";
 
 export default function WallConcreteCalcArticle() {

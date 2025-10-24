@@ -2,6 +2,7 @@
 
 import React from "react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import ColumnConcreteCalc from "@/components/calculators/ColumnConcreteCalc";
 import { Columns2 } from "lucide-react";
 import ColumnConcreteCalcArticle from "@/components/calculators/articles/ColumnConcreteCalcArticle";
@@ -166,11 +167,21 @@ export default function ColumnConcreteCalculatorPage() {
         {/* Visible breadcrumbs (match BreadcrumbList above) */}
         <nav aria-label="Breadcrumb" className="mb-3 text-sm text-slate-400">
           <ol className="flex gap-2">
-            <li><a className="hover:underline" href="/">Home</a></li>
-            <li>/</li>
-            <li><a className="hover:underline" href="/calculators">Calculators</a></li>
-            <li>/</li>
-            <li aria-current="page" className="text-slate-200">Column Concrete Calculator</li>
+            <li>
+              <Link href="/" className="hover:underline">
+                Home
+              </Link>
+            </li>
+            <li className="px-1 text-slate-500">/</li>
+            <li>
+              <Link href="/calculators" className="hover:underline">
+                Calculators
+              </Link>
+            </li>
+            <li className="px-1 text-slate-500">/</li>
+            <li aria-current="page" className="text-slate-200">
+              Column Concrete Calculator
+            </li>
           </ol>
         </nav>
 

@@ -6,7 +6,6 @@ import {
   Calculator as CalcIcon,
   Ruler,
   Square,
-  Circle,
   Layers,
   Beaker,
   ClipboardList,

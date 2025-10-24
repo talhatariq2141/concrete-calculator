@@ -10,6 +10,7 @@
 
 import React from "react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import FootingConcreteCalc from "@/components/calculators/FootingConcreteCalc";
 import { RulerDimensionLine } from "lucide-react";
 import FootingConcreteCalcArticle from "@/components/calculators/articles/FootingConcreteCalcArticle";
@@ -226,17 +227,17 @@ export default function FootingConcreteCalculatorPage() {
         <nav aria-label="Breadcrumb" className="mb-3 text-sm text-slate-400">
           <ol className="flex gap-2">
             <li>
-              <a className="hover:underline" href="/">
+              <Link href="/" className="hover:underline">
                 Home
-              </a>
+              </Link>
             </li>
-            <li>/</li>
+            <li className="px-1 text-slate-500">/</li>
             <li>
-              <a className="hover:underline" href="/calculators">
+              <Link href="/calculators" className="hover:underline">
                 Calculators
-              </a>
+              </Link>
             </li>
-            <li>/</li>
+            <li className="px-1 text-slate-500">/</li>
             <li aria-current="page" className="text-slate-200">
               Footing Concrete Calculator
             </li>

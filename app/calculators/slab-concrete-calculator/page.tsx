@@ -9,6 +9,7 @@
 
 import React from "react";
 import type { Metadata } from "next";
+import Link from "next/link";
 import SlabConcreteCalc from "@/components/calculators/SlabConcreteCalc";
 import { Container } from "lucide-react";
 import SlabConcreteCalcArticle from "@/components/calculators/articles/SlabConcreteCalcArticle";
@@ -180,17 +181,17 @@ export default function SlabConcreteCalculatorPage() {
         <nav aria-label="Breadcrumb" className="mb-3 text-sm text-slate-400">
           <ol className="flex gap-2">
             <li>
-              <a className="hover:underline" href="/">
+              <Link href="/" className="hover:underline">
                 Home
-              </a>
+              </Link>
             </li>
-            <li>/</li>
+            <li className="px-1 text-slate-500">/</li>
             <li>
-              <a className="hover:underline" href="/calculators">
+              <Link href="/calculators" className="hover:underline">
                 Calculators
-              </a>
+              </Link>
             </li>
-            <li>/</li>
+            <li className="px-1 text-slate-500">/</li>
             <li aria-current="page" className="text-slate-200">
               Slab Concrete Calculator
             </li>

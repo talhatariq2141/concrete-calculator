@@ -9,7 +9,6 @@ import {
   Droplets,
   Package,
   ClipboardList,
-  Printer,
   FlaskConical,
   Gauge,
 } from "lucide-react";
