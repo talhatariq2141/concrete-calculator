@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Info } from "lucide-react";
+import { Info, Printer } from "lucide-react";
 
 /* -------------------- Types (unchanged) -------------------- */
 type LinearUnit = "meters" | "yards" | "feet" | "inches" | "centimeter";
@@ -191,6 +191,172 @@ export default function SlabConcreteCalc() {
     setVolumeOutUnit("m3");
     setSubmitted(false);
   };
+
+  /* ======================= PRINT / SAVE (NEW) =======================
+   * This section adds a backend-less printable view.
+   * It opens a new tab with a white background and injects a minimal,
+   * branded HTML document containing the input summary and results.
+   * The user can then use the browser's Print dialog to print or save as PDF.
+   * ------------------------------------------------------------------ */
+
+  // TODO: Replace this with your real logo asset path if different
+  const LOGO_URL = "/logo.svg"; // e.g., "/logo.svg" or "/images/ccm-logo.png"
+
+  // Helper to format numbers exactly like in the on-page tiles
+  const fmt = (n: number) => Intl.NumberFormat(undefined, { maximumFractionDigits: 4 }).format(n);
+
+  /**
+   * Builds the printable HTML content as a full document string.
+   * Keeping styles inline ensures portability and works without any backend.
+   */
+  const buildPrintHtml = () => {
+    if (!calc) return "";
+
+    const now = new Date().toLocaleString();
+    const lengthStr = `${length || 0} ${unitAbbrev[lengthUnit]}`;
+    const widthStr = `${width || 0} ${unitAbbrev[widthUnit]}`;
+    const thicknessStr = `${thickness || 0} ${unitAbbrev[thicknessUnit]}`;
+
+    // NOTE: Using simple, email-style CSS for consistent print output
+    return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Slab Concrete Calculator – Print View</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    /* Reset / base */
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #ffffff; color: #0f172a; font: 14px/1.5 system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif; }
+    .container { max-width: 960px; margin: 0 auto; padding: 24px; }
+    .header { display: flex; align-items: center; gap: 16px; border-bottom: 1px solid #e5e7eb; padding-bottom: 16px; margin-bottom: 20px; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand img { height: 36px; width: auto; }
+    .brand-name { font-weight: 800; font-size: 18px; color: #0f766e; }
+    .meta { margin-left: auto; text-align: right; color: #475569; font-size: 12px; }
+    h1 { margin: 0; font-size: 20px; color: #0f172a; }
+    h2 { font-size: 16px; margin: 18px 0 8px; color: #0f172a; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .card { border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px; background: #fff; }
+    .kv { display: flex; align-items: center; justify-content: space-between; border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px; }
+    .kv .k { color: #475569; }
+    .kv .v { color: #0f766e; font-weight: 700; }
+    .muted { color: #475569; font-size: 12px; }
+    .value-lg { font-size: 22px; font-weight: 800; color: #0f766e; }
+    .value-md { font-size: 18px; font-weight: 800; color: #0f766e; }
+    .label { text-transform: uppercase; letter-spacing: .02em; font-size: 11px; color: #64748b; }
+    .footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid #e5e7eb; color: #64748b; font-size: 12px; }
+    @media print {
+      @page { margin: 12mm; }
+      .footer { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header / Branding -->
+    <div class="header">
+      <div class="brand">
+        <img src="${LOGO_URL}" alt="Concrete Calculator Max Logo" onerror="this.style.display='none'"/>
+        <div class="brand-name">Concrete Calculator Max</div>
+      </div>
+      <div class="meta">
+        <div>Slab Concrete Calculator</div>
+        <div>Printed: ${now}</div>
+      </div>
+    </div>
+
+    <!-- Inputs Summary -->
+    <h2>Inputs Summary</h2>
+    <div class="grid">
+      <div class="kv"><div class="k">Length</div><div class="v">${lengthStr}</div></div>
+      <div class="kv"><div class="k">Width</div><div class="v">${widthStr}</div></div>
+      <div class="kv"><div class="k">Thickness</div><div class="v">${thicknessStr}</div></div>
+      <div class="kv"><div class="k">Area Unit</div><div class="v">${areaUnits.find(a=>a.key===areaOutUnit)!.label}</div></div>
+      <div class="kv"><div class="k">Volume Unit</div><div class="v">${volumeUnits.find(v=>v.key===volumeOutUnit)!.label}</div></div>
+    </div>
+
+    <!-- Results -->
+    <h2>Results</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="label">Area</div>
+        <div class="value-lg">${fmt(calc.area)}</div>
+        <div class="muted">${calc.areaUnitLabel}</div>
+      </div>
+      <div class="card">
+        <div class="label">Volume</div>
+        <div class="value-lg">${fmt(calc.volume)}</div>
+        <div class="muted">${calc.volumeUnitLabel}</div>
+      </div>
+      <div class="card">
+        <div class="label">+5% Overage</div>
+        <div class="value-md">${fmt(calc.volume5)}</div>
+        <div class="muted">${calc.volumeUnitLabel}</div>
+      </div>
+      <div class="card">
+        <div class="label">+10% Overage</div>
+        <div class="value-md">${fmt(calc.volume10)}</div>
+        <div class="muted">${calc.volumeUnitLabel}</div>
+      </div>
+    </div>
+
+    <!-- Yards for Ordering -->
+    <h2 style="margin-top:16px;">Cubic Yards (for ordering)</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="label">Required</div>
+        <div class="value-md">${fmt(calc.yards)} yd³</div>
+      </div>
+      <div class="card">
+        <div class="label">+5%</div>
+        <div class="value-md">${fmt(calc.yards5)} yd³</div>
+      </div>
+      <div class="card">
+        <div class="label">+10%</div>
+        <div class="value-md">${fmt(calc.yards10)} yd³</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Tip: In the browser’s Print dialog, choose “Save as PDF” to export this page as a PDF.
+    </div>
+  </div>
+
+  <!-- Auto-open the print dialog to streamline the flow -->
+  <script>
+    window.addEventListener('load', () => {
+      // Small timeout improves print reliability across browsers
+      setTimeout(() => { window.print(); }, 100);
+    });
+  </script>
+</body>
+</html>`;
+  };
+
+  /**
+   * Opens a new tab with the printable HTML and focuses it.
+   * Uses window.open + document.write so no backend is required.
+   */
+  const handlePrint = () => {
+    if (!calc) return;
+    const html = buildPrintHtml();
+
+    // Attempt to open a new tab (may be blocked if not triggered by a user gesture)
+    const w = window.open("", "_blank");
+    if (!w) {
+      alert("Please allow pop-ups for this site to use Print/Save.");
+      return;
+    }
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    w.focus();
+    // print is triggered by the injected script after load
+  };
+
+  /* =================== END PRINT / SAVE (NEW) =================== */
 
   return (
     <Card className="font-poppins mx-auto w-full max-w-6xl rounded-sm border border-slate-700 bg-slate-900 shadow-md">
@@ -385,6 +551,20 @@ export default function SlabConcreteCalc() {
           <p className="mt-4 text-sm text-red-300">Please enter valid non-negative numbers for all fields.</p>
         ) : (
           <>
+            {/* NEW: Print/Save button (only shows when results are visible) */}
+            <div className="mt-4 flex justify-end">
+              <Button
+                type="button"
+                onClick={handlePrint}
+                className="h-10 rounded-sm bg-green-500 text-slate-900 hover:bg-green-400"
+                aria-label="Print or save results as PDF"
+                title="Print / Save"
+              >
+                <Printer className="h-4 w-4 mr-2" />
+                Print / Save
+              </Button>
+            </div>
+
             {/* Inputs Summary */}
             <div className={`${stepClass} rounded-sm bg-slate-900 border border-slate-700 p-4`}>
               <div className="mb-2 text-sm font-semibold text-white">Inputs Summary</div>

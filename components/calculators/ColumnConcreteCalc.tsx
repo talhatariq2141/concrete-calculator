@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Info } from "lucide-react";
+import { Info, Printer } from "lucide-react"; // ⬅️ NEW: Printer icon for the button
 
 /* ---------------------------------------------------
    Types (unchanged)
@@ -270,6 +270,192 @@ export default function ColumnConcreteCalc() {
     setSubmitted(false);
   };
 
+  /* ======================= PRINT / SAVE (NEW) =======================
+   * Opens a new tab with a white, PDF-ready page containing:
+   *  - Branding header (logo + name), calculator title, date/time
+   *  - Input summary (reflecting current tab & units)
+   *  - Results (Net, With Waste, Waste Added) in m³/ft³/yd³
+   *  - Yards +5% / +10% helpers
+   * No backend required. Auto-triggers browser print dialog.
+   * ------------------------------------------------------------------ */
+
+  const LOGO_URL = "/logo.svg"; // change to your real logo path if different
+
+  const buildPrintHtml = () => {
+    if (!active.ok) return "";
+
+    const now = new Date().toLocaleString();
+
+    // Resolve inputs per tab for the summary table
+    const isRect = tab === "rectangular";
+    const units = isRect ? rect.unit : circ.unit;
+    const unitShort = unitAbbrev[units];
+
+    const qty = isRect
+      ? Math.max(0, Math.floor(parseFloat(rect.count || "0")))
+      : Math.max(0, Math.floor(parseFloat(circ.count || "0")));
+    const wastePct = isRect
+      ? Math.max(0, parseFloat(rect.wastePct || "0"))
+      : Math.max(0, parseFloat(circ.wastePct || "0"));
+
+    // Results (numbers already computed)
+    const net_m3 = active.netTotal;
+    const withWaste_m3 = active.withWasteTotal;
+    const wasteAdded_m3 = withWaste_m3 - net_m3;
+
+    const net_ft3 = m3To(net_m3, "ft3");
+    const net_yd3 = m3To(net_m3, "yd3");
+    const withWaste_ft3 = m3To(withWaste_m3, "ft3");
+    const withWaste_yd3 = m3To(withWaste_m3, "yd3");
+    const wasteAdded_ft3 = m3To(wasteAdded_m3, "ft3");
+    const wasteAdded_yd3 = m3To(wasteAdded_m3, "yd3");
+
+    const yd3 = withWaste_yd3; // for ordering helper
+    const yd3_5 = yd3 * 1.05;
+    const yd3_10 = yd3 * 1.1;
+
+    // Helper for consistent number formatting in print page
+    const nf = (n: number, max = 4) =>
+      Number.isFinite(n)
+        ? n.toLocaleString(undefined, { maximumFractionDigits: max })
+        : "—";
+
+    return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Column Concrete Calculator – Print View</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #ffffff; color: #0f172a; font: 14px/1.5 system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif; }
+    .container { max-width: 960px; margin: 0 auto; padding: 24px; }
+    .header { display: flex; align-items: center; gap: 16px; border-bottom: 1px solid #e5e7eb; padding-bottom: 16px; margin-bottom: 20px; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand img { height: 36px; width: auto; }
+    .brand-name { font-weight: 800; font-size: 18px; color: #0f766e; }
+    .meta { margin-left: auto; text-align: right; color: #475569; font-size: 12px; }
+    h1 { margin: 0; font-size: 20px; color: #0f172a; }
+    h2 { font-size: 16px; margin: 18px 0 8px; color: #0f172a; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .card { border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px; background: #fff; }
+    .kv { display: flex; align-items: center; justify-content: space-between; border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px; }
+    .kv .k { color: #475569; }
+    .kv .v { color: #0f766e; font-weight: 700; }
+    .muted { color: #475569; font-size: 12px; }
+    .value-lg { font-size: 22px; font-weight: 800; color: #0f766e; }
+    .value-md { font-size: 18px; font-weight: 800; color: #0f766e; }
+    .label { text-transform: uppercase; letter-spacing: .02em; font-size: 11px; color: #64748b; }
+    .footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid #e5e7eb; color: #64748b; font-size: 12px; }
+    @media print {
+      @page { margin: 12mm; }
+      .footer { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header / Branding -->
+    <div class="header">
+      <div class="brand">
+        <img src="${LOGO_URL}" alt="Concrete Calculator Max Logo" onerror="this.style.display='none'"/>
+        <div class="brand-name">Concrete Calculator Max</div>
+      </div>
+      <div class="meta">
+        <div>Column Concrete Calculator (${isRect ? "Rectangular / Square" : "Circular"})</div>
+        <div>Printed: ${now}</div>
+      </div>
+    </div>
+
+    <!-- Inputs Summary -->
+    <h2>Inputs Summary</h2>
+    <div class="grid">
+      <div class="kv"><div class="k">Type</div><div class="v">${isRect ? "Rectangular / Square" : "Circular"}</div></div>
+      <div class="kv"><div class="k">Units</div><div class="v">${unitShort}</div></div>
+      <div class="kv"><div class="k">Quantity</div><div class="v">${qty}</div></div>
+      <div class="kv"><div class="k">Waste</div><div class="v">${nf(wastePct, 2)}%</div></div>
+      ${
+        isRect
+          ? `
+      <div class="kv"><div class="k">Length</div><div class="v">${rect.length || 0} ${unitShort}</div></div>
+      <div class="kv"><div class="k">Width</div><div class="v">${rect.width || 0} ${unitShort}</div></div>
+      <div class="kv"><div class="k">Height</div><div class="v">${rect.height || 0} ${unitShort}</div></div>
+      `
+          : `
+      <div class="kv"><div class="k">Diameter</div><div class="v">${circ.diameter || 0} ${unitShort}</div></div>
+      <div class="kv"><div class="k">Height</div><div class="v">${circ.height || 0} ${unitShort}</div></div>
+      `
+      }
+    </div>
+
+    <!-- Results -->
+    <h2>Results</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="label">Net Total</div>
+        <div class="kv"><div class="k">m³</div><div class="v">${nf(net_m3)}</div></div>
+        <div class="kv"><div class="k">ft³</div><div class="v">${nf(net_ft3)}</div></div>
+        <div class="kv"><div class="k">yd³</div><div class="v">${nf(net_yd3)}</div></div>
+      </div>
+      <div class="card">
+        <div class="label">With Waste</div>
+        <div class="kv"><div class="k">m³</div><div class="v">${nf(withWaste_m3)}</div></div>
+        <div class="kv"><div class="k">ft³</div><div class="v">${nf(withWaste_ft3)}</div></div>
+        <div class="kv"><div class="k">yd³</div><div class="v">${nf(withWaste_yd3)}</div></div>
+      </div>
+      <div class="card">
+        <div class="label">Waste Added</div>
+        <div class="kv"><div class="k">m³</div><div class="v">${nf(wasteAdded_m3)}</div></div>
+        <div class="kv"><div class="k">ft³</div><div class="v">${nf(wasteAdded_ft3)}</div></div>
+        <div class="kv"><div class="k">yd³</div><div class="v">${nf(wasteAdded_yd3)}</div></div>
+      </div>
+    </div>
+
+    <!-- Yards for Ordering -->
+    <h2 style="margin-top:16px;">Cubic Yards (for ordering)</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="label">yd³ (with waste)</div>
+        <div class="value-md">${nf(yd3)}</div>
+      </div>
+      <div class="card">
+        <div class="label">yd³ (+5%)</div>
+        <div class="value-md">${nf(yd3_5)}</div>
+      </div>
+      <div class="card">
+        <div class="label">yd³ (+10%)</div>
+        <div class="value-md">${nf(yd3_10)}</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Tip: In the browser’s Print dialog, choose “Save as PDF” to export this page as a PDF.
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('load', () => setTimeout(() => window.print(), 100));
+  </script>
+</body>
+</html>`;
+  };
+
+  const handlePrint = () => {
+    // Only allow printing once a valid result is visible
+    if (!submitted || !active.ok) return;
+    const html = buildPrintHtml();
+    const w = window.open("", "_blank");
+    if (!w) {
+      alert("Please allow pop-ups for this site to use Print/Save.");
+      return;
+    }
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    w.focus();
+  };
+
   /* -------------------- Render -------------------- */
   return (
     <Card className="mt-6 font-poppins mx-auto w-full max-w-6xl rounded-sm border border-slate-700 bg-slate-900 shadow-md overflow-hidden">
@@ -507,6 +693,20 @@ export default function ColumnConcreteCalc() {
           <p className="mt-4 text-sm text-red-300">Please enter valid positive numbers for all required fields.</p>
         ) : (
           <>
+            {/* NEW: Print/Save button (green) */}
+            <div className="mt-4 flex justify-end">
+              <Button
+                type="button"
+                onClick={handlePrint}
+                className="h-10 rounded-sm bg-green-500 text-slate-900 hover:bg-green-400" // ⬅️ per your request
+                aria-label="Print or save results as PDF"
+                title="Print / Save"
+              >
+                <Printer className="h-4 w-4 mr-2" />
+                Print / Save
+              </Button>
+            </div>
+
             {/* Inputs Summary */}
             <div className={`${stepClass} rounded-sm bg-slate-900 border border-slate-700 p-4`}>
               <div className="mb-2 text-sm font-semibold text-white">Inputs Summary</div>

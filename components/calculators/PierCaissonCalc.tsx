@@ -1,5 +1,4 @@
-// components/calculators/PierCaissonConcreteCalc.tsx
-
+// components/calculators/PierCaissonCalc.tsx
 "use client";
 
 import * as React from "react";
@@ -16,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Info } from "lucide-react";
+import { Info, Printer } from "lucide-react";
 
 /* ---------------------------------------------
    Types / Units (logic unchanged)
@@ -187,21 +186,37 @@ const UnitSelect = ({
 );
 
 /* ---------------------------------------------
-   Component (logic intact; UX refactor)
+   Component (logic intact; Reset fixed)
 --------------------------------------------- */
-export default function PierCaissonConcreteCalc() {
-  const [inputs, setInputs] = useState<Inputs>({
-    unit: "m",
-    diameter: "0.6",
-    depth: "3",
-    qty: "4",
-    wastePct: "5",
-    hasBell: false,
-    bellTopDia: "0.6",
-    bellBottomDia: "1.0",
-    bellHeight: "0.4",
-  });
 
+// Default starting values (used on initial load)
+const DEFAULT_INPUTS: Inputs = {
+  unit: "m",
+  diameter: "0.6",
+  depth: "3",
+  qty: "4",
+  wastePct: "5",
+  hasBell: false,
+  bellTopDia: "0.6",
+  bellBottomDia: "1.0",
+  bellHeight: "0.4",
+};
+
+// All-zero state for Reset (per your request)
+const ZERO_INPUTS: Inputs = {
+  unit: "m",         // keep a sane default unit
+  diameter: "0",
+  depth: "0",
+  qty: "0",
+  wastePct: "0",
+  hasBell: false,
+  bellTopDia: "0",
+  bellBottomDia: "0",
+  bellHeight: "0",
+};
+
+export default function PierCaissonConcreteCalc() {
+  const [inputs, setInputs] = useState<Inputs>(DEFAULT_INPUTS);
   const [results, setResults] = useState<Results>(null);
   const [submitted, setSubmitted] = useState(false);
 
@@ -257,20 +272,158 @@ export default function PierCaissonConcreteCalc() {
     setSubmitted(true);
   };
 
+  /** RESET FIX:
+   *  Sets every numeric text field to "0", turns off bell, keeps unit to "m",
+   *  clears results, and hides the results section.
+   */
   const reset = () => {
-    setInputs({
-      unit: "m",
-      diameter: "0.6",
-      depth: "3",
-      qty: "4",
-      wastePct: "5",
-      hasBell: false,
-      bellTopDia: "0.6",
-      bellBottomDia: "1.0",
-      bellHeight: "0.4",
-    });
+    setInputs(ZERO_INPUTS);
     setResults(null);
     setSubmitted(false);
+  };
+
+  /* ======================= PRINT / SAVE (unchanged) ======================= */
+  const LOGO_URL = "/logo.svg";
+
+  const nf = (n: number, max = 4) =>
+    Number.isFinite(n) ? n.toLocaleString(undefined, { maximumFractionDigits: max }) : "—";
+
+  const buildPrintHtml = () => {
+    if (!results) return "";
+
+    const now = new Date().toLocaleString();
+    const unitShort = unitAbbrev[inputs.unit];
+
+    const yd3_base = results.totalWaste.yd3;
+    const yd3_5 = yd3_base * 1.05;
+    const yd3_10 = yd3_base * 1.1;
+
+    return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Pier / Caisson Concrete Calculator – Print View</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #ffffff; color: #0f172a; font: 14px/1.5 system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif; }
+    .container { max-width: 960px; margin: 0 auto; padding: 24px; }
+    .header { display: flex; align-items: center; gap: 16px; border-bottom: 1px solid #e5e7eb; padding-bottom: 16px; margin-bottom: 20px; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand img { height: 36px; width: auto; }
+    .brand-name { font-weight: 800; font-size: 18px; color: #0f766e; }
+    .meta { margin-left: auto; text-align: right; color: #475569; font-size: 12px; }
+    h2 { font-size: 16px; margin: 18px 0 8px; color: #0f172a; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .card { border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px; background: #fff; }
+    .kv { display: flex; align-items: center; justify-content: space-between; border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px; }
+    .kv .k { color: #475569; }
+    .kv .v { color: #0f766e; font-weight: 700; }
+    .label { text-transform: uppercase; letter-spacing: .02em; font-size: 11px; color: #64748b; }
+    .value-md { font-size: 18px; font-weight: 800; color: #0f766e; }
+    .footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid #e5e7eb; color: #64748b; font-size: 12px; }
+    @media print { @page { margin: 12mm; } .footer { page-break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header / Branding -->
+    <div class="header">
+      <div class="brand">
+        <img src="${LOGO_URL}" alt="Concrete Calculator Max Logo" onerror="this.style.display='none'"/>
+        <div class="brand-name">Concrete Calculator Max</div>
+      </div>
+      <div class="meta">
+        <div>Pier / Caisson Concrete Calculator</div>
+        <div>Printed: ${now}</div>
+      </div>
+    </div>
+
+    <!-- Inputs Summary -->
+    <h2>Inputs Summary</h2>
+    <div class="grid">
+      <div class="kv"><div class="k">Units</div><div class="v">${unitShort}</div></div>
+      <div class="kv"><div class="k">Shaft Dia</div><div class="v">${inputs.diameter} ${unitShort}</div></div>
+      <div class="kv"><div class="k">Shaft Depth</div><div class="v">${inputs.depth} ${unitShort}</div></div>
+      <div class="kv"><div class="k">Quantity</div><div class="v">${inputs.qty}</div></div>
+      <div class="kv"><div class="k">Waste</div><div class="v">${nf(Math.max(0, parseFloat(inputs.wastePct || "0")),2)}%</div></div>
+      <div class="kv"><div class="k">Belled Base</div><div class="v">${inputs.hasBell ? "Yes" : "No"}</div></div>
+      ${
+        inputs.hasBell
+          ? `
+      <div class="kv"><div class="k">Bell Top Dia</div><div class="v">${inputs.bellTopDia} ${unitShort}</div></div>
+      <div class="kv"><div class="k">Bell Bottom Dia</div><div class="v">${inputs.bellBottomDia} ${unitShort}</div></div>
+      <div class="kv"><div class="k">Bell Height</div><div class="v">${inputs.bellHeight} ${unitShort}</div></div>
+      `
+          : ``
+      }
+    </div>
+
+    <!-- Results -->
+    <h2>Results</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="label">Per Pier</div>
+        <div class="kv"><div class="k">Net (m³)</div><div class="v">${nf(results.perPier.m3)}</div></div>
+        <div class="kv"><div class="k">Net (yd³)</div><div class="v">${nf(results.perPier.yd3)}</div></div>
+        <div class="kv"><div class="k">Net (ft³)</div><div class="v">${nf(results.perPier.ft3)}</div></div>
+        <div class="kv"><div class="k">With Waste (m³)</div><div class="v">${nf(results.perPierWaste.m3)}</div></div>
+        <div class="kv"><div class="k">With Waste (yd³)</div><div class="v">${nf(results.perPierWaste.yd3)}</div></div>
+        <div class="kv"><div class="k">With Waste (ft³)</div><div class="v">${nf(results.perPierWaste.ft3)}</div></div>
+      </div>
+      <div class="card">
+        <div class="label">Total (${parseFloat(inputs.qty) || 0} pier${parseFloat(inputs.qty) === 1 ? "" : "s"})</div>
+        <div class="kv"><div class="k">Net (m³)</div><div class="v">${nf(results.total.m3)}</div></div>
+        <div class="kv"><div class="k">Net (yd³)</div><div class="v">${nf(results.total.yd3)}</div></div>
+        <div class="kv"><div class="k">Net (ft³)</div><div class="v">${nf(results.total.ft3)}</div></div>
+        <div class="kv"><div class="k">With Waste (m³)</div><div class="v">${nf(results.totalWaste.m3)}</div></div>
+        <div class="kv"><div class="k">With Waste (yd³)</div><div class="v">${nf(results.totalWaste.yd3)}</div></div>
+        <div class="kv"><div class="k">With Waste (ft³)</div><div class="v">${nf(results.totalWaste.ft3)}</div></div>
+      </div>
+    </div>
+
+    <!-- Yards (for ordering) -->
+    <h2 style="margin-top:16px;">Cubic Yards (for ordering)</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="label">yd³ (with waste)</div>
+        <div class="value-md">${nf(yd3_base,3)}</div>
+      </div>
+      <div class="card">
+        <div class="label">yd³ (+5%)</div>
+        <div class="value-md">${nf(yd3_5,3)}</div>
+      </div>
+      <div class="card">
+        <div class="label">yd³ (+10%)</div>
+        <div class="value-md">${nf(yd3_10,3)}</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Tip: In the browser’s Print dialog, choose “Save as PDF” to export this page as a PDF.
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('load', () => setTimeout(() => window.print(), 100));
+  </script>
+</body>
+</html>`;
+  };
+
+  const handlePrint = () => {
+    if (!submitted || !results) return;
+    const html = buildPrintHtml();
+    const w = window.open("", "_blank");
+    if (!w) {
+      alert("Please allow pop-ups for this site to use Print/Save.");
+      return;
+    }
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    w.focus();
   };
 
   return (
@@ -310,10 +463,17 @@ export default function PierCaissonConcreteCalc() {
                   }}
                 />
               </Field>
-              <p className="mt-1 text-xs text-white/60">All dimensions below will be interpreted in <span className="text-white">{unitAbbrev[inputs.unit]}</span>.</p>
+              <p className="mt-1 text-xs text-white/60">
+                All dimensions below will be interpreted in{" "}
+                <span className="text-white">{unitAbbrev[inputs.unit]}</span>.
+              </p>
             </div>
             <div>
-              <Field label="Waste / Overage (%)" hint="Adds extra volume to cover spillage, uneven base, etc." subHint="Typical 5–10%">
+              <Field
+                label="Waste / Overage (%)"
+                hint="Adds extra volume to cover spillage, uneven base, etc."
+                subHint="Typical 5–10%"
+              >
                 <NumberInput
                   value={inputs.wastePct}
                   onChange={(v) => {
@@ -333,7 +493,12 @@ export default function PierCaissonConcreteCalc() {
         <section className={stepClass} aria-labelledby="step2">
           <h3 id="step2" className="text-sm font-semibold text-white/80">Step 2 — Core Dimensions</h3>
           <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-6">
-            <Field id="dia" label={`Shaft Diameter (D)`} hint="Full diameter of the cylindrical shaft." subHint={`Typical 0.45–1.2 ${unitAbbrev[inputs.unit]}`}>
+            <Field
+              id="dia"
+              label={`Shaft Diameter (D)`}
+              hint="Full diameter of the cylindrical shaft."
+              subHint={`Typical 0.45–1.2 ${unitAbbrev[inputs.unit]}`}
+            >
               <NumberInput
                 id="dia"
                 value={inputs.diameter}
@@ -347,7 +512,12 @@ export default function PierCaissonConcreteCalc() {
               />
             </Field>
 
-            <Field id="depth" label={`Shaft Depth (H)`} hint="Vertical depth/length of the cylindrical shaft." subHint={`Typical 2–6 ${unitAbbrev[inputs.unit]}`}>
+            <Field
+              id="depth"
+              label={`Shaft Depth (H)`}
+              hint="Vertical depth/length of the cylindrical shaft."
+              subHint={`Typical 2–6 ${unitAbbrev[inputs.unit]}`}
+            >
               <NumberInput
                 id="depth"
                 value={inputs.depth}
@@ -384,7 +554,9 @@ export default function PierCaissonConcreteCalc() {
           <div className="mt-2 flex items-center justify-between gap-3 rounded-sm border border-slate-700 bg-slate-900 p-4">
             <div>
               <h4 className="text-white font-semibold">Belled Base</h4>
-              <p className="text-xs md:text-sm text-slate-300">Adds a frustum volume at the bottom (useful for belled caissons).</p>
+              <p className="text-xs md:text-sm text-slate-300">
+                Adds a frustum volume at the bottom (useful for belled caissons).
+              </p>
             </div>
             <div className="flex items-center gap-2">
               <Switch
@@ -400,7 +572,12 @@ export default function PierCaissonConcreteCalc() {
 
           {inputs.hasBell && (
             <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-6">
-              <Field id="bellTop" label={`Bell Top Diameter`} hint="Often equals shaft diameter." subHint={`Typical 0.6–1.2 ${unitAbbrev[inputs.unit]}`}>
+              <Field
+                id="bellTop"
+                label={`Bell Top Diameter`}
+                hint="Often equals shaft diameter."
+                subHint={`Typical 0.6–1.2 ${unitAbbrev[inputs.unit]}`}
+              >
                 <NumberInput
                   id="bellTop"
                   value={inputs.bellTopDia}
@@ -468,11 +645,29 @@ export default function PierCaissonConcreteCalc() {
 
         {/* Results (hidden until Calculate) */}
         {!submitted ? (
-          <p className="mt-4 text-sm text-white/70">Enter values above and press <span className="font-semibold">Calculate</span> to reveal results.</p>
+          <p className="mt-4 text-sm text-white/70">
+            Enter values above and press <span className="font-semibold">Calculate</span> to reveal results.
+          </p>
         ) : !results ? (
-          <p className="mt-4 text-sm text-red-300">Please enter valid positive numbers for all required fields.</p>
+          <p className="mt-4 text-sm text-red-300">
+            Please enter valid positive numbers for all required fields.
+          </p>
         ) : (
           <>
+            {/* Print/Save button (green) */}
+            <div className="mt-4 flex justify-end">
+              <Button
+                type="button"
+                onClick={handlePrint}
+                className="h-10 rounded-sm bg-green-500 text-slate-900 hover:bg-green-400"
+                aria-label="Print or save results as PDF"
+                title="Print / Save"
+              >
+                <Printer className="h-4 w-4 mr-2" />
+                Print / Save
+              </Button>
+            </div>
+
             {/* Inputs Summary */}
             <div className={`${stepClass} rounded-sm bg-slate-900 border border-slate-700 p-4`}>
               <div className="mb-2 text-sm font-semibold text-white">Inputs Summary</div>
@@ -565,9 +760,13 @@ export default function PierCaissonConcreteCalc() {
         <section className="rounded-sm border border-slate-700 bg-slate-900 p-4 mt-4">
           <h6 className="text-white font-semibold">Formulas Used</h6>
           <ul className="mt-2 list-disc pl-5 text-xs text-slate-300">
-            <li>Shaft (cylinder): <span className="text-white">V = π r² h</span></li>
+            <li>
+              Shaft (cylinder): <span className="text-white">V = π r² h</span>
+            </li>
             {inputs.hasBell && (
-              <li>Bell (frustum): <span className="text-white">V = (π h / 3) (R₁² + R₁R₂ + R₂²)</span></li>
+              <li>
+                Bell (frustum): <span className="text-white">V = (π h / 3) (R₁² + R₁R₂ + R₂²)</span>
+              </li>
             )}
           </ul>
         </section>

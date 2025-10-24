@@ -1,3 +1,4 @@
+// components/calculators/StaircaseConcreteCalc.tsx
 "use client";
 
 import * as React from "react";
@@ -23,11 +24,10 @@ import {
   TabsTrigger,
 } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
-import { Info } from "lucide-react";
+import { Info, Printer } from "lucide-react";
 
 /* =========================
    Types, constants, helpers
-   (LOGIC UNCHANGED)
 ========================= */
 
 type LinearUnit = "m" | "cm" | "mm" | "ft" | "in";
@@ -62,7 +62,6 @@ function clampMin(n: number, min = 0): number {
   return isFinite(n) ? Math.max(n, min) : 0;
 }
 
-// Pythag length of stair flight (slope length)
 function slopedLength(totalRun_m: number, totalRise_m: number): number {
   return Math.hypot(totalRun_m, totalRise_m);
 }
@@ -156,31 +155,31 @@ function KV({ k, v }: { k: string; v: string }) {
 }
 
 /* =========================
-   Component (logic intact)
+   Component (Reset fixed + empty defaults)
 ========================= */
 export default function StaircaseConcreteCalc() {
   const [mode, setMode] = React.useState<Mode>("waist");
   const [unit, setUnit] = React.useState<LinearUnit>("m");
 
-  // shared inputs
-  const [steps, setSteps] = React.useState<string>("12");
-  const [tread, setTread] = React.useState<string>("0.28");
-  const [riser, setRiser] = React.useState<string>("0.17");
-  const [width, setWidth] = React.useState<string>("1.2");
+  // shared inputs — EMPTY by default
+  const [steps, setSteps] = React.useState<string>("");     // was "12"
+  const [tread, setTread] = React.useState<string>("");     // was "0.28"
+  const [riser, setRiser] = React.useState<string>("");     // was "0.17"
+  const [width, setWidth] = React.useState<string>("");     // was "1.2"
 
-  // waist slab specifics
-  const [waistThk, setWaistThk] = React.useState<string>("0.15");
+  // waist slab specific — EMPTY by default
+  const [waistThk, setWaistThk] = React.useState<string>(""); // was "0.15"
 
-  // landings
-  const [hasBottomLanding, setHasBottomLanding] = React.useState<boolean>(true);
-  const [blLen, setBlLen] = React.useState<string>("1.2");
-  const [blWid, setBlWid] = React.useState<string>("1.2");
-  const [blThk, setBlThk] = React.useState<string>("0.15");
+  // landings — disabled by default, fields EMPTY
+  const [hasBottomLanding, setHasBottomLanding] = React.useState<boolean>(false); // was true
+  const [blLen, setBlLen] = React.useState<string>("");     // was "1.2"
+  const [blWid, setBlWid] = React.useState<string>("");     // was "1.2"
+  const [blThk, setBlThk] = React.useState<string>("");     // was "0.15"
 
-  const [hasTopLanding, setHasTopLanding] = React.useState<boolean>(true);
-  const [tlLen, setTlLen] = React.useState<string>("1.2");
-  const [tlWid, setTlWid] = React.useState<string>("1.2");
-  const [tlThk, setTlThk] = React.useState<string>("0.15");
+  const [hasTopLanding, setHasTopLanding] = React.useState<boolean>(false); // was true
+  const [tlLen, setTlLen] = React.useState<string>("");     // was "1.2"
+  const [tlWid, setTlWid] = React.useState<string>("");     // was "1.2"
+  const [tlThk, setTlThk] = React.useState<string>("");     // was "0.15"
 
   // UX: show results only after clicking Calculate
   const [submitted, setSubmitted] = React.useState(false);
@@ -300,22 +299,32 @@ export default function StaircaseConcreteCalc() {
     );
   }
 
+  /** RESET (fixed):
+   * - Clears ALL text inputs to empty strings ("")
+   * - Disables both landings
+   * - Resets mode to "waist", unit to "m"
+   * - Hides results
+   */
   function resetAll() {
     setMode("waist");
     setUnit("m");
-    setSteps("12");
-    setTread("0.28");
-    setRiser("0.17");
-    setWidth("1.2");
-    setWaistThk("0.15");
-    setHasBottomLanding(true);
-    setBlLen("1.2");
-    setBlWid("1.2");
-    setBlThk("0.15");
-    setHasTopLanding(true);
-    setTlLen("1.2");
-    setTlWid("1.2");
-    setTlThk("0.15");
+
+    setSteps("");
+    setTread("");
+    setRiser("");
+    setWidth("");
+    setWaistThk("");
+
+    setHasBottomLanding(false);
+    setBlLen("");
+    setBlWid("");
+    setBlThk("");
+
+    setHasTopLanding(false);
+    setTlLen("");
+    setTlWid("");
+    setTlThk("");
+
     setSubmitted(false);
   }
 
@@ -323,6 +332,146 @@ export default function StaircaseConcreteCalc() {
     if (e) e.preventDefault();
     setSubmitted(true);
   }
+
+  /* ===================== PRINT / SAVE (kept) ===================== */
+  const LOGO_URL = "/logo.svg";
+  const nf = (n: number, d = 3) =>
+    Number.isFinite(n) ? n.toLocaleString(undefined, { maximumFractionDigits: d }) : "—";
+
+  const handlePrint = () => {
+    if (!submitted || !totals.valid) return;
+
+    const breakdownRows =
+      Object.entries(breakdown).length > 0
+        ? Object.entries(breakdown)
+            .map(([k, v]) => `<div class="kv"><div class="k">${k}</div><div class="v">${nf(v)}</div></div>`)
+            .join("")
+        : `<div class="kv"><div class="k">Breakdown</div><div class="v">—</div></div>`;
+
+    const now = new Date().toLocaleString();
+
+    const html = `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Staircase Concrete Calculator – Print View</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #ffffff; color: #0f172a; font: 14px/1.5 system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif; }
+    .container { max-width: 960px; margin: 0 auto; padding: 24px; }
+    .header { display: flex; align-items: center; gap: 16px; border-bottom: 1px solid #e5e7eb; padding-bottom: 16px; margin-bottom: 20px; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand img { height: 36px; width: auto; }
+    .brand-name { font-weight: 800; font-size: 18px; color: #0f766e; }
+    .meta { margin-left: auto; text-align: right; color: #475569; font-size: 12px; }
+    h2 { font-size: 16px; margin: 18px 0 8px; color: #0f172a; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .card { border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px; background: #fff; }
+    .kv { display: flex; align-items: center; justify-content: space-between; border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px; }
+    .kv .k { color: #475569; }
+    .kv .v { color: #0f766e; font-weight: 700; }
+    .label { text-transform: uppercase; letter-spacing: .02em; font-size: 11px; color: #64748b; }
+    .value-md { font-size: 18px; font-weight: 800; color: #0f766e; }
+    .footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid #e5e7eb; color: #64748b; font-size: 12px; }
+    @media print { @page { margin: 12mm; } .footer { page-break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header / Branding -->
+    <div class="header">
+      <div class="brand">
+        <img src="${LOGO_URL}" alt="Concrete Calculator Max Logo" onerror="this.style.display='none'"/>
+        <div class="brand-name">Concrete Calculator Max</div>
+      </div>
+      <div class="meta">
+        <div>Staircase Concrete Calculator (${mode === "waist" ? "Waist-slab" : "Solid (mass)"})</div>
+        <div>Printed: ${now}</div>
+      </div>
+    </div>
+
+    <!-- Inputs Summary -->
+    <h2>Inputs Summary</h2>
+    <div class="grid">
+      <div class="kv"><div class="k">Units</div><div class="v">${unitAbbrev[unit]}</div></div>
+      <div class="kv"><div class="k">Steps</div><div class="v">${steps || "—"}</div></div>
+      <div class="kv"><div class="k">Tread</div><div class="v">${tread || "—"} ${unitAbbrev[unit]}</div></div>
+      <div class="kv"><div class="k">Riser</div><div class="v">${riser || "—"} ${unitAbbrev[unit]}</div></div>
+      <div class="kv"><div class="k">Width</div><div class="v">${width || "—"} ${unitAbbrev[unit]}</div></div>
+      ${mode === "waist" ? `<div class="kv"><div class="k">Waist</div><div class="v">${waistThk || "—"} ${unitAbbrev[unit]}</div></div>` : ``}
+      <div class="kv"><div class="k">Bottom Landing</div><div class="v">${hasBottomLanding ? `${blLen}×${blWid}×${blThk} ${unitAbbrev[unit]}` : "No"}</div></div>
+      <div class="kv"><div class="k">Top Landing</div><div class="v">${hasTopLanding ? `${tlLen}×${tlWid}×${tlThk} ${unitAbbrev[unit]}` : "No"}</div></div>
+    </div>
+
+    <!-- Results -->
+    <h2>Results</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="label">Total Volume</div>
+        <div class="kv"><div class="k">m³</div><div class="v">${nf(totals.m3)}</div></div>
+        <div class="kv"><div class="k">ft³</div><div class="v">${nf(totals.ft3)}</div></div>
+        <div class="kv"><div class="k">yd³</div><div class="v">${nf(totals.yd3)}</div></div>
+        <div class="kv"><div class="k">liters</div><div class="v">${nf(totals.liters)}</div></div>
+      </div>
+      <div class="card">
+        <div class="label">Weight (approx.)</div>
+        <div class="kv"><div class="k">kg</div><div class="v">${nf(totals.kg, 0)}</div></div>
+        <div class="kv"><div class="k">metric tons</div><div class="v">${nf(totals.tonnes, 3)}</div></div>
+      </div>
+    </div>
+
+    <!-- Breakdown -->
+    <h2 style="margin-top:16px;">Breakdown (m³)</h2>
+    <div class="grid">
+      ${
+        Object.entries(breakdown).length > 0
+          ? Object.entries(breakdown)
+              .map(([k, v]) => `<div class="kv"><div class="k">${k}</div><div class="v">${nf(v)}</div></div>`)
+              .join("")
+          : `<div class="kv"><div class="k">—</div><div class="v">—</div></div>`
+      }
+    </div>
+
+    <!-- Ordering Helper (Cubic Yards) -->
+    <h2 style="margin-top:16px;">Cubic Yards (for ordering)</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="label">yd³ (net)</div>
+        <div class="value-md">${nf(totals.yd3, 3)}</div>
+      </div>
+      <div class="card">
+        <div class="label">yd³ (+5%)</div>
+        <div class="value-md">${nf(totals.yd3 * 1.05, 3)}</div>
+      </div>
+      <div class="card">
+        <div class="label">yd³ (+10%)</div>
+        <div class="value-md">${nf(totals.yd3 * 1.1, 3)}</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Tip: In the browser’s Print dialog, choose “Save as PDF” to export this page as a PDF.
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('load', () => setTimeout(() => window.print(), 100));
+  </script>
+</body>
+</html>`;
+
+    const w = window.open("", "_blank");
+    if (!w) {
+      alert("Please allow pop-ups for this site to use Print/Save.");
+      return;
+    }
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    w.focus();
+  };
 
   /* =========================
      RENDER (Step-based UX)
@@ -392,23 +541,23 @@ export default function StaircaseConcreteCalc() {
                 <NumberInput id="steps" value={steps} onChange={(v) => { setSteps(v); setSubmitted(false); }} placeholder="e.g., 12" numeric ariaLabel="Number of steps" />
               </Field>
 
-              <Field id="tread" label={`Tread / Step Depth`} hint="Horizontal depth per step." subHint={unit === 'in' ? 'Typical 10–12 in' : unit === 'ft' ? 'Typical 0.8–1.0 ft' : 'Typical 0.25–0.32 m'}>
-                <NumberInput id="tread" value={tread} onChange={(v) => { setTread(v); setSubmitted(false); }} placeholder={unit === 'm' ? '0.28' : unit === 'ft' ? '0.92' : ''} badge={unitAbbrev[unit]} ariaLabel="Tread depth" />
+              <Field id="tread" label={`Tread / Step Depth`} hint="Horizontal depth per step.">
+                <NumberInput id="tread" value={tread} onChange={(v) => { setTread(v); setSubmitted(false); }} placeholder="e.g., 0.28" badge={unitAbbrev[unit]} ariaLabel="Tread depth" />
               </Field>
 
-              <Field id="riser" label={`Riser / Step Height`} hint="Vertical height per step." subHint={unit === 'in' ? 'Typical 6–7.5 in' : unit === 'ft' ? 'Typical 0.5–0.65 ft' : 'Typical 0.15–0.20 m'}>
-                <NumberInput id="riser" value={riser} onChange={(v) => { setRiser(v); setSubmitted(false); }} placeholder={unit === 'm' ? '0.17' : unit === 'ft' ? '0.56' : ''} badge={unitAbbrev[unit]} ariaLabel="Riser height" />
+              <Field id="riser" label={`Riser / Step Height`} hint="Vertical height per step.">
+                <NumberInput id="riser" value={riser} onChange={(v) => { setRiser(v); setSubmitted(false); }} placeholder="e.g., 0.17" badge={unitAbbrev[unit]} ariaLabel="Riser height" />
               </Field>
 
-              <Field id="width" label={`Stair Width`} hint="Clear width of the flight." subHint={unit === 'in' ? 'Typical 36–48 in' : unit === 'ft' ? 'Typical 3–4 ft' : 'Typical 0.9–1.2 m'}>
-                <NumberInput id="width" value={width} onChange={(v) => { setWidth(v); setSubmitted(false); }} placeholder={unit === 'm' ? '1.2' : unit === 'ft' ? '4' : ''} badge={unitAbbrev[unit]} ariaLabel="Stair width" />
+              <Field id="width" label={`Stair Width`} hint="Clear width of the flight.">
+                <NumberInput id="width" value={width} onChange={(v) => { setWidth(v); setSubmitted(false); }} placeholder="e.g., 1.2" badge={unitAbbrev[unit]} ariaLabel="Stair width" />
               </Field>
             </div>
 
             {mode === "waist" && (
               <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <Field id="waist" label={`Waist Thickness`} hint="Thickness of the inclined slab." subHint={unit === 'in' ? 'Typical ~6 in' : unit === 'ft' ? 'Typical ~0.5 ft' : 'Typical ~0.15 m'}>
-                  <NumberInput id="waist" value={waistThk} onChange={(v) => { setWaistThk(v); setSubmitted(false); }} placeholder={unit === 'm' ? '0.15' : unit === 'in' ? '6' : ''} badge={unitAbbrev[unit]} ariaLabel="Waist thickness" />
+                <Field id="waist" label={`Waist Thickness`} hint="Thickness of the inclined slab.">
+                  <NumberInput id="waist" value={waistThk} onChange={(v) => { setWaistThk(v); setSubmitted(false); }} placeholder="e.g., 0.15" badge={unitAbbrev[unit]} ariaLabel="Waist thickness" />
                 </Field>
               </div>
             )}
@@ -432,13 +581,13 @@ export default function StaircaseConcreteCalc() {
               </div>
               <div className={`mt-4 grid grid-cols-1 sm:grid-cols-3 gap-6 ${hasBottomLanding ? '' : 'opacity-50 pointer-events-none'}`}>
                 <Field label={`Length`}>
-                  <NumberInput value={blLen} onChange={(v) => { setBlLen(v); setSubmitted(false); }} badge={unitAbbrev[unit]} ariaLabel="Bottom landing length" />
+                  <NumberInput value={blLen} onChange={(v) => { setBlLen(v); setSubmitted(false); }} placeholder="e.g., 1.2" badge={unitAbbrev[unit]} ariaLabel="Bottom landing length" />
                 </Field>
                 <Field label={`Width`}>
-                  <NumberInput value={blWid} onChange={(v) => { setBlWid(v); setSubmitted(false); }} badge={unitAbbrev[unit]} ariaLabel="Bottom landing width" />
+                  <NumberInput value={blWid} onChange={(v) => { setBlWid(v); setSubmitted(false); }} placeholder="e.g., 1.2" badge={unitAbbrev[unit]} ariaLabel="Bottom landing width" />
                 </Field>
                 <Field label={`Thickness`}>
-                  <NumberInput value={blThk} onChange={(v) => { setBlThk(v); setSubmitted(false); }} badge={unitAbbrev[unit]} ariaLabel="Bottom landing thickness" />
+                  <NumberInput value={blThk} onChange={(v) => { setBlThk(v); setSubmitted(false); }} placeholder="e.g., 0.15" badge={unitAbbrev[unit]} ariaLabel="Bottom landing thickness" />
                 </Field>
               </div>
             </div>
@@ -457,13 +606,13 @@ export default function StaircaseConcreteCalc() {
               </div>
               <div className={`mt-4 grid grid-cols-1 sm:grid-cols-3 gap-6 ${hasTopLanding ? '' : 'opacity-50 pointer-events-none'}`}>
                 <Field label={`Length`}>
-                  <NumberInput value={tlLen} onChange={(v) => { setTlLen(v); setSubmitted(false); }} badge={unitAbbrev[unit]} ariaLabel="Top landing length" />
+                  <NumberInput value={tlLen} onChange={(v) => { setTlLen(v); setSubmitted(false); }} placeholder="e.g., 1.2" badge={unitAbbrev[unit]} ariaLabel="Top landing length" />
                 </Field>
                 <Field label={`Width`}>
-                  <NumberInput value={tlWid} onChange={(v) => { setTlWid(v); setSubmitted(false); }} badge={unitAbbrev[unit]} ariaLabel="Top landing width" />
+                  <NumberInput value={tlWid} onChange={(v) => { setTlWid(v); setSubmitted(false); }} placeholder="e.g., 1.2" badge={unitAbbrev[unit]} ariaLabel="Top landing width" />
                 </Field>
                 <Field label={`Thickness`}>
-                  <NumberInput value={tlThk} onChange={(v) => { setTlThk(v); setSubmitted(false); }} badge={unitAbbrev[unit]} ariaLabel="Top landing thickness" />
+                  <NumberInput value={tlThk} onChange={(v) => { setTlThk(v); setSubmitted(false); }} placeholder="e.g., 0.15" badge={unitAbbrev[unit]} ariaLabel="Top landing thickness" />
                 </Field>
               </div>
             </div>
@@ -492,6 +641,20 @@ export default function StaircaseConcreteCalc() {
           </div>
         ) : (
           <>
+            {/* Print/Save button (green) */}
+            <div className="mt-4 flex justify-end">
+              <Button
+                type="button"
+                onClick={handlePrint}
+                className="h-10 rounded-sm bg-green-500 text-slate-900 hover:bg-green-400"
+                aria-label="Print or save results as PDF"
+                title="Print / Save"
+              >
+                <Printer className="h-4 w-4 mr-2" />
+                Print / Save
+              </Button>
+            </div>
+
             {/* Inputs Summary */}
             <div className={`${stepClass} rounded-sm bg-slate-900 border border-slate-700 p-4`}>
               <div className="mb-2 text-sm font-semibold text-white">Inputs Summary</div>

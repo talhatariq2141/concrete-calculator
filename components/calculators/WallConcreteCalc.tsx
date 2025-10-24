@@ -1,3 +1,4 @@
+// components/calculators/WallConcreteCalc.tsx
 "use client";
 
 import React from "react";
@@ -13,9 +14,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { Printer } from "lucide-react"; // <-- for Print/Save icon
 
 /* =====================================================================================
-   Types & Constants  (logic UNCHANGED)
+   Types & Constants
 ===================================================================================== */
 
 type LinearUnit = "m" | "ft";
@@ -38,7 +40,7 @@ const MIX_PARTS: Record<Mix, { c: number; s: number; a: number; total: number }>
     "1:3:6": { c: 1, s: 3, a: 6, total: 10 },
   };
 
-// Physics / industry constants (unchanged)
+// Physics / industry constants
 const DENSITY_CONCRETE_KG_M3 = 2400;
 const BULK_DENSITY_CEMENT_KG_M3 = 1440;
 const CEMENT_BAG_KG = 50;
@@ -49,8 +51,11 @@ const IN_TO_M = 0.0254;
 const FT_TO_M = 0.3048;
 const CM_TO_M = 0.01;
 
+// (Optional) logo path for print header (hidden if not found)
+const LOGO_URL = "/logo.svg";
+
 /* =====================================================================================
-   Helpers (UNCHANGED MATH)
+   Helpers
 ===================================================================================== */
 
 function toMeters(value: number, unit: LinearUnit | ThickUnit): number {
@@ -64,10 +69,12 @@ function toMeters(value: number, unit: LinearUnit | ThickUnit): number {
 function format(num: number, digits = 3): string {
   if (!isFinite(num)) return "—";
   return Number(num).toLocaleString(undefined, {
-    minimumFractionDigits: 0,
     maximumFractionDigits: digits,
   });
 }
+
+const nf = (n: number, d = 3) =>
+  Number.isFinite(n) ? n.toLocaleString(undefined, { maximumFractionDigits: d }) : "—";
 
 function uid() {
   return Math.random().toString(36).slice(2, 9);
@@ -100,33 +107,33 @@ export default function WallConcreteCalc() {
   const [thickUnit, setThickUnit] = React.useState<ThickUnit>("cm");
   const [outVolUnit, setOutVolUnit] = React.useState<VolumeUnit>("m3");
 
-  // ---------------- Wall inputs ----------------
+  // ---------------- Wall inputs (EMPTY) ----------------
   const [length, setLength] = React.useState<number | "">("");
   const [height, setHeight] = React.useState<number | "">("");
   const [thickness, setThickness] = React.useState<number | "">("");
 
-  // ---------------- Openings ----------------
+  // ---------------- Openings (one blank row) ----------------
   const [openings, setOpenings] = React.useState<Opening[]>([
     { id: uid(), width: "", height: "", count: "" },
   ]);
 
   // ---------------- Mix & water ----------------
   const [mix, setMix] = React.useState<Mix>("1:2:4");
-  const [wcr, setWcr] = React.useState<number>(0.5);
+  // wcr as TEXT so it starts empty and resets to ""
+  const [wcr, setWcr] = React.useState<string>("");
 
-  // ---------------- Costs (optional) ----------------
+  // ---------------- Costs (optional) — text fields EMPTY ----------------
   const [costMode, setCostMode] = React.useState<"perM3" | "byMaterials">("perM3");
   const [ratePerM3, setRatePerM3] = React.useState<number | "">("");
   const [cementBagPrice, setCementBagPrice] = React.useState<number | "">("");
   const [sandPricePerM3, setSandPricePerM3] = React.useState<number | "">("");
   const [aggPricePerM3, setAggPricePerM3] = React.useState<number | "">("");
 
-  // ---------------- Derived volumes (UNCHANGED) ----------------
+  // ---------------- Derived volumes ----------------
   const wallVolumeM3 = React.useMemo(() => {
     const L = typeof length === "number" ? toMeters(length, lenUnit) : 0;
     const H = typeof height === "number" ? toMeters(height, lenUnit) : 0;
-    const T =
-      typeof thickness === "number" ? toMeters(thickness, thickUnit) : 0;
+    const T = typeof thickness === "number" ? toMeters(thickness, thickUnit) : 0;
     if (L <= 0 || H <= 0 || T <= 0) return 0;
     return L * H * T;
   }, [length, height, thickness, lenUnit, thickUnit]);
@@ -136,11 +143,8 @@ export default function WallConcreteCalc() {
       const w = typeof o.width === "number" ? toMeters(o.width, lenUnit) : 0;
       const h = typeof o.height === "number" ? toMeters(o.height, lenUnit) : 0;
       const c = typeof o.count === "number" ? o.count : 0;
-      const T =
-        typeof thickness === "number" ? toMeters(thickness, thickUnit) : 0;
-      if (w > 0 && h > 0 && c > 0 && T > 0) {
-        sum += w * h * T * c;
-      }
+      const T = typeof thickness === "number" ? toMeters(thickness, thickUnit) : 0;
+      if (w > 0 && h > 0 && c > 0 && T > 0) sum += w * h * T * c;
       return sum;
     }, 0);
   }, [openings, lenUnit, thickness, thickUnit]);
@@ -153,7 +157,7 @@ export default function WallConcreteCalc() {
     return netVolumeM3 * M3_TO_YD3;
   }, [netVolumeM3, outVolUnit]);
 
-  // ---------------- Materials from mix (UNCHANGED) ----------------
+  // ---------------- Materials from mix ----------------
   const parts = MIX_PARTS[mix];
   const dryVol = netVolumeM3 * DRY_LOSS_FACTOR;
 
@@ -164,10 +168,12 @@ export default function WallConcreteCalc() {
   const sandVolM3 = (parts.s / parts.total) * dryVol;
   const aggVolM3 = (parts.a / parts.total) * dryVol;
 
-  const waterKg = cementKg * wcr;
+  // parse wcr text -> number ("" => 0)
+  const wcrNum = parseFloat(wcr || "0");
+  const waterKg = cementKg * (Number.isFinite(wcrNum) ? wcrNum : 0);
   const waterLiters = waterKg;
 
-  // ---------------- Costing (UNCHANGED) ----------------
+  // ---------------- Costing ----------------
   const totalCost = React.useMemo(() => {
     if (costMode === "perM3") {
       const rate = typeof ratePerM3 === "number" ? ratePerM3 : 0;
@@ -193,18 +199,20 @@ export default function WallConcreteCalc() {
   // ---------------- UI/UX gating ----------------
   const [submitted, setSubmitted] = React.useState(false);
 
-  // ---------------- Actions (UNCHANGED) ----------------
+  // ---------------- Actions ----------------
   function addOpening() {
-    setOpenings((prev) => [
-      ...prev,
-      { id: uid(), width: "", height: "", count: "" },
-    ]);
+    setOpenings((prev) => [...prev, { id: uid(), width: "", height: "", count: "" }]);
     setSubmitted(false);
   }
   function removeOpening(id: string) {
     setOpenings((prev) => prev.filter((o) => o.id !== id));
     setSubmitted(false);
   }
+  /** Reset:
+   * - Clears ALL text inputs to ""
+   * - Resets units to m/cm/m³ and options to defaults
+   * - Hides results
+   */
   function resetAll() {
     setLenUnit("m");
     setThickUnit("cm");
@@ -214,7 +222,7 @@ export default function WallConcreteCalc() {
     setThickness("");
     setOpenings([{ id: uid(), width: "", height: "", count: "" }]);
     setMix("1:2:4");
-    setWcr(0.5);
+    setWcr(""); // empty
     setCostMode("perM3");
     setRatePerM3("");
     setCementBagPrice("");
@@ -225,6 +233,131 @@ export default function WallConcreteCalc() {
   function handleCalculate(e?: React.FormEvent) {
     if (e) e.preventDefault();
     setSubmitted(true);
+  }
+
+  /* ======================= Print / Save (backend-less) =======================
+     - Builds a white, PDF-ready HTML page with branding, date/time, inputs & results
+     - Opens in a new tab and triggers browser print (user can Save as PDF)
+  =========================================================================== */
+
+  function buildPrintHtml() {
+  const now = new Date().toLocaleString();
+
+  const openingsRows =
+    openings
+      .filter((o) => o.width || o.height || o.count)
+      .map(
+        (o) => `
+      <div class="kv"><div class="k">Opening</div>
+        <div class="v">
+          ${o.width || "—"}×${o.height || "—"} ${unitAbbrev[lenUnit]} × ${o.count || "—"} pcs
+        </div>
+      </div>`
+      )
+      .join("") ||
+    `<div class="kv"><div class="k">Openings</div><div class="v">—</div></div>`;
+
+  return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Wall Concrete Calculator – Print View</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  *{box-sizing:border-box} body{margin:0;background:#fff;color:#0f172a;font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+  .container{max-width:960px;margin:0 auto;padding:24px}
+  .header{display:flex;align-items:center;gap:16px;border-bottom:1px solid #e5e7eb;padding-bottom:16px;margin-bottom:20px}
+  .brand{display:flex;align-items:center;gap:10px}.brand img{height:36px}.brand-name{font-weight:800;font-size:18px;color:#0f766e}
+  .meta{margin-left:auto;text-align:right;color:#475569;font-size:12px}
+  h2{font-size:16px;margin:18px 0 8px}
+  .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .card{border:1px solid #e5e7eb;border-radius:6px;padding:12px;background:#fff}
+  .kv{display:flex;align-items:center;justify-content:space-between;border:1px solid #e5e7eb;border-radius:6px;padding:8px}
+  .kv .k{color:#475569}.kv .v{color:#0f766e;font-weight:700}
+  .label{text-transform:uppercase;letter-spacing:.02em;font-size:11px;color:#64748b}
+  .value-md{font-size:18px;font-weight:800;color:#0f766e}
+  .footer{margin-top:24px;padding-top:12px;border-top:1px solid #e5e7eb;color:#64748b;font-size:12px}
+  @media print{@page{margin:12mm}.footer{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">
+        <img src="${LOGO_URL}" alt="Concrete Calculator Max" onerror="this.style.display='none'"/>
+        <div class="brand-name">Concrete Calculator Max</div>
+      </div>
+      <div class="meta">
+        <div>Wall Concrete Calculator</div>
+        <div>Printed: ${now}</div>
+      </div>
+    </div>
+
+    <h2>Inputs Summary</h2>
+    <div class="grid">
+      <div class="kv"><div class="k">Length</div><div class="v">${length || "—"} ${unitAbbrev[lenUnit]}</div></div>
+      <div class="kv"><div class="k">Height</div><div class="v">${height || "—"} ${unitAbbrev[lenUnit]}</div></div>
+      <div class="kv"><div class="k">Thickness</div><div class="v">${thickness || "—"} ${unitAbbrev[thickUnit]}</div></div>
+      <div class="kv"><div class="k">Mix</div><div class="v">${mix}</div></div>
+      <div class="kv"><div class="k">Water–Cement</div><div class="v">${wcr || "—"}</div></div>
+      <div class="kv"><div class="k">Output Unit</div><div class="v">${outVolUnit}</div></div>
+    </div>
+    <div class="grid" style="margin-top:8px">${openingsRows}</div>
+
+    <h2>Results</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="label">Volumes</div>
+        <div class="kv"><div class="k">Gross (m³)</div><div class="v">${nf(wallVolumeM3)}</div></div>
+        <div class="kv"><div class="k">Openings (m³)</div><div class="v">${nf(openingsVolumeM3)}</div></div>
+        <div class="kv"><div class="k">Net (${outVolUnit})</div><div class="v">${nf(volumeOut)}</div></div>
+      </div>
+      <div class="card">
+        <div class="label">Materials</div>
+        <div class="kv"><div class="k">Dry Volume (m³)</div><div class="v">${nf(dryVol)}</div></div>
+        <div class="kv"><div class="k">Cement (bags)</div><div class="v">${nf(cementBags,2)}</div></div>
+        <div class="kv"><div class="k">Sand (m³)</div><div class="v">${nf(sandVolM3)}</div></div>
+        <div class="kv"><div class="k">Aggregate (m³)</div><div class="v">${nf(aggVolM3)}</div></div>
+        <div class="kv"><div class="k">Water (liters)</div><div class="v">${nf(waterLiters,0)}</div></div>
+      </div>
+    </div>
+
+    <h2 style="margin-top:16px;">Cubic Yards (for ordering)</h2>
+    <div class="grid">
+  <div class="card">
+    <div class="label">yd³ (net)</div>
+    <div class="value-md">${nf(netVolumeM3 * M3_TO_YD3, 3)}</div>
+  </div>
+  <div class="card">
+    <div class="label">yd³ (+5%)</div>
+    <div class="value-md">${nf(netVolumeM3 * M3_TO_YD3 * 1.05, 3)}</div>
+  </div>
+  <div class="card">
+    <div class="label">yd³ (+10%)</div>
+    <div class="value-md">${nf(netVolumeM3 * M3_TO_YD3 * 1.1, 3)}</div>
+  </div>
+</div>
+
+    <div class="footer">Tip: In the browser’s Print dialog, choose “Save as PDF”.</div>
+  </div>
+  <script>window.addEventListener('load',()=>setTimeout(()=>window.print(),100));</script>
+</body>
+</html>`;
+}
+
+
+  function handlePrint() {
+    if (!submitted) return; // only after results are visible
+    const w = window.open("", "_blank");
+    if (!w) {
+      alert("Please allow pop-ups for this site to use Print/Save.");
+      return;
+    }
+    w.document.open();
+    w.document.write(buildPrintHtml());
+    w.document.close();
+    w.focus();
   }
 
   // ======================= Small UI helpers (presentation only) =======================
@@ -316,10 +449,7 @@ export default function WallConcreteCalc() {
               <Field id="lenUnit" label="Length/Height Unit" hint="Used for length and height fields.">
                 <Select
                   value={lenUnit}
-                  onValueChange={(v) => {
-                    setLenUnit(v as LinearUnit);
-                    setSubmitted(false);
-                  }}
+                  onValueChange={(v) => { setLenUnit(v as LinearUnit); setSubmitted(false); }}
                 >
                   <SelectTrigger className={selectTriggerClass} aria-label="Length unit">
                     <SelectValue placeholder="Unit" />
@@ -335,10 +465,7 @@ export default function WallConcreteCalc() {
               <Field id="thickUnit" label="Thickness Unit" hint="Used for wall thickness and opening depth.">
                 <Select
                   value={thickUnit}
-                  onValueChange={(v) => {
-                    setThickUnit(v as ThickUnit);
-                    setSubmitted(false);
-                  }}
+                  onValueChange={(v) => { setThickUnit(v as ThickUnit); setSubmitted(false); }}
                 >
                   <SelectTrigger className={selectTriggerClass} aria-label="Thickness unit">
                     <SelectValue placeholder="Unit" />
@@ -354,10 +481,7 @@ export default function WallConcreteCalc() {
               <Field id="outVolUnit" label="Output Volume Unit" hint="How results will be displayed.">
                 <Select
                   value={outVolUnit}
-                  onValueChange={(v) => {
-                    setOutVolUnit(v as VolumeUnit);
-                    setSubmitted(false);
-                  }}
+                  onValueChange={(v) => { setOutVolUnit(v as VolumeUnit); setSubmitted(false); }}
                 >
                   <SelectTrigger className={selectTriggerClass} aria-label="Output unit">
                     <SelectValue placeholder="Select" />
@@ -382,10 +506,7 @@ export default function WallConcreteCalc() {
                 <NumberInput
                   id="length"
                   value={length}
-                  onChange={(v) => {
-                    setLength(v === "" ? "" : Number(v));
-                    setSubmitted(false);
-                  }}
+                  onChange={(v) => { setLength(v === "" ? "" : Number(v)); setSubmitted(false); }}
                   placeholder={lenUnit === "ft" ? "e.g., 40" : "e.g., 12"}
                   badge={unitAbbrev[lenUnit]}
                   ariaLabel="Wall length"
@@ -395,10 +516,7 @@ export default function WallConcreteCalc() {
                 <NumberInput
                   id="height"
                   value={height}
-                  onChange={(v) => {
-                    setHeight(v === "" ? "" : Number(v));
-                    setSubmitted(false);
-                  }}
+                  onChange={(v) => { setHeight(v === "" ? "" : Number(v)); setSubmitted(false); }}
                   placeholder={lenUnit === "ft" ? "e.g., 10" : "e.g., 3"}
                   badge={unitAbbrev[lenUnit]}
                   ariaLabel="Wall height"
@@ -408,10 +526,7 @@ export default function WallConcreteCalc() {
                 <NumberInput
                   id="thickness"
                   value={thickness}
-                  onChange={(v) => {
-                    setThickness(v === "" ? "" : Number(v));
-                    setSubmitted(false);
-                  }}
+                  onChange={(v) => { setThickness(v === "" ? "" : Number(v)); setSubmitted(false); }}
                   placeholder={thickUnit === "in" ? "e.g., 8" : thickUnit === "cm" ? "e.g., 20" : "e.g., 0.2"}
                   badge={unitAbbrev[thickUnit]}
                   ariaLabel="Wall thickness"
@@ -521,10 +636,7 @@ export default function WallConcreteCalc() {
               <Field id="mix" label="Nominal Mix" hint="Cement : Sand : Aggregate (by volume).">
                 <Select
                   value={mix}
-                  onValueChange={(v) => {
-                    setMix(v as Mix);
-                    setSubmitted(false);
-                  }}
+                  onValueChange={(v) => { setMix(v as Mix); setSubmitted(false); }}
                 >
                   <SelectTrigger className={selectTriggerClass}>
                     <SelectValue placeholder="Mix" />
@@ -551,12 +663,9 @@ export default function WallConcreteCalc() {
               >
                 <NumberInput
                   id="wcr"
-                  value={String(wcr)}
-                  onChange={(v) => {
-                    setWcr(v === "" ? 0 : Number(v));
-                    setSubmitted(false);
-                  }}
-                  placeholder="0.5"
+                  value={wcr}
+                  onChange={(v) => { setWcr(v); setSubmitted(false); }}
+                  placeholder="e.g., 0.5"
                   badge="w/c"
                   ariaLabel="Water to cement ratio"
                 />
@@ -575,10 +684,7 @@ export default function WallConcreteCalc() {
               <Field label="Mode" hint="Choose rate per m³ or itemized materials.">
                 <Select
                   value={costMode}
-                  onValueChange={(v) => {
-                    setCostMode(v as typeof costMode);
-                    setSubmitted(false);
-                  }}
+                  onValueChange={(v) => { setCostMode(v as typeof costMode); setSubmitted(false); }}
                 >
                   <SelectTrigger className={selectTriggerClass}>
                     <SelectValue placeholder="Mode" />
@@ -666,6 +772,18 @@ export default function WallConcreteCalc() {
           </p>
         ) : (
           <>
+            {/* NEW: Print/Save button */}
+            <div className="mt-4 flex justify-end">
+              <Button
+                type="button"
+                onClick={handlePrint}
+                className="h-10 rounded-sm bg-green-500 text-slate-900 hover:bg-green-400"
+                title="Print / Save"
+              >
+                <Printer className="h-4 w-4 mr-2" /> Print / Save
+              </Button>
+            </div>
+
             {/* Inputs Summary (only after Calculate) */}
             <div className={`${stepClass} rounded-sm bg-slate-900 border border-slate-700 p-4`}>
               <div className="mb-2 text-sm font-semibold text-white">Inputs Summary</div>
@@ -675,7 +793,7 @@ export default function WallConcreteCalc() {
                 <KV k="Thickness" v={`${thickness || 0} ${unitAbbrev[thickUnit]}`} />
                 <KV k="Openings" v={`${openings.filter(o => o.width || o.height || o.count).length || 0}`} />
                 <KV k="Mix" v={mix} />
-                <KV k="w/c" v={`${wcr}`} />
+                <KV k="w/c" v={`${wcr || "0"}`} />
                 <KV k="Output Unit" v={outVolUnit} />
                 <KV k="Cost Mode" v={costMode === "perM3" ? "Rate per m³" : "By Materials"} />
               </div>
@@ -732,10 +850,7 @@ export default function WallConcreteCalc() {
                   <Label className="text-teal-500">Mode</Label>
                   <Select
                     value={costMode}
-                    onValueChange={(v) => {
-                      setCostMode(v as typeof costMode);
-                      setSubmitted(false);
-                    }}
+                    onValueChange={(v) => { setCostMode(v as typeof costMode); setSubmitted(false); }}
                   >
                     <SelectTrigger className={cn(selectTriggerClass, "w-44")}>
                       <SelectValue placeholder="Mode" />
@@ -837,7 +952,7 @@ function Stat({
       <div
         className={cn(
           "mt-1 text-2xl font-semibold tracking-tight",
-          highlight ? "text-teal-400" : "text-teal-400"
+          "text-teal-400"
         )}
       >
         {value}

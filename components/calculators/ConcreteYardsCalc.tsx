@@ -12,13 +12,14 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-import { Info } from "lucide-react";
+import { Info, Printer } from "lucide-react"; // ⬅️ NEW: Printer icon
 
 /* -------------------------------------------------------------
-   ConcreteYardsCalc.tsx — Beam-style UX/UI polish
-   - Logic, formulas, state names preserved
-   - No print/save/PDF features
-   - Mobile-first, teal labels, unit badges, inline hints, inputs summary
+   ConcreteYardsCalc.tsx — now with Print/Save (backend-less)
+   - Adds a Print/Save button (green) that opens a clean, white,
+     branded print page in a new tab and auto-opens the browser
+     Print dialog (Save as PDF works too).
+   - All existing math, UI, and state remain unchanged.
 -------------------------------------------------------------- */
 
 type Shape = "rectangle" | "circle";
@@ -214,6 +215,139 @@ export default function ConcreteYardsCalc() {
     </div>
   );
 
+  /* ======================= PRINT / SAVE (NEW) =======================
+   * Backend-less printable view:
+   * - Appears only when results exist (after Calculate)
+   * - Opens a new tab with white background and branded header
+   * - Shows inputs summary + yd³/ft³/m³ results (+5%/+10% helpers)
+   * - Auto-opens browser Print (user can Save as PDF)
+   * ------------------------------------------------------------------ */
+
+  // TODO: point to your actual logo asset if different
+  const LOGO_URL = "/logo.svg";
+
+  // Helper to format like the on-page tiles
+  const nf = (n: number | null, max = 4) =>
+    n === null || !Number.isFinite(n) ? "—" : n.toLocaleString(undefined, { maximumFractionDigits: max });
+
+  const buildPrintHtml = () => {
+    if (yd3 === null || ft3 === null || m3 === null) return "";
+
+    const now = new Date().toLocaleString();
+
+    const isRect = shape === "rectangle";
+    const unitShort = unitAbbrev[unit];
+
+    // Pre-compute helpers for ordering
+    const yd3_base = yd3;
+    const yd3_5 = Number((yd3_base * 1.05).toFixed(2));
+    const yd3_10 = Number((yd3_base * 1.1).toFixed(2));
+
+    return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Concrete Yards Calculator – Print View</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #ffffff; color: #0f172a; font: 14px/1.5 system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif; }
+    .container { max-width: 960px; margin: 0 auto; padding: 24px; }
+    .header { display: flex; align-items: center; gap: 16px; border-bottom: 1px solid #e5e7eb; padding-bottom: 16px; margin-bottom: 20px; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand img { height: 36px; width: auto; }
+    .brand-name { font-weight: 800; font-size: 18px; color: #0f766e; }
+    .meta { margin-left: auto; text-align: right; color: #475569; font-size: 12px; }
+    h2 { font-size: 16px; margin: 18px 0 8px; color: #0f172a; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .card { border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px; background: #fff; }
+    .kv { display: flex; align-items: center; justify-content: space-between; border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px; }
+    .kv .k { color: #475569; }
+    .kv .v { color: #0f766e; font-weight: 700; }
+    .muted { color: #475569; font-size: 12px; }
+    .value-md { font-size: 18px; font-weight: 800; color: #0f766e; }
+    .label { text-transform: uppercase; letter-spacing: .02em; font-size: 11px; color: #64748b; }
+    .footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid #e5e7eb; color: #64748b; font-size: 12px; }
+    @media print {
+      @page { margin: 12mm; }
+      .footer { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header / Branding -->
+    <div class="header">
+      <div class="brand">
+        <img src="${LOGO_URL}" alt="Concrete Calculator Max Logo" onerror="this.style.display='none'"/>
+        <div class="brand-name">Concrete Calculator Max</div>
+      </div>
+      <div class="meta">
+        <div>Concrete Yards Calculator</div>
+        <div>Printed: ${now}</div>
+      </div>
+    </div>
+
+    <!-- Inputs Summary -->
+    <h2>Inputs Summary</h2>
+    <div class="grid">
+      <div class="kv"><div class="k">Shape</div><div class="v">${isRect ? "Rectangle / Slab" : "Circular"}</div></div>
+      <div class="kv"><div class="k">Units</div><div class="v">${unitShort}</div></div>
+      ${isRect ? `
+        <div class="kv"><div class="k">Length</div><div class="v">${length || 0} ${unitShort}</div></div>
+        <div class="kv"><div class="k">Width</div><div class="v">${width || 0} ${unitShort}</div></div>
+      ` : `
+        <div class="kv"><div class="k">Diameter</div><div class="v">${diameter || 0} ${unitShort}</div></div>
+      `}
+      <div class="kv"><div class="k">Thickness</div><div class="v">${thickness || 0} ${unitShort}</div></div>
+      <div class="kv"><div class="k">Waste</div><div class="v">${wastePct}%</div></div>
+    </div>
+
+    <!-- Results -->
+    <h2>Results</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="label">Concrete Volume</div>
+        <div class="kv"><div class="k">Cubic Yards (yd³)</div><div class="v">${nf(yd3)}</div></div>
+        <div class="kv"><div class="k">Cubic Feet (ft³)</div><div class="v">${nf(ft3)}</div></div>
+        <div class="kv"><div class="k">Cubic Meters (m³)</div><div class="v">${nf(m3)}</div></div>
+      </div>
+      <div class="card">
+        <div class="label">Ordering Helper</div>
+        <div class="kv"><div class="k">yd³ (base)</div><div class="v">${nf(yd3)}</div></div>
+        <div class="kv"><div class="k">yd³ (+5%)</div><div class="v">${nf(yd3_5)}</div></div>
+        <div class="kv"><div class="k">yd³ (+10%)</div><div class="v">${nf(yd3_10)}</div></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Tip: In the browser’s Print dialog, choose “Save as PDF” to export this page as a PDF.
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('load', () => setTimeout(() => window.print(), 100));
+  </script>
+</body>
+</html>`;
+  };
+
+  const handlePrint = () => {
+    // Only allow printing when results are visible
+    if (yd3 === null || ft3 === null || m3 === null) return;
+    const html = buildPrintHtml();
+    const w = window.open("", "_blank");
+    if (!w) {
+      alert("Please allow pop-ups for this site to use Print/Save.");
+      return;
+    }
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    w.focus();
+  };
+
   /* ----------------------- Render ----------------------- */
   return (
     <Card className="font-poppins mx-auto w-full max-w-6xl rounded-sm border border-slate-700 bg-slate-900 shadow-md">
@@ -402,6 +536,20 @@ export default function ConcreteYardsCalc() {
         {/* Inputs Summary & Results (shown after Calculate) */}
         {yd3 !== null && (
           <>
+            {/* NEW: Print/Save button (green) */}
+            <div className="mt-4 flex justify-end">
+              <Button
+                type="button"
+                onClick={handlePrint}
+                className="h-10 rounded-sm bg-green-500 text-slate-900 hover:bg-green-400"
+                aria-label="Print or save results as PDF"
+                title="Print / Save"
+              >
+                <Printer className="h-4 w-4 mr-2" />
+                Print / Save
+              </Button>
+            </div>
+
             {/* Inputs Summary */}
             <div className={`${stepClass} rounded-sm bg-slate-900 border border-slate-700 p-4`}>
               <div className="mb-2 text-sm font-semibold text-white">Inputs Summary</div>

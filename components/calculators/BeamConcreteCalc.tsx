@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
-import { Info } from "lucide-react";
+import { Info, Printer } from "lucide-react";
 
 /* ---------------------------------------------
    Types & Units (unchanged logic)
@@ -55,7 +55,7 @@ const unitAbbrev: Record<LinearUnit, string> = {
 };
 
 /* ---------------------------------------------
-   Component (logic preserved; UX + mobile polish)
+   Component (logic preserved)
 --------------------------------------------- */
 
 export default function BeamConcreteCalc() {
@@ -180,6 +180,184 @@ export default function BeamConcreteCalc() {
     setSubmitted(false);
   };
 
+  /* ======================= PRINT / SAVE (FIXED) =======================
+   * Print page is generated fully client-side (new tab), with:
+   * - Branding header, title, date/time
+   * - Inputs summary
+   * - Results (per-beam, totals, quick conversions, yards with +5%/+10%)
+   * NOTE: Fixed nested template placeholders and removed string-replace hack.
+   * ------------------------------------------------------------------ */
+
+  const LOGO_URL = "/logo.svg";
+
+  const buildPrintHtml = () => {
+    const now = new Date().toLocaleString();
+
+    // Inputs
+    const unitStr = `${unit} (${unitAbbrev[unit]})`;
+    const dims = {
+      length: `${L_num || 0} ${unitAbbrev[unit]}`,
+      width: `${b_num || 0} ${unitAbbrev[unit]}`,
+      depth: `${d_num || 0} ${unitAbbrev[unit]}`,
+      qty: `${multiplier}`,
+      waste: `${waste_num}%`,
+      dry: useDryFactor ? `× ${dry_num}` : "Off",
+      void: hasVoid
+        ? `${vW_num} × ${vD_num} × ${vL_num} ${unitAbbrev[unit]}`
+        : "None",
+    };
+
+    // Results (numbers already computed in TS)
+    const perBeamWet = wetVolumePerBeam_m3;
+    const perBeamWetWaste = wetWithWaste_m3;
+    const perBeamDry = dryPerBeam_m3;
+
+    const tWet = totalWet_m3;
+    const tWetWaste = totalWetWaste_m3;
+    const tDry = totalDry_m3;
+
+    const ft3_wet = tWet * m3_to_ft3;
+    const yd3_wet = tWet * m3_to_yd3;
+
+    const yd3 = tWetWaste * m3_to_yd3;
+    const yd3_5 = yd3 * 1.05;
+    const yd3_10 = yd3 * 1.10;
+
+    return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Beam Concrete Calculator – Print View</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #ffffff; color: #0f172a; font: 14px/1.5 system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif; }
+    .container { max-width: 960px; margin: 0 auto; padding: 24px; }
+    .header { display: flex; align-items: center; gap: 16px; border-bottom: 1px solid #e5e7eb; padding-bottom: 16px; margin-bottom: 20px; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand img { height: 36px; width: auto; }
+    .brand-name { font-weight: 800; font-size: 18px; color: #0f766e; }
+    .meta { margin-left: auto; text-align: right; color: #475569; font-size: 12px; }
+    h1 { margin: 0; font-size: 20px; color: #0f172a; }
+    h2 { font-size: 16px; margin: 18px 0 8px; color: #0f172a; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .card { border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px; background: #fff; }
+    .kv { display: flex; align-items: center; justify-content: space-between; border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px; }
+    .kv .k { color: #475569; }
+    .kv .v { color: #0f766e; font-weight: 700; }
+    .muted { color: #475569; font-size: 12px; }
+    .value-lg { font-size: 22px; font-weight: 800; color: #0f766e; }
+    .value-md { font-size: 18px; font-weight: 800; color: #0f766e; }
+    .label { text-transform: uppercase; letter-spacing: .02em; font-size: 11px; color: #64748b; }
+    .footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid #e5e7eb; color: #64748b; font-size: 12px; }
+    @media print {
+      @page { margin: 12mm; }
+      .footer { page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header / Branding -->
+    <div class="header">
+      <div class="brand">
+        <img src="${LOGO_URL}" alt="Concrete Calculator Max Logo" onerror="this.style.display='none'"/>
+        <div class="brand-name">Concrete Calculator Max</div>
+      </div>
+      <div class="meta">
+        <div>Beam Concrete Calculator</div>
+        <div>Printed: ${now}</div>
+      </div>
+    </div>
+
+    <!-- Inputs Summary -->
+    <h2>Inputs Summary</h2>
+    <div class="grid">
+      <div class="kv"><div class="k">Units</div><div class="v">${unitStr}</div></div>
+      <div class="kv"><div class="k">Length (L)</div><div class="v">${dims.length}</div></div>
+      <div class="kv"><div class="k">Width (b)</div><div class="v">${dims.width}</div></div>
+      <div class="kv"><div class="k">Depth (d)</div><div class="v">${dims.depth}</div></div>
+      <div class="kv"><div class="k">Beams</div><div class="v">${dims.qty}</div></div>
+      <div class="kv"><div class="k">Waste</div><div class="v">${dims.waste}</div></div>
+      <div class="kv"><div class="k">Void (W×D×L)</div><div class="v">${dims.void}</div></div>
+      <div class="kv"><div class="k">Dry Factor</div><div class="v">${dims.dry}</div></div>
+    </div>
+
+    <!-- Results -->
+    <h2>Results</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="label">Per-Beam Volume</div>
+        <div class="kv"><div class="k">Wet (net)</div><div class="v">${perBeamWet.toLocaleString(undefined,{maximumFractionDigits:3})} m³</div></div>
+        <div class="kv"><div class="k">Wet + waste</div><div class="v">${perBeamWetWaste.toLocaleString(undefined,{maximumFractionDigits:3})} m³</div></div>
+        <div class="kv"><div class="k">${useDryFactor ? "Dry (est.)" : "Dry (off)"}</div><div class="v">${perBeamDry.toLocaleString(undefined,{maximumFractionDigits:3})} m³</div></div>
+      </div>
+
+      <div class="card">
+        <div class="label">Totals (× ${multiplier})</div>
+        <div class="kv"><div class="k">Total wet (net)</div><div class="v">${tWet.toLocaleString(undefined,{maximumFractionDigits:3})} m³</div></div>
+        <div class="kv"><div class="k">Total wet + waste</div><div class="v">${tWetWaste.toLocaleString(undefined,{maximumFractionDigits:3})} m³</div></div>
+        <div class="kv"><div class="k">${useDryFactor ? "Total dry (est.)" : "Total dry (off)"}</div><div class="v">${tDry.toLocaleString(undefined,{maximumFractionDigits:3})} m³</div></div>
+      </div>
+    </div>
+
+    <!-- Quick Conversions -->
+    <h2>Quick Conversions</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="label">Wet (ft³)</div>
+        <div class="value-md">${ft3_wet.toLocaleString(undefined,{maximumFractionDigits:3})}</div>
+      </div>
+      <div class="card">
+        <div class="label">Wet (yd³)</div>
+        <div class="value-md">${yd3_wet.toLocaleString(undefined,{maximumFractionDigits:3})}</div>
+      </div>
+    </div>
+
+    <!-- Yards for Ordering -->
+    <h2 style="margin-top:16px;">Cubic Yards (for ordering)</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="label">yd³ (with waste)</div>
+        <div class="value-md">${yd3.toLocaleString(undefined,{maximumFractionDigits:3})}</div>
+      </div>
+      <div class="card">
+        <div class="label">yd³ (+5%)</div>
+        <div class="value-md">${yd3_5.toLocaleString(undefined,{maximumFractionDigits:3})}</div>
+      </div>
+      <div class="card">
+        <div class="label">yd³ (+10%)</div>
+        <div class="value-md">${yd3_10.toLocaleString(undefined,{maximumFractionDigits:3})}</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Tip: In the browser’s Print dialog, choose “Save as PDF” to export this page as a PDF.
+    </div>
+  </div>
+
+  <script>
+    window.addEventListener('load', () => setTimeout(() => window.print(), 100));
+  </script>
+</body>
+</html>`;
+  };
+
+  const handlePrint = () => {
+    if (!submitted || invalidDims) return; // only print valid, visible results
+    const html = buildPrintHtml();
+    const w = window.open("", "_blank");
+    if (!w) {
+      alert("Please allow pop-ups for this site to use Print/Save.");
+      return;
+    }
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    w.focus();
+  };
+
   /* ----------------------- Styles ----------------------- */
   const fieldInputClass =
     "h-11 w-full rounded-sm border border-slate-700 bg-slate-700 text-white caret-white placeholder-slate-300 pr-12 focus-visible:ring-0 focus:border-teal-400";
@@ -187,7 +365,7 @@ export default function BeamConcreteCalc() {
     "h-11 rounded-sm border border-slate-700 bg-slate-700 text-white data-[placeholder]:text-slate-300 focus-visible:ring-0 focus:border-teal-400";
   const selectContentClass =
     "rounded-sm border border-slate-700 bg-slate-900 text-white";
-  const stepClass = "pt-6 mt-4 border-t border-slate-800"; // clear separation between steps
+  const stepClass = "pt-6 mt-4 border-t border-slate-800";
 
   /* ----------------------- UI ----------------------- */
   return (
@@ -197,7 +375,8 @@ export default function BeamConcreteCalc() {
           Beam Concrete Calculator
         </CardTitle>
         <p className="text-sm text-white/70 mt-1 text-center sm:text-left">
-          Enter dimensions in your chosen unit. The calculator multiplies <span className="font-medium text-white">V = L × b × d</span> and can subtract a uniform void/duct, apply waste, and (optionally) a dry-volume factor.
+          Enter dimensions in your chosen unit. The calculator multiplies{" "}
+          <span className="font-medium text-white">V = L × b × d</span> and can subtract a uniform void/duct, apply waste, and (optionally) a dry-volume factor.
         </p>
       </CardHeader>
 
@@ -234,7 +413,9 @@ export default function BeamConcreteCalc() {
                 <SelectItem value="inches" className="text-white">Inches (in)</SelectItem>
               </SelectContent>
             </Select>
-            <p className="mt-1 text-xs text-white/60">All dimensions below will be interpreted in <span className="text-white">{unit}</span>.</p>
+            <p className="mt-1 text-xs text-white/60">
+              All dimensions below will be interpreted in <span className="text-white">{unit}</span>.
+            </p>
           </div>
         </section>
 
@@ -426,8 +607,7 @@ export default function BeamConcreteCalc() {
         </section>
 
         {/* Actions */}
-        <div className={cn(stepClass, "flex flex-col sm:flex-row gap-2 border-none pt-4 mt-4")}
-        >
+        <div className={cn(stepClass, "flex flex-col sm:flex-row gap-2 border-none pt-4 mt-4")}>
           <Button
             type="submit"
             onClick={handleCalculate}
@@ -444,7 +624,7 @@ export default function BeamConcreteCalc() {
           </Button>
         </div>
 
-        {/* Results (hidden until Calculate) */}
+        {/* Results */}
         {!submitted ? (
           <p className="mt-4 text-sm text-white/70">
             Enter values above and press <span className="font-semibold">Calculate</span> to reveal results.
@@ -455,9 +635,22 @@ export default function BeamConcreteCalc() {
           </p>
         ) : (
           <>
+            {/* Print/Save (only when results are valid) */}
+            <div className="mt-4 flex justify-end">
+              <Button
+                type="button"
+                onClick={handlePrint}
+                className="h-10 rounded-sm bg-green-500 text-slate-900 hover:bg-green-400"
+                aria-label="Print or save results as PDF"
+                title="Print / Save"
+              >
+                <Printer className="h-4 w-4 mr-2" />
+                Print / Save
+              </Button>
+            </div>
+
             {/* Inputs Summary */}
-            <div className={cn(stepClass, "rounded-sm bg-slate-900 border border-slate-700 p-4")}
-            >
+            <div className={cn(stepClass, "rounded-sm bg-slate-900 border border-slate-700 p-4")}>
               <div className="mb-2 text-sm font-semibold text-white">Inputs Summary</div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
                 <div className="flex items-center justify-between rounded-sm border border-slate-700 bg-slate-900 p-2">
@@ -470,7 +663,7 @@ export default function BeamConcreteCalc() {
                 </div>
                 <div className="flex items-center justify-between rounded-sm border border-slate-700 bg-slate-900 p-2">
                   <span className="text-white/70">Width (b)</span>
-                  <span className="text-teal-400 font-semibold">{b_num || 0} {unitAbbrev[unit as LinearUnit] ?? unitAbbrev[unit]}</span>
+                  <span className="text-teal-400 font-semibold">{b_num || 0} {unitAbbrev[unit]}</span>
                 </div>
                 <div className="flex items-center justify-between rounded-sm border border-slate-700 bg-slate-900 p-2">
                   <span className="text-white/70">Depth (d)</span>
@@ -478,19 +671,17 @@ export default function BeamConcreteCalc() {
                 </div>
                 <div className="flex items-center justify-between rounded-sm border border-slate-700 bg-slate-900 p-2">
                   <span className="text-white/70">Beams</span>
-                  <span className="text-teal-400 font-semibold">{qty_num || 0}</span>
+                  <span className="text-teal-400 font-semibold">{multiplier}</span>
                 </div>
                 <div className="flex items-center justify-between rounded-sm border border-slate-700 bg-slate-900 p-2">
                   <span className="text-white/70">Waste</span>
                   <span className="text-teal-400 font-semibold">{waste_num}%</span>
                 </div>
                 {hasVoid && (
-                  <>
-                    <div className="flex items-center justify-between rounded-sm border border-slate-700 bg-slate-900 p-2">
-                      <span className="text-white/70">Void W × D × L</span>
-                      <span className="text-teal-400 font-semibold">{vW_num} × {vD_num} × {vL_num} {unitAbbrev[unit]}</span>
-                    </div>
-                  </>
+                  <div className="flex items-center justify-between rounded-sm border border-slate-700 bg-slate-900 p-2">
+                    <span className="text-white/70">Void W × D × L</span>
+                    <span className="text-teal-400 font-semibold">{vW_num} × {vD_num} × {vL_num} {unitAbbrev[unit]}</span>
+                  </div>
                 )}
                 {useDryFactor && (
                   <div className="flex items-center justify-between rounded-sm border border-slate-700 bg-slate-900 p-2">
@@ -502,8 +693,7 @@ export default function BeamConcreteCalc() {
             </div>
 
             {/* Result tiles */}
-            <div className={cn(stepClass, "grid grid-cols-1 lg:grid-cols-3 gap-4 border-none")}
-            >
+            <div className={cn(stepClass, "grid grid-cols-1 lg:grid-cols-3 gap-4 border-none")}>
               <div className="rounded-sm border border-slate-700 bg-slate-900 p-4">
                 <p className="text-xs uppercase text-white/70">Per-Beam Volume</p>
                 <div className="mt-2 space-y-1.5">
@@ -556,8 +746,7 @@ export default function BeamConcreteCalc() {
             </div>
 
             {/* Cubic Yards helper */}
-            <div className={cn(stepClass, "rounded-sm border border-slate-700 bg-slate-900 p-4")}
-            >
+            <div className={cn(stepClass, "rounded-sm border border-slate-700 bg-slate-900 p-4")}>
               <div className="mb-2 text-sm font-semibold text-white">Cubic Yards (for ordering)</div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
@@ -580,6 +769,8 @@ export default function BeamConcreteCalc() {
                 </div>
               </div>
             </div>
+
+            {/* Print/Save button already placed above */}
           </>
         )}
       </CardContent>

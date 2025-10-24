@@ -26,10 +26,10 @@ import {
   TabsContent,
 } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
-import { Info } from "lucide-react";
+import { Info, Printer } from "lucide-react";
 
 /* -----------------------------------------------------------------------------
-   Types & helpers (calculation logic preserved)
+   Types & helpers (calculation logic preserved; now parsing from string inputs)
 ----------------------------------------------------------------------------- */
 type LinearUnit = "meters" | "centimeters" | "feet" | "inches";
 
@@ -53,6 +53,19 @@ const m3ToFt3 = (m3: number) => m3 * 35.3146667;
 const fmt = (n: number, d = 3) =>
   Number(n).toLocaleString(undefined, { maximumFractionDigits: d });
 
+// Parse any numeric text field -> non-negative number (empty -> 0)
+const num = (s: string) => clamp(parseFloat(s || "0") || 0);
+
+const unitAbbrev: Record<LinearUnit, string> = {
+  meters: "m",
+  centimeters: "cm",
+  feet: "ft",
+  inches: "in",
+};
+
+// (Optional) logo path used in the printable header (hide if not found)
+const LOGO_URL = "/logo.svg";
+
 /* -----------------------------------------------------------------------------
    UI tokens (Dark Slate + Teal)
 ----------------------------------------------------------------------------- */
@@ -63,13 +76,6 @@ const selectTriggerClass =
 const selectContentClass =
   "rounded-sm border border-slate-700 bg-slate-900 text-white";
 const stepClass = "pt-6 mt-4 border-t border-slate-800";
-
-const unitAbbrev: Record<LinearUnit, string> = {
-  meters: "m",
-  centimeters: "cm",
-  feet: "ft",
-  inches: "in",
-};
 
 /* -----------------------------------------------------------------------------
    Small UI: Field, NumberInput, Stat, KV
@@ -108,7 +114,7 @@ function NumberInput({
   ariaLabel,
 }: {
   id?: string;
-  value: string | number;
+  value: string;
   onChange: (v: string) => void;
   placeholder?: string;
   badge?: string;
@@ -169,9 +175,11 @@ function KV({ k, v }: { k: string; v: string }) {
    Component
 ----------------------------------------------------------------------------- */
 export default function TankTrenchConcreteCalc() {
-  // Global units & waste
+  // ---------------- Global units & waste ----------------
   const [unit, setUnit] = React.useState<LinearUnit>("meters");
-  const [wastePct, setWastePct] = React.useState<number>(5);
+
+  // NOTE: per request, text fields start empty — so wastePct is also a string.
+  const [wastePct, setWastePct] = React.useState<string>("");
 
   // Tabs
   const [tab, setTab] = React.useState<"trench" | "rectTank" | "circTank">(
@@ -181,51 +189,52 @@ export default function TankTrenchConcreteCalc() {
   // Submitted (hide results until Calculate)
   const [submitted, setSubmitted] = React.useState(false);
 
-  // ---------------- Trench ----------------
+  // ---------------- Trench (all EMPTY on load) ----------------
   const [trenchMode, setTrenchMode] = React.useState<"rect" | "trap">("rect");
-  const [trLen, setTrLen] = React.useState<number>(10);
-  const [trWidth, setTrWidth] = React.useState<number>(0.6);
-  const [trDepth, setTrDepth] = React.useState<number>(0.9);
-  const [trTopWidth, setTrTopWidth] = React.useState<number>(0.8);
-  const [trBottomWidth, setTrBottomWidth] = React.useState<number>(0.5);
+  const [trLen, setTrLen] = React.useState<string>("");          // ""
+  const [trWidth, setTrWidth] = React.useState<string>("");      // ""
+  const [trDepth, setTrDepth] = React.useState<string>("");      // ""
+  const [trTopWidth, setTrTopWidth] = React.useState<string>("");// ""
+  const [trBottomWidth, setTrBottomWidth] = React.useState<string>(""); // ""
 
-  // ---------------- Rectangular Tank ----------------
-  const [rtLen, setRtLen] = React.useState<number>(3);     // inner
-  const [rtWid, setRtWid] = React.useState<number>(2);     // inner
-  const [rtHt, setRtHt] = React.useState<number>(2);       // inner
-  const [rtWallT, setRtWallT] = React.useState<number>(0.2);
-  const [rtBaseT, setRtBaseT] = React.useState<number>(0.25);
+  // ---------------- Rectangular Tank (all EMPTY) ----------------
+  const [rtLen, setRtLen] = React.useState<string>("");     // inner
+  const [rtWid, setRtWid] = React.useState<string>("");     // inner
+  const [rtHt, setRtHt] = React.useState<string>("");       // inner
+  const [rtWallT, setRtWallT] = React.useState<string>(""); // wall thickness
+  const [rtBaseT, setRtBaseT] = React.useState<string>(""); // base thickness
   const [rtIncludeTop, setRtIncludeTop] = React.useState<boolean>(false);
-  const [rtTopT, setRtTopT] = React.useState<number>(0.15);
+  const [rtTopT, setRtTopT] = React.useState<string>("");   // cover thickness
 
-  // ---------------- Circular Tank ----------------
-  const [ctDia, setCtDia] = React.useState<number>(2.5);   // inner
-  const [ctHt, setCtHt] = React.useState<number>(2);       // inner
-  const [ctWallT, setCtWallT] = React.useState<number>(0.2);
-  const [ctBaseT, setCtBaseT] = React.useState<number>(0.25);
+  // ---------------- Circular Tank (all EMPTY) ----------------
+  const [ctDia, setCtDia] = React.useState<string>("");     // inner
+  const [ctHt, setCtHt] = React.useState<string>("");       // inner
+  const [ctWallT, setCtWallT] = React.useState<string>(""); // wall thickness
+  const [ctBaseT, setCtBaseT] = React.useState<string>(""); // base thickness
   const [ctIncludeTop, setCtIncludeTop] = React.useState<boolean>(false);
-  const [ctTopT, setCtTopT] = React.useState<number>(0.15);
+  const [ctTopT, setCtTopT] = React.useState<string>("");   // cover thickness
 
   /* ---------------------------------------------------------------------------
-     Calculations (logic unchanged)
+     Calculations (unchanged formulas; now reading from strings)
   --------------------------------------------------------------------------- */
   const trenchResult = React.useMemo<VolumeResult>(() => {
-    const L = toMeters(trLen, unit);
-    const D = toMeters(trDepth, unit);
-    let core = 0;
+    const L = toMeters(num(trLen), unit);
+    const D = toMeters(num(trDepth), unit);
+    const wPct = clamp(num(wastePct), 0);
 
+    let core = 0;
     if (trenchMode === "rect") {
-      const W = toMeters(trWidth, unit);
+      const W = toMeters(num(trWidth), unit);
       core = L * W * D;
     } else {
       // Trapezoidal: area = depth * (top + bottom)/2
-      const TW = toMeters(trTopWidth, unit);
-      const BW = toMeters(trBottomWidth, unit);
+      const TW = toMeters(num(trTopWidth), unit);
+      const BW = toMeters(num(trBottomWidth), unit);
       const avg = (TW + BW) / 2;
       core = L * D * avg;
     }
 
-    const withWaste = core * (1 + clamp(wastePct) / 100);
+    const withWaste = core * (1 + wPct / 100);
     return { core, withWaste };
   }, [
     trenchMode,
@@ -240,13 +249,13 @@ export default function TankTrenchConcreteCalc() {
 
   const rectTankResult = React.useMemo<VolumeResult>(() => {
     // Inner dims
-    const Li = toMeters(rtLen, unit);
-    const Wi = toMeters(rtWid, unit);
-    const Hi = toMeters(rtHt, unit);
+    const Li = toMeters(num(rtLen), unit);
+    const Wi = toMeters(num(rtWid), unit);
+    const Hi = toMeters(num(rtHt), unit);
 
-    const tW = toMeters(rtWallT, unit);
-    const tB = toMeters(rtBaseT, unit);
-    const tT = rtIncludeTop ? toMeters(rtTopT, unit) : 0;
+    const tW = toMeters(num(rtWallT), unit);
+    const tB = toMeters(num(rtBaseT), unit);
+    const tT = rtIncludeTop ? toMeters(num(rtTopT), unit) : 0;
 
     // Outer dims (box around inner void)
     const Lo = Li + 2 * tW;
@@ -261,7 +270,7 @@ export default function TankTrenchConcreteCalc() {
     const topVol = tT > 0 ? Lo * Wo * tT : 0;
     const wallsVol = Math.max(core - baseVol - topVol, 0);
 
-    const withWaste = core * (1 + clamp(wastePct) / 100);
+    const withWaste = core * (1 + clamp(num(wastePct), 0) / 100);
     return {
       core,
       withWaste,
@@ -274,12 +283,12 @@ export default function TankTrenchConcreteCalc() {
   }, [rtLen, rtWid, rtHt, rtWallT, rtBaseT, rtIncludeTop, rtTopT, unit, wastePct]);
 
   const circTankResult = React.useMemo<VolumeResult>(() => {
-    const Di = toMeters(ctDia, unit);
-    const Hi = toMeters(ctHt, unit);
+    const Di = toMeters(num(ctDia), unit);
+    const Hi = toMeters(num(ctHt), unit);
 
-    const tW = toMeters(ctWallT, unit);
-    const tB = toMeters(ctBaseT, unit);
-    const tT = ctIncludeTop ? toMeters(ctTopT, unit) : 0;
+    const tW = toMeters(num(ctWallT), unit);
+    const tB = toMeters(num(ctBaseT), unit);
+    const tT = ctIncludeTop ? toMeters(num(ctTopT), unit) : 0;
 
     const Do = Di + 2 * tW;
     const Ho = Hi + tB + tT;
@@ -292,7 +301,7 @@ export default function TankTrenchConcreteCalc() {
     const topVol = tT > 0 ? Math.PI * Math.pow(Do / 2, 2) * tT : 0;
     const wallsVol = Math.max(core - baseVol - topVol, 0);
 
-    const withWaste = core * (1 + clamp(wastePct) / 100);
+    const withWaste = core * (1 + clamp(num(wastePct), 0) / 100);
     return {
       core,
       withWaste,
@@ -312,34 +321,256 @@ export default function TankTrenchConcreteCalc() {
     setSubmitted(true);
   }
 
+  /** Reset:
+   *  - Clears ALL text inputs to ""
+   *  - Disables optional cover slabs
+   *  - Resets unit to "meters", tab to "trench", trenchMode to "rect"
+   *  - Hides results
+   */
   function resetAll() {
     setUnit("meters");
-    setWastePct(5);
+    setWastePct("");
+
     setTab("trench");
     setTrenchMode("rect");
-    setTrLen(10);
-    setTrWidth(0.6);
-    setTrDepth(0.9);
-    setTrTopWidth(0.8);
-    setTrBottomWidth(0.5);
-    setRtLen(3);
-    setRtWid(2);
-    setRtHt(2);
-    setRtWallT(0.2);
-    setRtBaseT(0.25);
+
+    setTrLen("");
+    setTrWidth("");
+    setTrDepth("");
+    setTrTopWidth("");
+    setTrBottomWidth("");
+
+    setRtLen("");
+    setRtWid("");
+    setRtHt("");
+    setRtWallT("");
+    setRtBaseT("");
     setRtIncludeTop(false);
-    setRtTopT(0.15);
-    setCtDia(2.5);
-    setCtHt(2);
-    setCtWallT(0.2);
-    setCtBaseT(0.25);
+    setRtTopT("");
+
+    setCtDia("");
+    setCtHt("");
+    setCtWallT("");
+    setCtBaseT("");
     setCtIncludeTop(false);
-    setCtTopT(0.15);
+    setCtTopT("");
+
     setSubmitted(false);
   }
 
   /* ---------------------------------------------------------------------------
-     Render (step-based UX + unit badges + inputs summary)
+     Print / Save (backend-less)
+     - Opens a new tab with a white, PDF-ready page mirroring current tab’s
+       inputs and results, includes brand header + date/time, then triggers print.
+  --------------------------------------------------------------------------- */
+  const nf = (n: number, d = 3) =>
+    Number.isFinite(n)
+      ? n.toLocaleString(undefined, { maximumFractionDigits: d })
+      : "—";
+
+  function buildPrintHtml() {
+    const now = new Date().toLocaleString();
+    const u = unitAbbrev[unit];
+
+    // Render section based on active tab
+    const trenchHtml = (() => {
+      const yd = m3ToYd3(trenchResult.withWaste);
+      const rows = trenchMode === "rect"
+        ? `
+        <div class="kv"><div class="k">Width</div><div class="v">${trWidth || "—"} ${u}</div></div>`
+        : `
+        <div class="kv"><div class="k">Top Width</div><div class="v">${trTopWidth || "—"} ${u}</div></div>
+        <div class="kv"><div class="k">Bottom Width</div><div class="v">${trBottomWidth || "—"} ${u}</div></div>`;
+
+      return `
+      <h2>Inputs Summary — Trench</h2>
+      <div class="grid">
+        <div class="kv"><div class="k">Units</div><div class="v">${u}</div></div>
+        <div class="kv"><div class="k">Mode</div><div class="v">${trenchMode === "rect" ? "Rectangular" : "Trapezoidal"}</div></div>
+        <div class="kv"><div class="k">Length</div><div class="v">${trLen || "—"} ${u}</div></div>
+        ${rows}
+        <div class="kv"><div class="k">Depth</div><div class="v">${trDepth || "—"} ${u}</div></div>
+        <div class="kv"><div class="k">Waste</div><div class="v">${wastePct || "0"}%</div></div>
+      </div>
+
+      <h2>Results</h2>
+      <div class="grid-2">
+        <div class="card">
+          <div class="label">Net (without waste)</div>
+          <div class="kv"><div class="k">m³</div><div class="v">${nf(trenchResult.core)}</div></div>
+          <div class="kv"><div class="k">yd³</div><div class="v">${nf(m3ToYd3(trenchResult.core),3)}</div></div>
+          <div class="kv"><div class="k">ft³</div><div class="v">${nf(m3ToFt3(trenchResult.core),0)}</div></div>
+        </div>
+        <div class="card">
+          <div class="label">With Waste (${wastePct || "0"}%)</div>
+          <div class="kv"><div class="k">m³</div><div class="v">${nf(trenchResult.withWaste)}</div></div>
+          <div class="kv"><div class="k">yd³</div><div class="v">${nf(yd,3)}</div></div>
+          <div class="kv"><div class="k">ft³</div><div class="v">${nf(m3ToFt3(trenchResult.withWaste),0)}</div></div>
+        </div>
+      </div>
+
+      <h2 style="margin-top:16px;">Cubic Yards (for ordering)</h2>
+      <div class="grid">
+        <div class="card"><div class="label">yd³ (base)</div><div class="value-md">${nf(yd,3)}</div></div>
+        <div class="card"><div class="label">yd³ (+5%)</div><div class="value-md">${nf(yd*1.05,3)}</div></div>
+        <div class="card"><div class="label">yd³ (+10%)</div><div class="value-md">${nf(yd*1.10,3)}</div></div>
+      </div>`;
+    })();
+
+    const rectHtml = (() => {
+      const yd = m3ToYd3(rectTankResult.withWaste);
+      return `
+      <h2>Inputs Summary — Rectangular Tank</h2>
+      <div class="grid">
+        <div class="kv"><div class="k">Units</div><div class="v">${u}</div></div>
+        <div class="kv"><div class="k">Inner L×W×H</div><div class="v">${rtLen || "—"} × ${rtWid || "—"} × ${rtHt || "—"} ${u}</div></div>
+        <div class="kv"><div class="k">Wall Thickness</div><div class="v">${rtWallT || "—"} ${u}</div></div>
+        <div class="kv"><div class="k">Base Thickness</div><div class="v">${rtBaseT || "—"} ${u}</div></div>
+        <div class="kv"><div class="k">Cover Slab</div><div class="v">${rtIncludeTop ? (rtTopT || "—") + " " + u : "No"}</div></div>
+        <div class="kv"><div class="k">Waste</div><div class="v">${wastePct || "0"}%</div></div>
+      </div>
+
+      <h2>Results</h2>
+      <div class="grid-2">
+        <div class="card">
+          <div class="label">Net (without waste)</div>
+          <div class="kv"><div class="k">m³</div><div class="v">${nf(rectTankResult.core)}</div></div>
+          <div class="kv"><div class="k">yd³</div><div class="v">${nf(m3ToYd3(rectTankResult.core),3)}</div></div>
+          <div class="kv"><div class="k">ft³</div><div class="v">${nf(m3ToFt3(rectTankResult.core),0)}</div></div>
+        </div>
+        <div class="card">
+          <div class="label">With Waste (${wastePct || "0"}%)</div>
+          <div class="kv"><div class="k">m³</div><div class="v">${nf(rectTankResult.withWaste)}</div></div>
+          <div class="kv"><div class="k">yd³</div><div class="v">${nf(yd,3)}</div></div>
+          <div class="kv"><div class="k">ft³</div><div class="v">${nf(m3ToFt3(rectTankResult.withWaste),0)}</div></div>
+        </div>
+      </div>
+
+      <h2 style="margin-top:16px;">Breakdown (m³)</h2>
+      <div class="grid">
+        <div class="kv"><div class="k">Base Slab</div><div class="v">${nf(rectTankResult.breakdown!.baseSlab)}</div></div>
+        <div class="kv"><div class="k">Walls</div><div class="v">${nf(rectTankResult.breakdown!.walls)}</div></div>
+        <div class="kv"><div class="k">Cover Slab</div><div class="v">${nf(rectTankResult.breakdown!.coverSlab)}</div></div>
+      </div>
+
+      <h2 style="margin-top:16px;">Cubic Yards (for ordering)</h2>
+      <div class="grid">
+        <div class="card"><div class="label">yd³ (base)</div><div class="value-md">${nf(yd,3)}</div></div>
+        <div class="card"><div class="label">yd³ (+5%)</div><div class="value-md">${nf(yd*1.05,3)}</div></div>
+        <div class="card"><div class="label">yd³ (+10%)</div><div class="value-md">${nf(yd*1.10,3)}</div></div>
+      </div>`;
+    })();
+
+    const circHtml = (() => {
+      const yd = m3ToYd3(circTankResult.withWaste);
+      return `
+      <h2>Inputs Summary — Circular Tank</h2>
+      <div class="grid">
+        <div class="kv"><div class="k">Units</div><div class="v">${u}</div></div>
+        <div class="kv"><div class="k">Inner Dia</div><div class="v">${ctDia || "—"} ${u}</div></div>
+        <div class="kv"><div class="k">Inner Height</div><div class="v">${ctHt || "—"} ${u}</div></div>
+        <div class="kv"><div class="k">Wall Thickness</div><div class="v">${ctWallT || "—"} ${u}</div></div>
+        <div class="kv"><div class="k">Base Thickness</div><div class="v">${ctBaseT || "—"} ${u}</div></div>
+        <div class="kv"><div class="k">Cover Slab</div><div class="v">${ctIncludeTop ? (ctTopT || "—") + " " + u : "No"}</div></div>
+        <div class="kv"><div class="k">Waste</div><div class="v">${wastePct || "0"}%</div></div>
+      </div>
+
+      <h2>Results</h2>
+      <div class="grid-2">
+        <div class="card">
+          <div class="label">Net (without waste)</div>
+          <div class="kv"><div class="k">m³</div><div class="v">${nf(circTankResult.core)}</div></div>
+          <div class="kv"><div class="k">yd³</div><div class="v">${nf(m3ToYd3(circTankResult.core),3)}</div></div>
+          <div class="kv"><div class="k">ft³</div><div class="v">${nf(m3ToFt3(circTankResult.core),0)}</div></div>
+        </div>
+        <div class="card">
+          <div class="label">With Waste (${wastePct || "0"}%)</div>
+          <div class="kv"><div class="k">m³</div><div class="v">${nf(circTankResult.withWaste)}</div></div>
+          <div class="kv"><div class="k">yd³</div><div class="v">${nf(yd,3)}</div></div>
+          <div class="kv"><div class="k">ft³</div><div class="v">${nf(m3ToFt3(circTankResult.withWaste),0)}</div></div>
+        </div>
+      </div>
+
+      <h2 style="margin-top:16px;">Breakdown (m³)</h2>
+      <div class="grid">
+        <div class="kv"><div class="k">Base Slab</div><div class="v">${nf(circTankResult.breakdown!.baseSlab)}</div></div>
+        <div class="kv"><div class="k">Walls</div><div class="v">${nf(circTankResult.breakdown!.walls)}</div></div>
+        <div class="kv"><div class="k">Cover Slab</div><div class="v">${nf(circTankResult.breakdown!.coverSlab)}</div></div>
+      </div>
+
+      <h2 style="margin-top:16px;">Cubic Yards (for ordering)</h2>
+      <div class="grid">
+        <div class="card"><div class="label">yd³ (base)</div><div class="value-md">${nf(yd,3)}</div></div>
+        <div class="card"><div class="label">yd³ (+5%)</div><div class="value-md">${nf(yd*1.05,3)}</div></div>
+        <div class="card"><div class="label">yd³ (+10%)</div><div class="value-md">${nf(yd*1.10,3)}</div></div>
+      </div>`;
+    })();
+
+    const bodyByTab =
+      tab === "trench" ? trenchHtml : tab === "rectTank" ? rectHtml : circHtml;
+
+    // Full printable HTML (white background)
+    return `<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Tank / Trench Concrete Calculator – Print View</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  *{box-sizing:border-box} body{margin:0;background:#fff;color:#0f172a;font:14px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial}
+  .container{max-width:960px;margin:0 auto;padding:24px}
+  .header{display:flex;align-items:center;gap:16px;border-bottom:1px solid #e5e7eb;padding-bottom:16px;margin-bottom:20px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .brand img{height:36px}
+  .brand-name{font-weight:800;font-size:18px;color:#0f766e}
+  .meta{margin-left:auto;text-align:right;color:#475569;font-size:12px}
+  h2{font-size:16px;margin:18px 0 8px}
+  .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .card{border:1px solid #e5e7eb;border-radius:6px;padding:12px;background:#fff}
+  .kv{display:flex;align-items:center;justify-content:space-between;border:1px solid #e5e7eb;border-radius:6px;padding:8px}
+  .kv .k{color:#475569}.kv .v{color:#0f766e;font-weight:700}
+  .label{text-transform:uppercase;letter-spacing:.02em;font-size:11px;color:#64748b}
+  .value-md{font-size:18px;font-weight:800;color:#0f766e}
+  .footer{margin-top:24px;padding-top:12px;border-top:1px solid #e5e7eb;color:#64748b;font-size:12px}
+  @media print{@page{margin:12mm}.footer{page-break-inside:avoid}}
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand">
+        <img src="${LOGO_URL}" alt="Concrete Calculator Max" onerror="this.style.display='none'"/>
+        <div class="brand-name">Concrete Calculator Max</div>
+      </div>
+      <div class="meta">
+        <div>Tank / Trench Concrete Calculator — ${tab}</div>
+        <div>Printed: ${now}</div>
+      </div>
+    </div>
+    ${bodyByTab}
+    <div class="footer">Tip: In the browser’s Print dialog, choose “Save as PDF”.</div>
+  </div>
+  <script>window.addEventListener('load',()=>setTimeout(()=>window.print(),100));</script>
+</body>
+</html>`;
+  }
+
+  function handlePrint() {
+    if (!submitted) return; // only after results are visible
+    const w = window.open("", "_blank");
+    if (!w) {
+      alert("Please allow pop-ups for this site to use Print/Save.");
+      return;
+    }
+    w.document.open();
+    w.document.write(buildPrintHtml());
+    w.document.close();
+    w.focus();
+  }
+
+  /* ---------------------------------------------------------------------------
+     Render (identical layout; only inputs are now strings; Print/Save button added)
   --------------------------------------------------------------------------- */
   return (
     <Card className="font-poppins mx-auto w-full max-w-6xl rounded-sm border border-slate-700 bg-slate-900">
@@ -397,9 +628,9 @@ export default function TankTrenchConcreteCalc() {
             >
               <NumberInput
                 id="waste"
-                value={String(wastePct)}
+                value={wastePct}
                 onChange={(v) => {
-                  setWastePct(v === "" ? 0 : Number(v));
+                  setWastePct(v);
                   setSubmitted(false);
                 }}
                 placeholder="5"
@@ -414,12 +645,8 @@ export default function TankTrenchConcreteCalc() {
         <Tabs
           value={tab}
           onValueChange={(v: string) => {
-            // Narrow the incoming string to the allowed tab values
             if (v === "trench" || v === "rectTank" || v === "circTank") {
               setTab(v);
-            } else {
-              // Ignore unexpected values to keep type-safety
-              // (could also log for debugging)
             }
             setSubmitted(false);
           }}
@@ -457,8 +684,8 @@ export default function TankTrenchConcreteCalc() {
                 <Field id="trLen" label={`Length (L)`} hint="Overall trench length." subHint={`Typical 3–60 ${unitAbbrev[unit]}`}>
                   <NumberInput
                     id="trLen"
-                    value={String(trLen)}
-                    onChange={(v) => { setTrLen(Number(v || 0)); setSubmitted(false); }}
+                    value={trLen}
+                    onChange={(v) => { setTrLen(v); setSubmitted(false); }}
                     placeholder="10"
                     badge={unitAbbrev[unit]}
                     ariaLabel="Trench length"
@@ -469,8 +696,8 @@ export default function TankTrenchConcreteCalc() {
                   <Field id="trWidth" label={`Width (W)`} hint="Uniform trench width.">
                     <NumberInput
                       id="trWidth"
-                      value={String(trWidth)}
-                      onChange={(v) => { setTrWidth(Number(v || 0)); setSubmitted(false); }}
+                      value={trWidth}
+                      onChange={(v) => { setTrWidth(v); setSubmitted(false); }}
                       placeholder="0.6"
                       badge={unitAbbrev[unit]}
                       ariaLabel="Trench width"
@@ -481,8 +708,8 @@ export default function TankTrenchConcreteCalc() {
                     <Field id="trTopWidth" label={`Top Width`} hint="Top surface width for trapezoidal trench.">
                       <NumberInput
                         id="trTopWidth"
-                        value={String(trTopWidth)}
-                        onChange={(v) => { setTrTopWidth(Number(v || 0)); setSubmitted(false); }}
+                        value={trTopWidth}
+                        onChange={(v) => { setTrTopWidth(v); setSubmitted(false); }}
                         placeholder="0.8"
                         badge={unitAbbrev[unit]}
                         ariaLabel="Top width"
@@ -491,8 +718,8 @@ export default function TankTrenchConcreteCalc() {
                     <Field id="trBottomWidth" label={`Bottom Width`} hint="Bottom width for trapezoidal trench.">
                       <NumberInput
                         id="trBottomWidth"
-                        value={String(trBottomWidth)}
-                        onChange={(v) => { setTrBottomWidth(Number(v || 0)); setSubmitted(false); }}
+                        value={trBottomWidth}
+                        onChange={(v) => { setTrBottomWidth(v); setSubmitted(false); }}
                         placeholder="0.5"
                         badge={unitAbbrev[unit]}
                         ariaLabel="Bottom width"
@@ -504,8 +731,8 @@ export default function TankTrenchConcreteCalc() {
                 <Field id="trDepth" label={`Depth (D)`} hint="Vertical depth of trench." subHint={`Typical 0.5–2.0 ${unitAbbrev[unit]}`}>
                   <NumberInput
                     id="trDepth"
-                    value={String(trDepth)}
-                    onChange={(v) => { setTrDepth(Number(v || 0)); setSubmitted(false); }}
+                    value={trDepth}
+                    onChange={(v) => { setTrDepth(v); setSubmitted(false); }}
                     placeholder="0.9"
                     badge={unitAbbrev[unit]}
                     ariaLabel="Trench depth"
@@ -566,23 +793,35 @@ export default function TankTrenchConcreteCalc() {
               </p>
             ) : (
               <>
+                {/* NEW: Print/Save button (green-500 → hover green-400) */}
+                <div className="mt-4 flex justify-end">
+                  <Button
+                    type="button"
+                    onClick={handlePrint}
+                    className="h-10 rounded-sm bg-green-500 text-slate-900 hover:bg-green-400"
+                    title="Print / Save"
+                  >
+                    <Printer className="h-4 w-4 mr-2" /> Print / Save
+                  </Button>
+                </div>
+
                 {/* Inputs Summary */}
                 <div className={`${stepClass} rounded-sm bg-slate-900 border border-slate-700 p-4`}>
                   <div className="mb-2 text-sm font-semibold text-white">Inputs Summary</div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
                     <KV k="Units" v={unitAbbrev[unit]} />
                     <KV k="Mode" v={trenchMode === "rect" ? "Rectangular" : "Trapezoidal"} />
-                    <KV k="Length" v={`${trLen} ${unitAbbrev[unit]}`} />
+                    <KV k="Length" v={`${trLen || "—"} ${unitAbbrev[unit]}`} />
                     {trenchMode === "rect" ? (
-                      <KV k="Width" v={`${trWidth} ${unitAbbrev[unit]}`} />
+                      <KV k="Width" v={`${trWidth || "—"} ${unitAbbrev[unit]}`} />
                     ) : (
                       <>
-                        <KV k="Top Width" v={`${trTopWidth} ${unitAbbrev[unit]}`} />
-                        <KV k="Bottom Width" v={`${trBottomWidth} ${unitAbbrev[unit]}`} />
+                        <KV k="Top Width" v={`${trTopWidth || "—"} ${unitAbbrev[unit]}`} />
+                        <KV k="Bottom Width" v={`${trBottomWidth || "—"} ${unitAbbrev[unit]}`} />
                       </>
                     )}
-                    <KV k="Depth" v={`${trDepth} ${unitAbbrev[unit]}`} />
-                    <KV k="Waste" v={`${wastePct}%`} />
+                    <KV k="Depth" v={`${trDepth || "—"} ${unitAbbrev[unit]}`} />
+                    <KV k="Waste" v={`${wastePct || "0"}%`} />
                   </div>
                 </div>
 
@@ -593,7 +832,7 @@ export default function TankTrenchConcreteCalc() {
                     sub={`${fmt(m3ToYd3(trenchResult.core), 3)} yd³ · ${fmt(m3ToFt3(trenchResult.core), 0)} ft³`}
                   />
                   <Stat
-                    heading={`With Waste (${wastePct}%)`}
+                    heading={`With Waste (${wastePct || "0"}%)`}
                     value={`${fmt(trenchResult.withWaste)} m³`}
                     sub={`${fmt(m3ToYd3(trenchResult.withWaste), 3)} yd³ · ${fmt(m3ToFt3(trenchResult.withWaste), 0)} ft³`}
                   />
@@ -638,8 +877,8 @@ export default function TankTrenchConcreteCalc() {
                 <Field id="rtLen" label="Inner Length (L)" hint="Clear internal length." subHint={`Typical 1–8 ${unitAbbrev[unit]}`}>
                   <NumberInput
                     id="rtLen"
-                    value={String(rtLen)}
-                    onChange={(v) => { setRtLen(Number(v || 0)); setSubmitted(false); }}
+                    value={rtLen}
+                    onChange={(v) => { setRtLen(v); setSubmitted(false); }}
                     placeholder="3"
                     badge={unitAbbrev[unit]}
                     ariaLabel="Rect tank inner length"
@@ -648,8 +887,8 @@ export default function TankTrenchConcreteCalc() {
                 <Field id="rtWid" label="Inner Width (W)" hint="Clear internal width.">
                   <NumberInput
                     id="rtWid"
-                    value={String(rtWid)}
-                    onChange={(v) => { setRtWid(Number(v || 0)); setSubmitted(false); }}
+                    value={rtWid}
+                    onChange={(v) => { setRtWid(v); setSubmitted(false); }}
                     placeholder="2"
                     badge={unitAbbrev[unit]}
                     ariaLabel="Rect tank inner width"
@@ -658,8 +897,8 @@ export default function TankTrenchConcreteCalc() {
                 <Field id="rtHt" label="Inner Height (H)" hint="Clear internal height.">
                   <NumberInput
                     id="rtHt"
-                    value={String(rtHt)}
-                    onChange={(v) => { setRtHt(Number(v || 0)); setSubmitted(false); }}
+                    value={rtHt}
+                    onChange={(v) => { setRtHt(v); setSubmitted(false); }}
                     placeholder="2"
                     badge={unitAbbrev[unit]}
                     ariaLabel="Rect tank inner height"
@@ -671,8 +910,8 @@ export default function TankTrenchConcreteCalc() {
                 <Field id="rtWallT" label="Wall Thickness" hint="Uniform thickness of all walls." subHint={`Typical 0.15–0.30 ${unitAbbrev[unit]}`}>
                   <NumberInput
                     id="rtWallT"
-                    value={String(rtWallT)}
-                    onChange={(v) => { setRtWallT(Number(v || 0)); setSubmitted(false); }}
+                    value={rtWallT}
+                    onChange={(v) => { setRtWallT(v); setSubmitted(false); }}
                     placeholder="0.2"
                     badge={unitAbbrev[unit]}
                     ariaLabel="Wall thickness"
@@ -681,8 +920,8 @@ export default function TankTrenchConcreteCalc() {
                 <Field id="rtBaseT" label="Base Slab Thickness" hint="Bottom slab thickness.">
                   <NumberInput
                     id="rtBaseT"
-                    value={String(rtBaseT)}
-                    onChange={(v) => { setRtBaseT(Number(v || 0)); setSubmitted(false); }}
+                    value={rtBaseT}
+                    onChange={(v) => { setRtBaseT(v); setSubmitted(false); }}
                     placeholder="0.25"
                     badge={unitAbbrev[unit]}
                     ariaLabel="Base slab thickness"
@@ -702,8 +941,8 @@ export default function TankTrenchConcreteCalc() {
                   <Field id="rtTopT" label="Cover Slab Thickness">
                     <NumberInput
                       id="rtTopT"
-                      value={String(rtTopT)}
-                      onChange={(v) => { setRtTopT(Number(v || 0)); setSubmitted(false); }}
+                      value={rtTopT}
+                      onChange={(v) => { setRtTopT(v); setSubmitted(false); }}
                       placeholder="0.15"
                       badge={unitAbbrev[unit]}
                       ariaLabel="Cover slab thickness"
@@ -742,16 +981,28 @@ export default function TankTrenchConcreteCalc() {
               </p>
             ) : (
               <>
+                {/* Print/Save button */}
+                <div className="mt-4 flex justify-end">
+                  <Button
+                    type="button"
+                    onClick={handlePrint}
+                    className="h-10 rounded-sm bg-green-500 text-slate-900 hover:bg-green-400"
+                    title="Print / Save"
+                  >
+                    <Printer className="h-4 w-4 mr-2" /> Print / Save
+                  </Button>
+                </div>
+
                 {/* Inputs Summary */}
                 <div className={`${stepClass} rounded-sm bg-slate-900 border border-slate-700 p-4`}>
                   <div className="mb-2 text-sm font-semibold text-white">Inputs Summary</div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
                     <KV k="Units" v={unitAbbrev[unit]} />
-                    <KV k="Inner L×W×H" v={`${rtLen} × ${rtWid} × ${rtHt} ${unitAbbrev[unit]}`} />
-                    <KV k="Wall Thickness" v={`${rtWallT} ${unitAbbrev[unit]}`} />
-                    <KV k="Base Thickness" v={`${rtBaseT} ${unitAbbrev[unit]}`} />
-                    <KV k="Cover Slab" v={rtIncludeTop ? `Yes (${rtTopT} ${unitAbbrev[unit]})` : "No"} />
-                    <KV k="Waste" v={`${wastePct}%`} />
+                    <KV k="Inner L×W×H" v={`${rtLen || "—"} × ${rtWid || "—"} × ${rtHt || "—"} ${unitAbbrev[unit]}`} />
+                    <KV k="Wall Thickness" v={`${rtWallT || "—"} ${unitAbbrev[unit]}`} />
+                    <KV k="Base Thickness" v={`${rtBaseT || "—"} ${unitAbbrev[unit]}`} />
+                    <KV k="Cover Slab" v={rtIncludeTop ? `Yes (${rtTopT || "—"} ${unitAbbrev[unit]})` : "No"} />
+                    <KV k="Waste" v={`${wastePct || "0"}%`} />
                   </div>
                 </div>
 
@@ -762,7 +1013,7 @@ export default function TankTrenchConcreteCalc() {
                     sub={`${fmt(m3ToYd3(rectTankResult.core), 3)} yd³ · ${fmt(m3ToFt3(rectTankResult.core), 0)} ft³`}
                   />
                   <Stat
-                    heading={`With Waste (${wastePct}%)`}
+                    heading={`With Waste (${wastePct || "0"}%)`}
                     value={`${fmt(rectTankResult.withWaste)} m³`}
                     sub={`${fmt(m3ToYd3(rectTankResult.withWaste), 3)} yd³ · ${fmt(m3ToFt3(rectTankResult.withWaste), 0)} ft³`}
                   />
@@ -833,8 +1084,8 @@ export default function TankTrenchConcreteCalc() {
                 <Field id="ctDia" label="Inner Diameter (D)" hint="Clear internal diameter." subHint={`Typical 1–10 ${unitAbbrev[unit]}`}>
                   <NumberInput
                     id="ctDia"
-                    value={String(ctDia)}
-                    onChange={(v) => { setCtDia(Number(v || 0)); setSubmitted(false); }}
+                    value={ctDia}
+                    onChange={(v) => { setCtDia(v); setSubmitted(false); }}
                     placeholder="2.5"
                     badge={unitAbbrev[unit]}
                     ariaLabel="Circular tank inner diameter"
@@ -843,8 +1094,8 @@ export default function TankTrenchConcreteCalc() {
                 <Field id="ctHt" label="Inner Height (H)" hint="Clear internal height.">
                   <NumberInput
                     id="ctHt"
-                    value={String(ctHt)}
-                    onChange={(v) => { setCtHt(Number(v || 0)); setSubmitted(false); }}
+                    value={ctHt}
+                    onChange={(v) => { setCtHt(v); setSubmitted(false); }}
                     placeholder="2"
                     badge={unitAbbrev[unit]}
                     ariaLabel="Circular tank inner height"
@@ -853,8 +1104,8 @@ export default function TankTrenchConcreteCalc() {
                 <Field id="ctWallT" label="Wall Thickness" hint="Uniform wall thickness.">
                   <NumberInput
                     id="ctWallT"
-                    value={String(ctWallT)}
-                    onChange={(v) => { setCtWallT(Number(v || 0)); setSubmitted(false); }}
+                    value={ctWallT}
+                    onChange={(v) => { setCtWallT(v); setSubmitted(false); }}
                     placeholder="0.2"
                     badge={unitAbbrev[unit]}
                     ariaLabel="Circular wall thickness"
@@ -866,8 +1117,8 @@ export default function TankTrenchConcreteCalc() {
                 <Field id="ctBaseT" label="Base Slab Thickness" hint="Bottom slab thickness.">
                   <NumberInput
                     id="ctBaseT"
-                    value={String(ctBaseT)}
-                    onChange={(v) => { setCtBaseT(Number(v || 0)); setSubmitted(false); }}
+                    value={ctBaseT}
+                    onChange={(v) => { setCtBaseT(v); setSubmitted(false); }}
                     placeholder="0.25"
                     badge={unitAbbrev[unit]}
                     ariaLabel="Circular base thickness"
@@ -889,8 +1140,8 @@ export default function TankTrenchConcreteCalc() {
                   <Field id="ctTopT" label="Cover Slab Thickness">
                     <NumberInput
                       id="ctTopT"
-                      value={String(ctTopT)}
-                      onChange={(v) => { setCtTopT(Number(v || 0)); setSubmitted(false); }}
+                      value={ctTopT}
+                      onChange={(v) => { setCtTopT(v); setSubmitted(false); }}
                       placeholder="0.15"
                       badge={unitAbbrev[unit]}
                       ariaLabel="Cover slab thickness"
@@ -929,17 +1180,29 @@ export default function TankTrenchConcreteCalc() {
               </p>
             ) : (
               <>
+                {/* Print/Save button */}
+                <div className="mt-4 flex justify-end">
+                  <Button
+                    type="button"
+                    onClick={handlePrint}
+                    className="h-10 rounded-sm bg-green-500 text-slate-900 hover:bg-green-400"
+                    title="Print / Save"
+                  >
+                    <Printer className="h-4 w-4 mr-2" /> Print / Save
+                  </Button>
+                </div>
+
                 {/* Inputs Summary */}
                 <div className={`${stepClass} rounded-sm bg-slate-900 border border-slate-700 p-4`}>
                   <div className="mb-2 text-sm font-semibold text-white">Inputs Summary</div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
                     <KV k="Units" v={unitAbbrev[unit]} />
-                    <KV k="Inner Dia" v={`${ctDia} ${unitAbbrev[unit]}`} />
-                    <KV k="Inner Height" v={`${ctHt} ${unitAbbrev[unit]}`} />
-                    <KV k="Wall Thickness" v={`${ctWallT} ${unitAbbrev[unit]}`} />
-                    <KV k="Base Thickness" v={`${ctBaseT} ${unitAbbrev[unit]}`} />
-                    <KV k="Cover Slab" v={ctIncludeTop ? `Yes (${ctTopT} ${unitAbbrev[unit]})` : "No"} />
-                    <KV k="Waste" v={`${wastePct}%`} />
+                    <KV k="Inner Dia" v={`${ctDia || "—"} ${unitAbbrev[unit]}`} />
+                    <KV k="Inner Height" v={`${ctHt || "—"} ${unitAbbrev[unit]}`} />
+                    <KV k="Wall Thickness" v={`${ctWallT || "—"} ${unitAbbrev[unit]}`} />
+                    <KV k="Base Thickness" v={`${ctBaseT || "—"} ${unitAbbrev[unit]}`} />
+                    <KV k="Cover Slab" v={ctIncludeTop ? `Yes (${ctTopT || "—"} ${unitAbbrev[unit]})` : "No"} />
+                    <KV k="Waste" v={`${wastePct || "0"}%`} />
                   </div>
                 </div>
 
@@ -950,7 +1213,7 @@ export default function TankTrenchConcreteCalc() {
                     sub={`${fmt(m3ToYd3(circTankResult.core), 3)} yd³ · ${fmt(m3ToFt3(circTankResult.core), 0)} ft³`}
                   />
                   <Stat
-                    heading={`With Waste (${wastePct}%)`}
+                    heading={`With Waste (${wastePct || "0"}%)`}
                     value={`${fmt(circTankResult.withWaste)} m³`}
                     sub={`${fmt(m3ToYd3(circTankResult.withWaste), 3)} yd³ · ${fmt(m3ToFt3(circTankResult.withWaste), 0)} ft³`}
                   />

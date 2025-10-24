@@ -15,7 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Info } from "lucide-react";
+import { Info, Printer } from "lucide-react"; // ⬅️ NEW: Printer icon for Print/Save
 
 /* --------------------------------------------------------------------------------
    TYPES / CONSTANTS / HELPERS
@@ -220,6 +220,155 @@ export default function NominalMixConcreteCalc() {
     setSubmitted(false);
   }
 
+  /* ======================= PRINT / SAVE (NEW) =======================
+   * Opens a new tab with a white, PDF-ready page containing:
+   *  - Branding header (logo + name), calculator title, date/time
+   *  - Inputs summary (grade, volumes, factors, densities, moisture)
+   *  - Results tiles (bags/water, adjusted masses, volumes)
+   *  - Yards helpers (+5% / +10%) based on net m³
+   * No backend required. Auto-triggers browser print dialog.
+   * ------------------------------------------------------------------ */
+  const LOGO_URL = "/logo.svg"; // update if your logo lives elsewhere
+
+  // Local formatter for the print page (kept separate from fmt to control decimals)
+  const nf = (n: number, max = 4) =>
+    Number.isFinite(n) ? n.toLocaleString(undefined, { maximumFractionDigits: max }) : "—";
+
+  const buildPrintHtml = () => {
+    if (!submitted || !canCalculate) return "";
+
+    const now = new Date().toLocaleString();
+
+    // Snapshot values used in the print view
+    const gradeLine = `${grade} (${mix.c}:${mix.s}:${mix.a}, w/c ${nf(wc, 2)})`;
+    const inputVolLabel = unitVol === "m3" ? "m³" : unitVol === "ft3" ? "ft³" : "yd³";
+
+    // Yards helper based on net entered volume
+    const yd3_net = volToYd3(result.volM3);
+    const yd3_5 = yd3_net * 1.05;
+    const yd3_10 = yd3_net * 1.1;
+
+    return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Nominal Mix Concrete Calculator (M5–M25) – Print View</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #ffffff; color: #0f172a; font: 14px/1.5 system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif; }
+    .container { max-width: 960px; margin: 0 auto; padding: 24px; }
+    .header { display: flex; align-items: center; gap: 16px; border-bottom: 1px solid #e5e7eb; padding-bottom: 16px; margin-bottom: 20px; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand img { height: 36px; width: auto; }
+    .brand-name { font-weight: 800; font-size: 18px; color: #0f766e; }
+    .meta { margin-left: auto; text-align: right; color: #475569; font-size: 12px; }
+    h2 { font-size: 16px; margin: 18px 0 8px; color: #0f172a; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .card { border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px; background: #fff; }
+    .kv { display: flex; align-items: center; justify-content: space-between; border: 1px solid #e5e7eb; border-radius: 6px; padding: 8px; }
+    .kv .k { color: #475569; }
+    .kv .v { color: #0f766e; font-weight: 700; }
+    .label { text-transform: uppercase; letter-spacing: .02em; font-size: 11px; color: #64748b; }
+    .value-md { font-size: 18px; font-weight: 800; color: #0f766e; }
+    .footer { margin-top: 24px; padding-top: 12px; border-top: 1px solid #e5e7eb; color: #64748b; font-size: 12px; }
+    @media print { @page { margin: 12mm; } .footer { page-break-inside: avoid; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header / Branding -->
+    <div class="header">
+      <div class="brand">
+        <img src="${LOGO_URL}" alt="Concrete Calculator Max Logo" onerror="this.style.display='none'"/>
+        <div class="brand-name">Concrete Calculator Max</div>
+      </div>
+      <div class="meta">
+        <div>Nominal Mix Concrete Calculator (M5–M25)</div>
+        <div>Printed: ${now}</div>
+      </div>
+    </div>
+
+    <!-- Inputs Summary -->
+    <h2>Inputs Summary</h2>
+    <div class="grid">
+      <div class="kv"><div class="k">Grade</div><div class="v">${gradeLine}</div></div>
+      <div class="kv"><div class="k">Volume</div><div class="v">${inputVol} ${inputVolLabel}</div></div>
+      <div class="kv"><div class="k">Dry Volume Factor</div><div class="v">${nf(dryFactor,2)}</div></div>
+      <div class="kv"><div class="k">Wastage</div><div class="v">${nf(wastagePct,0)}%</div></div>
+      <div class="kv"><div class="k">Bag Size</div><div class="v">${nf(bagSizeKg,0)} kg</div></div>
+      <div class="kv"><div class="k">Densities (kg/m³)</div><div class="v">cem ${nf(rhoCement,0)}, sand ${nf(rhoSand,0)}, agg ${nf(rhoAgg,0)}</div></div>
+      <div class="kv"><div class="k">Moisture (%)</div><div class="v">sand ${nf(moistSandPct,0)} · agg ${nf(moistAggPct,0)}</div></div>
+    </div>
+
+    <!-- Results -->
+    <h2>Results</h2>
+    <div class="grid-2">
+      <div class="card">
+        <div class="label">Bags & Water</div>
+        <div class="kv"><div class="k">Cement (bags @ ${nf(bagSizeKg,0)} kg)</div><div class="v">${nf(result.bags,2)}</div></div>
+        <div class="kv"><div class="k">Water (L, after adj.)</div><div class="v">${nf(result.adjWaterKg,0)}</div></div>
+      </div>
+      <div class="card">
+        <div class="label">Mass (adjusted)</div>
+        <div class="kv"><div class="k">Cement (kg)</div><div class="v">${nf(result.massCementKg,0)}</div></div>
+        <div class="kv"><div class="k">Sand (kg)</div><div class="v">${nf(result.adjSandKg,0)}</div></div>
+        <div class="kv"><div class="k">Aggregate (kg)</div><div class="v">${nf(result.adjAggKg,0)}</div></div>
+      </div>
+      <div class="card">
+        <div class="label">Volumes</div>
+        <div class="kv"><div class="k">Input Volume (m³)</div><div class="v">${nf(result.volM3,3)}</div></div>
+        <div class="kv"><div class="k">Dry Volume (m³)</div><div class="v">${nf(result.dryVol,3)}</div></div>
+        <div class="kv"><div class="k">Dry + Wastage ${nf(wastagePct,0)}% (m³)</div><div class="v">${nf(result.dryVolWithWastage,3)}</div></div>
+      </div>
+    </div>
+
+    <!-- Cubic Yards (for ordering) -->
+    <h2 style="margin-top:16px;">Cubic Yards (for ordering)</h2>
+    <div class="grid">
+      <div class="card">
+        <div class="label">yd³ (net)</div>
+        <div class="value-md">${nf(yd3_net,3)}</div>
+      </div>
+      <div class="card">
+        <div class="label">yd³ (+5%)</div>
+        <div class="value-md">${nf(yd3_5,3)}</div>
+      </div>
+      <div class="card">
+        <div class="label">yd³ (+10%)</div>
+        <div class="value-md">${nf(yd3_10,3)}</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Tip: In the browser’s Print dialog, choose “Save as PDF” to export this page as a PDF.
+    </div>
+  </div>
+
+  <script>
+    // Auto-open the browser print dialog; user can choose "Save as PDF".
+    window.addEventListener('load', () => setTimeout(() => window.print(), 100));
+  </script>
+</body>
+</html>`;
+  };
+
+  const handlePrint = () => {
+    // Only allow printing when results are visible and inputs are valid
+    if (!submitted || !canCalculate) return;
+    const html = buildPrintHtml();
+    const w = window.open("", "_blank");
+    if (!w) {
+      alert("Please allow pop-ups for this site to use Print/Save.");
+      return;
+    }
+    w.document.open();
+    w.document.write(html);
+    w.document.close();
+    w.focus();
+  };
+
   /* -------------------------------- UI: Clean Dark Slate + Teal ------------------------------- */
   return (
     <Card className="font-poppins mx-auto w-full max-w-6xl rounded-sm border border-slate-700 bg-slate-900">
@@ -410,6 +559,20 @@ export default function NominalMixConcreteCalc() {
           <p className="mt-4 text-sm text-white/70">Enter values above and press <span className="font-semibold">Calculate</span> to reveal results.</p>
         ) : (
           <>
+            {/* NEW: Print/Save button (green) — shows only when results are visible */}
+            <div className="mt-4 flex justify-end">
+              <Button
+                type="button"
+                onClick={handlePrint}
+                className="h-10 rounded-sm bg-green-500 text-slate-900 hover:bg-green-400"
+                aria-label="Print or save results as PDF"
+                title="Print / Save"
+              >
+                <Printer className="h-4 w-4 mr-2" />
+                Print / Save
+              </Button>
+            </div>
+
             {/* Inputs Summary */}
             <div className={`${stepClass} rounded-sm bg-slate-900 border border-slate-700 p-4`}>
               <div className="mb-2 text-sm font-semibold text-white">Inputs Summary</div>

@@ -1,3 +1,5 @@
+// components/calculators/articles/ColumnConcreteCalcArticle.tsx
+
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
@@ -133,9 +135,9 @@ export default function ColumnConcreteCalcArticle() {
         </div>
 
         {/* Why Choose */}
-        <h3 className="text-xl font-semibold text-white mt-12 mb-4">
+        <h2 className="text-xl font-semibold text-white mt-12 mb-4">
           Why Choose Our Free Column Calculator?
-        </h3>
+        </h2>
         <div className="rounded-lg bg-slate-900/60 border border-slate-800 p-5">
           <ul className="space-y-4 text-slate-300">
             <WhyItem>Supports both rectangular/square and circular columns in one tool.</WhyItem>
@@ -147,9 +149,9 @@ export default function ColumnConcreteCalcArticle() {
         </div>
 
         {/* How-to (H4) */}
-        <h4 className="text-lg font-semibold text-white mt-12 mb-3">
+        <h2 className="text-lg font-semibold text-white mt-12 mb-3">
           How to Use the Column Concrete Calculator
-        </h4>
+        </h2>
         <div className="rounded-lg bg-slate-900/60 border border-slate-800 p-5">
         <ol className="list-decimal list-inside space-y-2 text-slate-300">
           <li>Select the <span className="text-white">Rectangular / Square</span> or <span className="text-white">Circular</span> tab.</li>
@@ -162,9 +164,9 @@ export default function ColumnConcreteCalcArticle() {
         </div>
 
         {/* Formulas */}
-        <h3 className="text-xl font-semibold text-white mt-12 mb-4">
+        <h2 className="text-xl font-semibold text-white mt-12 mb-4">
           Formulas Used in the Calculator
-        </h3>
+        </h2>
         <div className="rounded-lg bg-slate-900/60 border border-slate-800 p-5 space-y-4 text-slate-300">
           <FormulaBlock
             title="1) Rectangular / Square Column"
@@ -192,9 +194,9 @@ export default function ColumnConcreteCalcArticle() {
         </div>
 
         {/* FAQs */}
-        <h3 className="text-xl font-semibold text-white mt-12 mb-4">
+        <h2 className="text-xl font-semibold text-white mt-12 mb-4">
           Frequently Asked Questions
-        </h3>
+        </h2>
         <div className="rounded-lg border border-slate-800 p-5 space-y-6">
           <FAQ
             q="Does the calculator handle both rectangular and circular columns?"
