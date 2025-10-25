@@ -1,7 +1,6 @@
 // app/layout.tsx
 
 import type { Metadata } from "next";
-import Script from "next/script";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import { Header } from "@/components/app/Header";
@@ -99,8 +98,14 @@ export default function RootLayout({
         <meta name="msvalidate.01" content="1CD2FCEA3D1A7CE25462E9DDC3234B05" />
       </head>
       <body>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange enableColorScheme={false}>
-          <div className="min-h-screen bg-slate-900">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+          enableColorScheme={false}
+        >
+          <div className="min-h-screen bg-background text-foreground transition-colors">
             <Header />
             {children}
             <Footer />
