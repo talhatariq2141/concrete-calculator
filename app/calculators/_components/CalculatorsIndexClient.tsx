@@ -80,8 +80,8 @@ export default function CalculatorsIndexClient() {
       </nav>
 
       {/* Search + Filter Row */}
-      <div className="mb-4 flex justify-between items-stard">
-        <div className="w-full/50 text-left">
+      <div className="mb-4 flex flex-col gap-4 justify-between md:flex-row md:items-start">
+        <div className="w-full text-left md:w-1/2">
           <h1 className="text-2xl font-bold">
             <span>Free Concrete Calculators for</span>
             <motion.span

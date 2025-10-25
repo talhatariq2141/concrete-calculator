@@ -201,9 +201,9 @@ export default function SlabConcreteCalculatorPage() {
         <div className="flex">
           <article className="lg:col-span-8">
             {/* Title and Description (intent match) */}
-            <div className="flex flex-col mb-4 justify-between">
-              <div className="w-full/50 text-left">
-                <div className="flex item-start gap-2 sm:gap-3">
+            <div className="flex flex-col justify-between gap-4 lg:flex-row">
+              <div className="w-full text-left lg:w-1/2">
+                <div className="flex items-start gap-2 sm:gap-3">
                   <div className="p-1.5 sm:p-2 bg-primary/30 rounded-lg flex-shrink-0 items-center">
                     <Container className="h-5 w-5 text-green-400" />
                   </div>
@@ -217,7 +217,7 @@ export default function SlabConcreteCalculatorPage() {
                     lastUpdated="2025-10-24"
                   />
               </div>
-              <p className="mt-3 ml-2 text-sm sm:text-base lg:text-lg text-slate-400 leading relaxed font-poppins">
+              <p className="mt-3 ml-2 text-sm sm:text-base lg:text-lg text-slate-400 leading-relaxed font-poppins">
                 Use our free Slab Concrete Calculator to estimate the concrete volume for floors, patios, driveways, and
                 foundation slabs. Enter length, width, and thickness, choose your units, and add waste to get ordering
                 values in m³ and yd³ (ft³ available).

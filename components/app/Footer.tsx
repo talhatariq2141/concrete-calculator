@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 
 export const Footer = () => {
   return (
@@ -9,9 +10,9 @@ export const Footer = () => {
             &copy; {new Date().getFullYear()} Concrete Calculator Max. All rights reserved.
           </p>
           <div className="flex justify-center gap-6 text-sm text-slate-500">
-            <a href="/privacy-policy" className="hover:text-teal-400 transition-colors">Privacy Policy</a>
-            <a href="/terms-of-service" className="hover:text-teal-400 transition-colors">Terms of Service</a>
-            <a href="/about-us" className="hover:text-teal-400 transition-colors">About Us</a>
+            <Link href="/privacy-policy" className="hover:text-teal-400 transition-colors">Privacy Policy</Link>
+            <Link href="/terms-of-service" className="hover:text-teal-400 transition-colors">Terms of Service</Link>
+            <Link href="/about-us" className="hover:text-teal-400 transition-colors">About Us</Link>
           </div>
         </div>
       </footer>

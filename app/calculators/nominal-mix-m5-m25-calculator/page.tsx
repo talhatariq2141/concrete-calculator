@@ -256,9 +256,9 @@ export default function NominalMixCalculatorPage() {
         <div className="flex">
           <article className="lg:col-span-8">
             {/* Title & short intro (intent match) */}
-            <div className="flex flex-col mb-4 justify-between">
-              <div className="w-full/50 text-left">
-                <div className="flex item-start gap-2 sm:gap-3">
+            <div className="flex flex-col justify-between gap-4 lg:flex-row">
+              <div className="w-full text-left lg:w-1/2">
+                <div className="flex items-start gap-2 sm:gap-3">
                   <div className="p-1.5 sm:p-2 bg-primary/30 rounded-lg flex-shrink-0 items-center">
                     <Boxes className="h-5 w-5 text-green-400" />
                   </div>
@@ -272,7 +272,7 @@ export default function NominalMixCalculatorPage() {
                     lastUpdated="2025-10-24"
                   />
               </div>
-              <p className="mt-3 ml-2 text-sm sm:text-base lg:text-lg text-slate-400 leading relaxed font-poppins">
+              <p className="mt-3 ml-2 text-sm sm:text-base lg:text-lg text-slate-400 leading-relaxed font-poppins">
                 Quickly estimate cement, sand, aggregate, and water for nominal mix grades M5–M25.
                 Enter wet volume, apply dry-volume and optional waste, and get material quantities,
                 50&nbsp;kg bag counts, and water–cement ratio guidance.
