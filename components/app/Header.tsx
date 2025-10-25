@@ -13,7 +13,7 @@ import {
 
 export function Header() {
   const [open, setOpen] = useState(false);
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   // const isHomePage = pathname === '/';
 
 
@@ -40,7 +40,7 @@ export function Header() {
 
             <Link
               href="/calculators"
-              className={`flex items-center gap-2 ${pathname === '/Calculators' ? 'text-green-400' : 'text-foreground'} active:text-green-400 hover:text-green-400`}
+              className={`flex items-center gap-2 ${pathname.startsWith('/calculators') ? 'text-green-400' : 'text-foreground'} active:text-green-400 hover:text-green-400`}
             >
               <LayoutGrid className="h-4 w-4" />
               <span className="text-sm">All Calculators</span>
@@ -70,15 +70,15 @@ export function Header() {
                 <nav className="md:flex items-center gap-10 ml-3 font-poppins">            
                     <Link
                       href="/"
-                      className={`flex items-center gap-2 ${pathname === '/' ? 'text-primary' : 'text-foreground'} active:text-priamary hover:text-primary`}
+                      className={`flex items-center gap-2 ${pathname === '/' ? 'text-primary' : 'text-foreground'} active:text-primary hover:text-primary`}
                     >
                       <House className="h-4 w-4" />
                       <span className="text-sm">Home</span>
                     </Link>
 
                     <Link
-                      href="/Calculators"
-                      className={`flex items-center mt-6 gap-2 ${pathname === '/Calculators' ? 'text-primary' : 'text-foreground'} active:text-primary hover:text-primary`}
+                      href="/calculators"
+                      className={`flex items-center mt-6 gap-2 ${pathname.startsWith('/calculators') ? 'text-primary' : 'text-foreground'} active:text-primary hover:text-primary`}
                     >
                       <LayoutGrid className="h-4 w-4" />
                       <span className="text-sm">All Calculators</span>

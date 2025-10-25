@@ -236,8 +236,8 @@ export default function ConcreteYardCalculatorPage() {
           <article className="lg:col-span-8">
             {/* Title and Description (intent match) */}
             <div className="mb-4 flex justify-between items-start">
-              <div className="w-full/50 text-left">
-                <div className="flex item-start gap-2 sm:gap-3">
+              <div className="w-full text-left lg:w-1/2">
+                <div className="flex items-start gap-2 sm:gap-3">
                   <div className="p-1.5 sm:p-2 bg-primary/30 rounded-lg flex-shrink-0 items-center">
                     <Ruler className="h-5 w-5 text-green-400" />
                   </div>
