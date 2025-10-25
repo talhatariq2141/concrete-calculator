@@ -1,20 +1,24 @@
-import React from 'react'
+import React from "react";
 
 export const Footer = () => {
   return (
-    
-    <footer className="border-t border-slate-800 py-8 px-4 sm:px-6 lg:px-8 bg-[#0e1013]">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-slate-400 mb-4">
-            &copy; {new Date().getFullYear()} Concrete Calculator Max. All rights reserved.
-          </p>
-          <div className="flex justify-center gap-6 text-sm text-slate-500">
-            <a href="/privacy-policy" className="hover:text-teal-400 transition-colors">Privacy Policy</a>
-            <a href="/terms-of-service" className="hover:text-teal-400 transition-colors">Terms of Service</a>
-            <a href="/about-us" className="hover:text-teal-400 transition-colors">About Us</a>
-          </div>
+    <footer className="bg-background py-8 px-4 sm:px-6 lg:px-8 border-t border-border/60 transition-colors">
+      <div className="mx-auto max-w-7xl text-center">
+        <p className="mb-4 text-sm text-muted-foreground">
+          &copy; {new Date().getFullYear()} Concrete Calculator Max. All rights reserved.
+        </p>
+        <div className="flex justify-center gap-6 text-sm text-muted-foreground">
+          <a href="/privacy-policy" className="transition-colors hover:text-primary">
+            Privacy Policy
+          </a>
+          <a href="/terms-of-service" className="transition-colors hover:text-primary">
+            Terms of Service
+          </a>
+          <a href="/about-us" className="transition-colors hover:text-primary">
+            About Us
+          </a>
         </div>
-      </footer>
-
-  )
-}
+      </div>
+    </footer>
+  );
+};
