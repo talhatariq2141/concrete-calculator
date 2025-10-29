@@ -111,7 +111,16 @@ export default function CalculatorsIndexClient({
             </motion.span>
           </h1>
           <p className="text-sm text-muted-foreground">
-            Professional grade concrete calculators for builders, contractors, engineers and architects.
+            Professional grade concrete calculators for builders, contractors, engineers and architects. By continuing you
+            acknowledge our{' '}
+            <Link href="/terms-of-service" className="text-teal-400 hover:underline">
+              Terms of Service
+            </Link>{' '}
+            and{' '}
+            <Link href="/privacy-policy" className="text-teal-400 hover:underline">
+              Privacy Policy
+            </Link>
+            .
           </p>
         </div>
 
