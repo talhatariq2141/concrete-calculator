@@ -247,7 +247,7 @@ export default function FootingConcreteCalculatorPage() {
         <div className="flex">
           <article className="lg:col-span-8">
             {/* Title & short intro (intent match) */}
-            <div className="flex flex-col justify-between gap-4 lg:flex-row">
+            <div className="flex flex-col justify-between gap-4 mt-2 mb-4 ">
               <div className="w-full text-left lg:w-1/2">
                 <div className="flex items-start gap-2 sm:gap-3">
                   <div className="p-1.5 sm:p-2 bg-primary/30 rounded-lg flex-shrink-0 items-center">
@@ -255,7 +255,7 @@ export default function FootingConcreteCalculatorPage() {
                   </div>
                   <h1 className="text-lg sm:text-2xl lg:text-3xl text-slate-200 font-bold font-poppins tracking-tight leading-tight">
                     Footing Concrete Calculator
-                  </h1>
+                  </h1>                  
                 </div>
                 <EEATBlock
                     reviewerName="Engr. Talha Tariq"
@@ -263,11 +263,13 @@ export default function FootingConcreteCalculatorPage() {
                     lastUpdated="2025-10-24"
                   />
               </div>
+              <div>
               <p className="mt-3 ml-2 text-sm sm:text-base lg:text-lg text-slate-400 leading-relaxed font-poppins">
                 Quickly estimate concrete volume for rectangular, square, or circular footings. Enter your dimensions,
                 choose units, and add waste or dry-volume factors. Results show in m³ and yd³ (ft³ available).
               </p>
-            </div>
+              </div>
+            </div>            
 
             {/* ===== Calculator Slot ===== */}
             <FootingConcreteCalc />

@@ -25,18 +25,11 @@ export type CalcCard = {
 
 export const CALCULATORS: CalcCard[] = [
   {
-    id: "calculators/slab-concrete-calculator",
-    title: "Slab Concrete Calculator",
-    desc: "Estimate concrete for slabs, patios, and floors.",
+    id: "calculators/beam-concrete-calculator",
+    title: "Beam Concrete Calculator",
+    desc: "Estimate concrete for beams and lintels.",
     category: "Volume",
-    icon: Container,
-  },
-  {
-    id: "calculators/concrete-yards-calculator",
-    title: "Concrete Yards Calculator",
-    desc: "Convert and compute volume into cubic yards.",
-    category: "Volume",
-    icon: Ruler,
+    icon: Package2,
   },
   {
     id: "calculators/column-concrete-calculator",
@@ -44,7 +37,14 @@ export const CALCULATORS: CalcCard[] = [
     desc: "Volume for square, rectangular, and circular columns.",
     category: "Volume",
     icon: Columns2,
-  },
+  },  
+  {
+    id: "calculators/concrete-yards-calculator",
+    title: "Concrete Yards Calculator",
+    desc: "Convert and compute volume into cubic yards.",
+    category: "Volume",
+    icon: Ruler,
+  },  
   {
     id: "calculators/footing-concrete-calculator",
     title: "Footing Concrete Calculator",
@@ -53,18 +53,11 @@ export const CALCULATORS: CalcCard[] = [
     icon: RulerDimensionLine,
   },
   {
-    id: "calculators/beam-concrete-calculator",
-    title: "Beam Concrete Calculator",
-    desc: "Estimate concrete for beams and lintels.",
-    category: "Volume",
-    icon: Package2,
-  },
-  {
-    id: "calculators/wall-concrete-calculator",
-    title: "Wall Concrete Calculator",
-    desc: "Vertical concrete wall volumes, single or multi-segment.",
-    category: "Volume",
-    icon: BrickWall,
+    id: "calculators/nominal-mix-m5-m25-calculator",
+    title: "Nominal Mix M5-M25 Calculator",
+    desc: "Nominal Mix M5-M25 Calculator",
+    category: "Mix",
+    icon: Boxes,
   },
   {
     id: "calculators/pier-caisson-concrete-calculator",
@@ -72,6 +65,13 @@ export const CALCULATORS: CalcCard[] = [
     desc: "Cylindrical shafts and drilled piers by length.",
     category: "Volume",
     icon: Box,
+  },    
+  {
+    id: "calculators/slab-concrete-calculator",
+    title: "Slab Concrete Calculator",
+    desc: "Estimate concrete for slabs, patios, and floors.",
+    category: "Volume",
+    icon: Container,
   },
   {
     id: "calculators/staircase-concrete-calculator",
@@ -88,12 +88,13 @@ export const CALCULATORS: CalcCard[] = [
     icon: Boxes,
   },
   {
-    id: "calculators/nominal-mix-m5-m25-calculator",
-    title: "Nominal Mix M5-M25 Calculator",
-    desc: "Nominal Mix M5-M25 Calculator",
-    category: "Mix",
-    icon: Boxes,
-  },
+    id: "calculators/wall-concrete-calculator",
+    title: "Wall Concrete Calculator",
+    desc: "Vertical concrete wall volumes, single or multi-segment.",
+    category: "Volume",
+    icon: BrickWall,
+  }
+  
 ];
 
 export const CATEGORIES: Category[] = ["All", "Volume", "Rebar", "Masonry", "Cost", "Mix", "Other"];

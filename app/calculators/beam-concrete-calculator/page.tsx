@@ -237,7 +237,7 @@ export default function BeamConcreteCalculatorPage() {
         <div className="flex">
           <article className="lg:col-span-8">
             {/* Title & short intro (intent match) */}
-            <div className="flex flex-col justify-between gap-4 lg:flex-row">
+            <div className="flex flex-col justify-between gap-4 mt-2 mb-4 ">
               <div className="w-full text-left lg:w-1/2">
                 <div className="flex items-start gap-2 sm:gap-3">
                   <div className="p-1.5 sm:p-2 bg-primary/30 rounded-lg flex-shrink-0 items-center">
@@ -253,12 +253,14 @@ export default function BeamConcreteCalculatorPage() {
                     lastUpdated="2025-10-24"
                   />
               </div>
+              <div>
               <p className="mt-3 ml-2 text-sm sm:text-base lg:text-lg text-slate-400 leading-relaxed font-poppins">
                 Instantly estimate the concrete volume for beams using V = L × b
                 × d. Optionally subtract voids and add waste or dry-volume
                 factors. Switch display units between m³, yd³, and ft³ for
                 ordering.
               </p>
+              </div>
             </div>
 
             {/* Calculator */}

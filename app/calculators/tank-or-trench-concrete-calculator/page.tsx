@@ -245,7 +245,7 @@ export default function TankTrenchCalculatorPage() {
         <div className="flex">
           <article className="lg:col-span-8">
             {/* Title & short intro (intent match) */}
-            <div className="flex flex-col justify-between gap-4 lg:flex-row">
+            <div className="flex flex-col justify-between gap-4 mt-2 mb-4">
               <div className="w-full text-left lg:w-1/2">
                 <div className="flex items-start gap-2 sm:gap-3">
                   <div className="p-1.5 sm:p-2 bg-primary/30 rounded-lg flex-shrink-0 items-center">

@@ -235,27 +235,30 @@ export default function ConcreteYardCalculatorPage() {
         <div className="flex">
           <article className="lg:col-span-8">
             {/* Title and Description (intent match) */}
-            <div className="mb-4 flex justify-between items-start">
+
+            <div className="flex flex-col justify-between gap-4 mt-2 mb-4 ">
               <div className="w-full text-left lg:w-1/2">
                 <div className="flex items-start gap-2 sm:gap-3">
                   <div className="p-1.5 sm:p-2 bg-primary/30 rounded-lg flex-shrink-0 items-center">
                     <Ruler className="h-5 w-5 text-green-400" />
                   </div>
-                  <h1 className="text-lg sm:text-2xl lg:text-3xl font-bold font-poppins tracking-tight leading-tight text-slate-200">
+                  <h1 className="text-lg sm:text-2xl lg:text-3xl text-slate-200 font-bold font-poppins tracking-tight leading-tight">
                     Concrete Yards Calculator
-                  </h1>
+                  </h1>                  
                 </div>
                 <EEATBlock
                     reviewerName="Engr. Talha Tariq"
                     licenseNumber="PEC-CIVIL-37815"
                     lastUpdated="2025-10-24"
                   />
-                <p className="mt-3 text-sm sm:text-base lg:text-lg text-slate-400 leading-relaxed font-poppins">
-                  Quickly estimate yardage in yd³ for slabs, footings, walls, and more. Convert
-                  from ft³ or m³, add waste allowance, and switch display units for ordering.
-                </p>
               </div>
-            </div>
+              <div>
+              <p className="mt-3 ml-2 text-sm sm:text-base lg:text-lg text-slate-400 leading-relaxed font-poppins">
+                Quickly estimate yardage in yd³ for slabs, footings, walls, and more. Convert
+                  from ft³ or m³, add waste allowance, and switch display units for ordering.
+              </p>
+              </div>
+            </div>           
 
             {/* ===== Calculator Slot ===== */}
             <ConcreteYardsCalc />
