@@ -4,6 +4,9 @@ export const metadata = {
   title: 'Privacy Policy - Concrete Calculator Max',
   description:
     'Our concise privacy policy explains what we collect, how we use it, cookies, data retention, and your rights when using our free online concrete calculators.',
+  alternates: {
+    canonical: 'https://concretecalculatormax.com/privacy-policy',
+  },
 };
 
 export default function PrivacyPolicyPage() {
