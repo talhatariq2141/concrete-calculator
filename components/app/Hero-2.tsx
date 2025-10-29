@@ -92,6 +92,18 @@ export default function Hero2() {
           <span className="text-orange-400">⏱</span> Save Hours Daily
         </span>
       </div>
+
+      <p className="mt-8 text-xs text-slate-500">
+        By using our free tools you agree to our{' '}
+        <Link href="/terms-of-service" className="text-teal-400 hover:underline">
+          Terms of Service
+        </Link>{' '}
+        and{' '}
+        <Link href="/privacy-policy" className="text-teal-400 hover:underline">
+          Privacy Policy
+        </Link>
+        . We keep calculators fast, secure, and transparent about data use.
+      </p>
     </section>
   );
 }
