@@ -8,7 +8,7 @@ export default function RightSidebarCalculatorsWidget() {
     { name: "Concrete Volume Calculator", href: "/concrete-volume-calculator" },
     { name: "Slab Concrete Calculator", href: "/concrete-volume-calculators/slab-concrete-calculator" },
     { name: "Footing Concrete Calculator", href: "/concrete-volume-calculators/footing-concrete-calculator" },
-    { name: "Column Concrete Calculator", href: "/concrete-volume-calculators/column-concrete-calculator" },
+    { name: "Column Concrete Calculator", href: "/calculators/column-concrete-calculator" },
     { name: "Beam Concrete Calculator", href: "/concrete-volume-calculators/beam-concrete-calculator" },
     { name: "Wall Concrete Calculator", href: "/concrete-volume-calculators/wall-concrete-calculator" },
     { name: "Pier / Caisson Calculator", href: "/concrete-volume-calculators/pier-caisson-concrete-calculator" },
