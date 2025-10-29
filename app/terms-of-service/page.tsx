@@ -4,6 +4,9 @@ export const metadata = {
   title: 'Terms of Service - Concrete Calculator Max',
   description:
     'Read the Terms of Service for using our free online concrete calculators, including license, acceptable use, disclaimers, and limitations of liability.',
+  alternates: {
+    canonical: 'https://concretecalculatormax.com/terms-of-service',
+  },
 };
 
 export default function TermsOfServicePage() {
