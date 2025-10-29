@@ -5,16 +5,16 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 
 export default function RightSidebarCalculatorsWidget() {
   const calculators = [
-    { name: "Concrete Volume Calculator", href: "/concrete-volume-calculator" },
-    { name: "Slab Concrete Calculator", href: "/concrete-volume-calculators/slab-concrete-calculator" },
-    { name: "Footing Concrete Calculator", href: "/concrete-volume-calculators/footing-concrete-calculator" },
-    { name: "Column Concrete Calculator", href: "/concrete-volume-calculators/column-concrete-calculator" },
-    { name: "Beam Concrete Calculator", href: "/concrete-volume-calculators/beam-concrete-calculator" },
-    { name: "Wall Concrete Calculator", href: "/concrete-volume-calculators/wall-concrete-calculator" },
-    { name: "Pier / Caisson Calculator", href: "/concrete-volume-calculators/pier-caisson-concrete-calculator" },
-    { name: "Tank / Trench Calculator", href: "/concrete-volume-calculators/tank-trench-concrete-calculator" },
-    { name: "Nominal Mix (M5–M25) Calculator", href: "/concrete-volume-calculators/nominal-mix-concrete-calculator" },
-    { name: "Concrete Yard Calculator", href: "/concrete-volume-calculators/concrete-yards-calculator" },
+    { name: "Slab Concrete Calculator", href: "/calculators/slab-concrete-calculator" },
+    { name: "Footing Concrete Calculator", href: "/calculators/footing-concrete-calculator" },
+    { name: "Column Concrete Calculator", href: "/calculators/column-concrete-calculator" },
+    { name: "Beam Concrete Calculator", href: "/calculators/beam-concrete-calculator" },
+    { name: "Wall Concrete Calculator", href: "/calculators/wall-concrete-calculator" },
+    { name: "Pier / Caisson Calculator", href: "/calculators/pier-caisson-concrete-calculator" },
+    { name: "Tank / Trench Calculator", href: "/calculators/tank-or-trench-concrete-calculator" },
+    { name: "Staircase Concrete Calculator", href: "/calculators/staircase-concrete-calculator" },
+    { name: "Nominal Mix (M5–M25) Calculator", href: "/calculators/nominal-mix-m5-m25-calculator" },
+    { name: "Concrete Yard Calculator", href: "/calculators/concrete-yards-calculator" },
   ];
 
   return (

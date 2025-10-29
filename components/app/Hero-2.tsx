@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { ArrowRight, Box, Calculator, Ruler } from "lucide-react";
 import { Button } from "../ui/button";
 
@@ -44,7 +45,7 @@ export default function Hero2() {
       </h1>
 
       {/* Subheading */}
-      <p className="max-w-2xl text-lg text-slate-400 leading-relaxed mb-10 mt-6" style={{ fontFamily: "var(--font-poppin)" }}>
+      <p className="max-w-2xl text-lg text-slate-400 leading-relaxed mb-10 mt-6" style={{ fontFamily: "var(--font-poppins)" }}>
         Calculate concrete volume instantly for slabs, beams, columns, footings, and walls. Get precise measurements in cubic yards and cubic meters with our easy-to-use calculator.
       </p>
 
@@ -52,19 +53,23 @@ export default function Hero2() {
       <div className="flex flex-wrap gap-4 justify-center mb-10">
         
         <Button
+          asChild
           variant="default"
           className="px-8 py-6 bg-teal-500 hover:bg-teal-400 text-slate-900 font-medium rounded-lg flex items-center gap-2 transition"
-          onClick={() => window.location.href = '/calculators'}
         >
-          Explore All Calculators <ArrowRight className="ml-1 h-4 w-4" />
+          <Link href="/calculators">
+            Explore All Calculators <ArrowRight className="ml-1 h-4 w-4" />
+          </Link>
         </Button>
 
         <Button
+          asChild
           variant="default"
           className="px-8 py-6 bg-slate-800 hover:bg-slate-700 text-white font-medium rounded-lg flex items-center gap-2 transition"
-          onClick={() => window.location.href = '/calculators/slab-concrete-calculator'}
         >
-        <Box className=" text-yellow-400 ml-1 h-4 w-4" />  Try Slab Concrete Calc 
+          <Link href="/calculators/slab-concrete-calculator">
+            <Box className="text-yellow-400 h-4 w-4" /> Try Slab Concrete Calc
+          </Link>
         </Button>
 
 
@@ -87,6 +92,18 @@ export default function Hero2() {
           <span className="text-orange-400">⏱</span> Save Hours Daily
         </span>
       </div>
+
+      <p className="mt-8 text-xs text-slate-500">
+        By using our free tools you agree to our{' '}
+        <Link href="/terms-of-service" className="text-teal-400 hover:underline">
+          Terms of Service
+        </Link>{' '}
+        and{' '}
+        <Link href="/privacy-policy" className="text-teal-400 hover:underline">
+          Privacy Policy
+        </Link>
+        . We keep calculators fast, secure, and transparent about data use.
+      </p>
     </section>
   );
 }

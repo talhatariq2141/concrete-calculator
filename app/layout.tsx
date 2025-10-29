@@ -1,7 +1,6 @@
 // app/layout.tsx
 
 import type { Metadata } from "next";
-import Script from "next/script";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import { Header } from "@/components/app/Header";
@@ -76,6 +75,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
+              "@id": "https://concretecalculatormax.com/#website",
               url: "https://concretecalculatormax.com",
               name: "Concrete Calculator Max",
               potentialAction: {
@@ -84,6 +84,29 @@ export default function RootLayout({
                 "query-input": "required name=query",
               },
               publisher: { "@type": "Organization", name: "Concrete Calculator Max" },
+            }),
+          }}
+        />
+        {/* JSON-LD Organization profile for E-E-A-T signals */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "@id": "https://concretecalculatormax.com/#organization",
+              name: "Concrete Calculator Max",
+              url: "https://concretecalculatormax.com",
+              logo: "https://concretecalculatormax.com/og/logo.png",
+              contactPoint: [
+                {
+                  "@type": "ContactPoint",
+                  contactType: "customer support",
+                  email: "info@concretecalculatormax.com",
+                  availableLanguage: ["en"],
+                },
+              ],
+              sameAs: [],
             }),
           }}
         />

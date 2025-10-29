@@ -3,6 +3,9 @@ import { Calculator, Target, Award, Users } from 'lucide-react';
 export const metadata = {
   title: 'About Us - Concrete Calculator Max',
   description: 'Learn about our mission to provide accurate and easy-to-use concrete calculation tools for construction professionals and DIY enthusiasts.',
+  alternates: {
+    canonical: 'https://concretecalculatormax.com/about-us',
+  },
 };
 
 export default function AboutPage() {
