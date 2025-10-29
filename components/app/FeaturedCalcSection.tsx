@@ -59,7 +59,7 @@ const CARDS: ToolCard[] = [
     badge: { label: "Popular", tone: "yellow" },
   },
   {
-    id: "calculators/Wall-concrete-calculator",
+    id: "calculators/wall-concrete-calculator",
     icon: BrickWall,
     title: "Wall Concrete Calculator",
     desc: "Calculate concrete for walls and barriers",
