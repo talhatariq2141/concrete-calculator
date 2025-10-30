@@ -14,6 +14,7 @@ import {
   Container,
   Package2,
   Columns2,
+  Briefcase,
 } from "lucide-react";
 
 type CatalogItem = {
@@ -110,6 +111,13 @@ const DEFAULT_ITEMS: CatalogItem[] = [
     title: "Concrete Yards Calculator",
     description: "Convert area/thickness into cubic yards & m³.",
     icon: <Ruler className="h-5 w-5" />,
+  },
+  {
+    slug: "concrete-bag",
+    href: "/calculators/concrete-bag-calculator",
+    title: "Concrete Bag Calculator",
+    description: "Calculate how many concrete bags you need with unit conversions, bag sizes (40/50/60/80 lb & 20 kg), and waste buffers. Covers slabs, footings, posts, and sonotubes.",
+    icon: <Briefcase className="h-5 w-5" />,
   },
 ];
 

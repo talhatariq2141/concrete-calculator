@@ -11,6 +11,7 @@ import {
   Box,
   Boxes,
   Calculator,
+  Briefcase,
 } from "lucide-react";
 
 export type Category = "All" | "Volume" | "Rebar" | "Masonry" | "Cost" | "Mix" | "Other";
@@ -93,6 +94,13 @@ export const CALCULATORS: CalcCard[] = [
     desc: "Vertical concrete wall volumes, single or multi-segment.",
     category: "Volume",
     icon: BrickWall,
+  },
+  {
+    id: "calculators/concrete-bag-calculator",
+    title: "Concrete Bag Calculator",
+    desc: "Calculate how many concrete bags you need with unit conversions",
+    category: "Other",
+    icon: Briefcase,
   }
   
 ];
