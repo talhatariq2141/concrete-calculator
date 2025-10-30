@@ -11,6 +11,7 @@ import Hero2 from "@/components/app/Hero-2";
 import FeaturedCalcSection from "@/components/app/FeaturedCalcSection";
 import WhyChooseSection from "@/components/app/WhyChooseSection";
 
+
 /**
  * Home page: already strong. We keep FAQs mirrored as JSON-LD via <FaqJsonLd>.
  * No extra JSON-LD here to avoid redundancy; site-level JSON-LD is in RootLayout.
@@ -18,7 +19,8 @@ import WhyChooseSection from "@/components/app/WhyChooseSection";
 export default function Page() {
   return (
     <main>
-      <Hero2 />
+      
+      <Hero2 />            
       <FeaturedCalcSection />
       <WhyChooseSection />
       <HomepageArticle />

@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Box, Calculator, Ruler } from "lucide-react";
 import { Button } from "../ui/button";
-import HomepageCalcTab from "./HomepageCalcsTab";
 
 
 const flipWords = ["Builders", "Contractors", "Engineers", "Architects", "DIY Enthusiasts"];
@@ -21,7 +20,7 @@ export default function Hero2() {
   }, []);
 
   return (
-    <section className=" relative flex flex-col items-center justify-center text-center py-10 px-6 bg-background text-white overflow-hidden">
+    <section className=" relative flex flex-col items-center justify-center text-center py-24 px-6 bg-background text-white overflow-hidden">
       
       {/* Badge */}
       <div className="mb-10">
@@ -30,13 +29,23 @@ export default function Hero2() {
         </span>
       </div>
 
-      {/* Homepage Calculator Tabs */}
-      
-      <HomepageCalcTab />
-
+      {/* Main Heading */}
+      <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold font-poppins tracking-tight flex flex-col items-center mb-8">
+        <span>Special Concrete Calculators for</span>
+        <motion.span
+          key={index}
+          className="mt-2 bg-gradient-to-r from-teal-400 via-cyan-400 to-blue-500 text-transparent bg-clip-text"
+          initial={{ rotateX: 90, opacity: 0 }}
+          animate={{ rotateX: 0, opacity: 1 }}
+          exit={{ rotateX: -90, opacity: 0 }}
+          transition={{ duration: 0.6, ease: "easeInOut" }}
+        >
+          {flipWords[index]}
+        </motion.span>
+      </h1>
 
       {/* Subheading */}
-      <p className=" max-w-2xl text-lg text-slate-400 leading-relaxed mb-10 mt-10" style={{ fontFamily: "var(--font-poppins)" }}>
+      <p className="max-w-2xl text-lg text-slate-400 leading-relaxed mb-10 mt-6" style={{ fontFamily: "var(--font-poppins)" }}>
         Calculate concrete volume instantly for slabs, beams, columns, footings, and walls. Get precise measurements in cubic yards and cubic meters with our easy-to-use calculator.
       </p>
 
@@ -53,7 +62,15 @@ export default function Hero2() {
           </Link>
         </Button>
 
-        
+        <Button
+          asChild
+          variant="default"
+          className="px-8 py-6 bg-slate-800 hover:bg-slate-700 text-white font-medium rounded-lg flex items-center gap-2 transition"
+        >
+          <Link href="/calculators/slab-concrete-calculator">
+            <Box className="text-yellow-400 h-4 w-4" /> Try Slab Concrete Calc
+          </Link>
+        </Button>
 
 
       </div>
