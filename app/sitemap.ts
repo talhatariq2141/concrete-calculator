@@ -23,6 +23,7 @@ const routes: string[] = [
   "/calculators/staircase-concrete-calculator",
   "/calculators/tank-or-trench-concrete-calculator",
   "/calculators/wall-concrete-calculator",
+  "/calculators/concrete-bag-calculator"
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
