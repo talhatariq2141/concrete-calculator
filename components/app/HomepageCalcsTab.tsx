@@ -34,9 +34,12 @@ export default function HomepageCalcTab() {
 
   return (
     <section className="mx-auto w-full max-w-7xl px-3 sm:px-4">
-      <h2 className="text-center text-xl sm:text-2xl font-semibold font-poppins text-slate-200 mb-10">
+      <h1 className="mt-6 text-center text-3x sm:text-4xl font-semibold font-poppins text-white tracking-tight">
+          Concrete Calculator
+      </h1>
+      <p className="text-lg text-slate-400 text-center mb-10 mt-10">
         Select below your desired tab to calculate concrete volume
-      </h2>
+      </p> 
 
       {/* Tablist */}
       <div

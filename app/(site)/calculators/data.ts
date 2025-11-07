@@ -14,7 +14,7 @@ import {
   Briefcase,
 } from "lucide-react";
 
-export type Category = "All" | "Volume" | "Rebar" | "Masonry" | "Cost" | "Mix" | "Other";
+export type Category = "All" | "Beam" | "Column" | "Concrete Yards" | "Cost" | "Footing" | "Concrete Mix" | "Pier/Caisson" | "Slab" | "Staircase" | "Tank/Trench" | "Wall" | "Concrete Bags";
 
 export type CalcCard = {
   id: string;
@@ -29,82 +29,82 @@ export const CALCULATORS: CalcCard[] = [
     id: "calculators/beam-concrete-calculator",
     title: "Beam Concrete Calculator",
     desc: "Estimate concrete for beams and lintels.",
-    category: "Volume",
+    category: "Beam",
     icon: Package2,
   },
   {
     id: "calculators/column-concrete-calculator",
     title: "Column Concrete Calculator",
     desc: "Volume for square, rectangular, and circular columns.",
-    category: "Volume",
+    category: "Column",
     icon: Columns2,
   },  
   {
     id: "calculators/concrete-yards-calculator",
     title: "Concrete Yards Calculator",
     desc: "Convert and compute volume into cubic yards.",
-    category: "Volume",
+    category: "Concrete Yards",
     icon: Ruler,
   },  
   {
     id: "calculators/footing-concrete-calculator",
     title: "Footing Concrete Calculator",
     desc: "Continuous, isolated, and combined footings.",
-    category: "Volume",
+    category: "Footing",
     icon: RulerDimensionLine,
   },
   {
     id: "calculators/nominal-mix-m5-m25-calculator",
     title: "Nominal Mix M5-M25 Calculator",
     desc: "Nominal Mix M5-M25 Calculator",
-    category: "Mix",
+    category: "Concrete Mix",
     icon: Boxes,
   },
   {
     id: "calculators/pier-caisson-concrete-calculator",
     title: "Pier / Caisson Concrete Calculator",
     desc: "Cylindrical shafts and drilled piers by length.",
-    category: "Volume",
+    category: "Pier/Caisson",
     icon: Box,
   },    
   {
     id: "calculators/slab-concrete-calculator",
     title: "Slab Concrete Calculator",
     desc: "Estimate concrete for slabs, patios, and floors.",
-    category: "Volume",
+    category: "Slab",
     icon: Container,
   },
   {
     id: "calculators/staircase-concrete-calculator",
     title: "Staircase Concrete Calculator",
     desc: "Flights, landings, risers, and treads volume.",
-    category: "Volume",
+    category: "Staircase",
     icon: Boxes,
   },
   {
     id: "calculators/tank-or-trench-concrete-calculator",
     title: "Tank or Trench Concrete Calc",
     desc: "Calculate concrete volume for tanks or trench structures easily.",
-    category: "Volume",
+    category: "Tank/Trench",
     icon: Boxes,
   },
   {
     id: "calculators/wall-concrete-calculator",
     title: "Wall Concrete Calculator",
     desc: "Vertical concrete wall volumes, single or multi-segment.",
-    category: "Volume",
+    category: "Wall",
     icon: BrickWall,
   },
   {
     id: "calculators/concrete-bag-calculator",
     title: "Concrete Bag Calculator",
     desc: "Calculate how many concrete bags you need with unit conversions",
-    category: "Other",
+    category: "Concrete Bags",
     icon: Briefcase,
   }
   
 ];
 
-export const CATEGORIES: Category[] = ["All", "Volume", "Rebar", "Masonry", "Cost", "Mix", "Other"];
+export const CATEGORIES: Category[] = ["All", "Beam", "Column", "Concrete Yards", "Cost", "Footing", "Concrete Mix", "Pier/Caisson", "Slab", "Staircase", "Tank/Trench", "Wall", "Concrete Bags"];
 
 export const FALLBACK_ICON: ElementType = Calculator;

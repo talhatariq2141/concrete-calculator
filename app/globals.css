@@ -1,6 +1,21 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+
+/* Enable the plugin in v4 */
+@plugin "@tailwindcss/typography";
+
+@import "katex/dist/katex.min.css";
+
+/* Optional: small polish for blog prose */
+.prose {
+  --tw-prose-headings: #0f172a;          /* slate-900 */
+  --tw-prose-links: #0f766e;             /* teal-700 */
+  --tw-prose-bold: #0f172a;
+  --tw-prose-counters: #64748b;          /* slate-500 */
+  --tw-prose-bullets: #94a3b8;           /* slate-400 */
+}
+
 /* Dark mode utility */
 /* @custom-variant dark (&:is(.dark *)); */
 

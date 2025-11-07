@@ -1,0 +1,38 @@
+[
+  {
+    "slug": "slab",
+    "name": "Slab",
+    "description": "Guides and tutorials for slab concrete volume and cost calculations."
+  },
+  {
+    "slug": "column",
+    "name": "Column",
+    "description": "How to estimate concrete for square, rectangular, and circular columns."
+  },
+  {
+    "slug": "beam",
+    "name": "Beam",
+    "description": "Beam volume, mix notes, and construction best practices."
+  },
+  {
+    "slug": "wall",
+    "name": "Wall",
+    "description": "Concrete wall estimation, openings, and waste allowances."
+  },
+  {
+    "slug": "tank-trench",
+    "name": "Tank / Trench",
+    "description": "Volume methods for tanks and trenches with unit conversions."
+  },
+  {
+    "slug": "staircase",
+    "name": "Staircase",
+    "description": "Stair concrete math, riser/tread tips, and examples."
+  },
+  {
+    "slug": "concrete-bags",
+    "name": "Concrete Bags",
+    "description": "Guides & tutorials that support the Concrete Bags Calculator.",
+    "feature_calculator": "/calculators/concrete-bag-calculator"
+  }
+]
