@@ -25,7 +25,7 @@ export type BlogFrontmatter = {
 export type BlogListItem = {
   title: string;
   slug: string;
-  date?: string;
+  date: string;
   excerpt?: string;
   cover?: string;
   category?: string;
@@ -91,7 +91,8 @@ export async function getAllPosts(): Promise<BlogListItem[]> {
   const items = entries.map(({ frontmatter }) => ({
     title: frontmatter.title,
     slug: frontmatter.slug,
-    date: frontmatter.date,
+    // Ensure date is always a string for consumers; use empty string when missing
+    date: frontmatter.date ?? "",
     excerpt: frontmatter.excerpt,
     cover: frontmatter.cover,
     category: frontmatter.category,
