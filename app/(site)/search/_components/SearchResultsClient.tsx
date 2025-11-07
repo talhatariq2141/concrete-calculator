@@ -3,7 +3,7 @@
 
 import * as React from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import CalculatorsIndexClient from "@/app/calculators/_components/CalculatorsIndexClient";
+import CalculatorsIndexClient from "@/app/(site)/calculators/_components/CalculatorsIndexClient";
 
 function buildSearchUrl(query: string, paramsString: string) {
   const params = new URLSearchParams(paramsString);
