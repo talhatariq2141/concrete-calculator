@@ -19,7 +19,9 @@ export type BlogFrontmatter = {
   calculator?: string;  // e.g. "concrete-bags"
   related_posts?: string[];
   related_calculator_link?: string;
-  [key: string]: any;
+  // Allow additional frontmatter fields but avoid `any` so linting stays strict.
+  // Use `unknown` to force call-sites to narrow before use.
+  [key: string]: unknown;
 };
 
 export type BlogListItem = {
