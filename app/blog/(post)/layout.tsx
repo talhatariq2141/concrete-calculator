@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Header } from "@/components/app/Header";
 import { Footer } from "@/components/app/Footer";
 import { ClientTOC } from "@/components/blog/ClientTOC";
+import { stringifyJsonLd } from "@/lib/jsonLd";
 
 export const metadata: Metadata = {
   title: {
@@ -55,7 +56,7 @@ export default function BlogPostLayout({
     <div className="min-h-screen bg-white text-slate-800 font-poppins">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: stringifyJsonLd(jsonLd) }}
       />
 
       {/* Light Header */}

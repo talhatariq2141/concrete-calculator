@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": ".tests-dist",
+    "rootDir": ".",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "ES2019",
+    "declaration": false,
+    "emitDeclarationOnly": false,
+    "esModuleInterop": true
+  },
+  "include": ["lib/jsonLd.ts"],
+  "exclude": []
+}

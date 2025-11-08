@@ -17,6 +17,7 @@ import {
   getPostBySlug,
   getRelatedByCategory,
 } from "@/lib/blog-data";
+import { stringifyJsonLd } from "@/lib/jsonLd";
 
 // SSG: discover all slugs (now recursive)
 export async function generateStaticParams() {
@@ -106,7 +107,7 @@ export default async function BlogPostPage({
     <article className="max-w-3xl mx-auto px-2 sm:px-6 lg:px-2 py-2">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: stringifyJsonLd(jsonLd) }}
       />
 
       {/* Breadcrumb */}
