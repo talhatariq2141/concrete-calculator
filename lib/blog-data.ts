@@ -1,7 +1,9 @@
 // lib/blog-data.ts
+import type { Dirent } from "node:fs";
 import fs from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
+import { unstable_cache } from "next/cache.js";
 
 // ---- Paths -------------------------------------------------
 const POSTS_ROOT = path.join(process.cwd(), "content/blog/posts");
@@ -35,10 +37,26 @@ export type BlogListItem = {
 };
 
 // ---- FS walk (recursively collect all *.mdx under POSTS_ROOT)
+type CachedEntry = {
+  absPath: string;
+  content: string;
+  frontmatter: BlogFrontmatter;
+};
+
+let frontmatterLoadCount = 0;
+let cacheGeneration = 0;
+
 async function walkMdx(dir: string): Promise<string[]> {
   const out: string[] = [];
   async function walk(current: string) {
-    const entries = await fs.readdir(current, { withFileTypes: true });
+    let entries: Dirent[];
+    try {
+      entries = await fs.readdir(current, { withFileTypes: true });
+    } catch (error) {
+      console.error(`[blog-data] Failed to read directory: ${current}`, error);
+      return;
+    }
+
     for (const e of entries) {
       if (e.name.startsWith(".")) continue;
       const abs = path.join(current, e.name);
@@ -53,43 +71,98 @@ async function walkMdx(dir: string): Promise<string[]> {
   return out;
 }
 
-// ---- Internal: read all posts (front-matter + content optionally)
-async function readAllMdxFrontmatter() {
+async function loadAllMdxFrontmatter(): Promise<CachedEntry[]> {
   const files = await walkMdx(POSTS_ROOT);
+  if (!files.length) return [];
+
   const posts = await Promise.all(
     files.map(async (abs) => {
-      const raw = await fs.readFile(abs, "utf8");
-      const parsed = matter(raw); // { content, data }
-      const fm = parsed.data as BlogFrontmatter;
+      try {
+        const raw = await fs.readFile(abs, "utf8");
+        const parsed = matter(raw); // { content, data }
+        const fm = parsed.data as BlogFrontmatter;
 
-      // Require minimum fields
-      if (!fm?.slug || !fm?.title) return null;
+        // Require minimum fields
+        if (!fm?.slug || !fm?.title) return null;
 
-      // Normalize cover path: must not include /public prefix
-      if (fm.cover && fm.cover.startsWith("/public/")) {
-        fm.cover = fm.cover.replace(/^\/public/, "");
+        // Normalize cover path: must not include /public prefix
+        if (fm.cover && typeof fm.cover === "string" && fm.cover.startsWith("/public/")) {
+          fm.cover = fm.cover.replace(/^\/public/, "");
+        }
+
+        return {
+          absPath: abs,
+          content: parsed.content,
+          frontmatter: fm,
+        } satisfies CachedEntry;
+      } catch (error) {
+        console.error(`[blog-data] Failed to read or parse file: ${abs}`, error);
+        return null;
       }
-
-      return {
-        absPath: abs,
-        content: parsed.content,
-        frontmatter: fm,
-      };
     })
   );
 
-  return posts.filter(Boolean) as Array<{
-    absPath: string;
-    content: string;
-    frontmatter: BlogFrontmatter;
-  }>;
+  return posts.filter(Boolean) as CachedEntry[];
+}
+
+function createCachedFrontmatterReader() {
+  const cacheKey = `blog-data:frontmatter:${cacheGeneration}`;
+  let fallbackMemo: Promise<CachedEntry[]> | null = null;
+
+  const loader = async () => {
+    frontmatterLoadCount += 1;
+    try {
+      return await loadAllMdxFrontmatter();
+    } catch (error) {
+      console.error("[blog-data] Failed to load MDX frontmatter", error);
+      return [];
+    }
+  };
+
+  const cached = unstable_cache(loader, [cacheKey], { revalidate: false });
+
+  return async () => {
+    try {
+      return await cached();
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message.includes("incrementalCache missing")
+      ) {
+        if (!fallbackMemo) {
+          fallbackMemo = loader().catch((err) => {
+            fallbackMemo = null;
+            throw err;
+          });
+        }
+        return await fallbackMemo;
+      }
+      throw error;
+    }
+  };
+}
+
+let readAllMdxFrontmatter = createCachedFrontmatterReader();
+
+async function getCachedFrontmatter() {
+  return readAllMdxFrontmatter();
+}
+
+export function __dangerous__resetBlogCacheForTests() {
+  cacheGeneration += 1;
+  readAllMdxFrontmatter = createCachedFrontmatterReader();
+  frontmatterLoadCount = 0;
+}
+
+export function __dangerous__getFrontmatterLoadCount() {
+  return frontmatterLoadCount;
 }
 
 // ---- Public API --------------------------------------------
 
 // Flat list for listings (newest first by date)
 export async function getAllPosts(): Promise<BlogListItem[]> {
-  const entries = await readAllMdxFrontmatter();
+  const entries = await getCachedFrontmatter();
   const items = entries.map(({ frontmatter }) => ({
     title: frontmatter.title,
     slug: frontmatter.slug,
@@ -114,7 +187,7 @@ export async function getAllPostSlugs(): Promise<string[]> {
 }
 
 export async function getPostBySlug(slug: string) {
-  const entries = await readAllMdxFrontmatter();
+  const entries = await getCachedFrontmatter();
   const hit = entries.find((e) => e.frontmatter.slug === slug);
   if (!hit) return null;
   return { content: hit.content, frontmatter: hit.frontmatter };
@@ -141,9 +214,20 @@ export async function getRelatedByCategory(
 export async function getCategories(): Promise<
   { slug: string; name: string; description?: string; feature_calculator?: string }[]
 > {
-  const raw = await fs.readFile(CATEGORIES_JSON, "utf8");
-  const parsed = JSON.parse(raw);
-  if (Array.isArray(parsed)) return parsed;
-  if (Array.isArray(parsed.categories)) return parsed.categories;
+  try {
+    const raw = await fs.readFile(CATEGORIES_JSON, "utf8");
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed;
+    if (Array.isArray((parsed as { categories?: unknown }).categories)) {
+      return (parsed as { categories: unknown[] }).categories as {
+        slug: string;
+        name: string;
+        description?: string;
+        feature_calculator?: string;
+      }[];
+    }
+  } catch (error) {
+    console.error("[blog-data] Failed to read categories", error);
+  }
   return [];
 }
