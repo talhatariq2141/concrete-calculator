@@ -1,7 +1,7 @@
-const test = require("node:test");
-const assert = require("node:assert/strict");
+import { test } from "node:test";
+import assert from "node:assert/strict";
 
-const { stringifyJsonLd } = require("../../../.tests-dist/lib/jsonLd.js");
+import { stringifyJsonLd } from "../../../.tests-dist/lib/jsonLd.js";
 
 test("stringifyJsonLd escapes angle brackets", () => {
   const schema = {

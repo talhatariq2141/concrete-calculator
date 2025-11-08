@@ -12,11 +12,7 @@ import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 
 import { ClientTOC } from "@/components/blog/ClientTOC";
-import {
-  getAllPostSlugs,
-  getPostBySlug,
-  getRelatedByCategory,
-} from "@/lib/blog-data";
+import { getAllPostSlugs, getPostBySlug } from "@/lib/blog-data";
 import { stringifyJsonLd } from "@/lib/jsonLd";
 
 // SSG: discover all slugs (now recursive)
@@ -69,10 +65,6 @@ export default async function BlogPostPage({
   const { frontmatter, content } = post;
   const date = frontmatter.date ? new Date(frontmatter.date) : null;
   const category = (frontmatter.category as string | undefined) || undefined;
-
-  const related = category
-    ? await getRelatedByCategory(category, frontmatter.slug)
-    : [];
 
   const categoryLabel =
     category?.replace(/-/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
@@ -200,39 +192,6 @@ export default async function BlogPostPage({
         />
       </div>
 
-      {/* In this silo */}
-      {/* {category && related.length > 0 && (
-        <section className="mt-12 border-t border-slate-200 pt-6">
-          <h2 className="text-lg font-semibold text-slate-900 mb-3">
-            In this silo
-          </h2>
-          <ul className="grid gap-3 sm:grid-cols-2">
-            {related.slice(0, 6).map((r) => (
-              <li key={r.slug} className="rounded border border-slate-200 p-3">
-                <Link
-                  href={`/blog/${r.slug}`}
-                  className="text-teal-600 hover:text-teal-700 font-medium"
-                >
-                  {r.title}
-                </Link>
-                {r.excerpt ? (
-                  <p className="text-sm text-slate-600 mt-1">{r.excerpt}</p>
-                ) : null}
-              </li>
-            ))}
-          </ul>
-          <p className="mt-4 text-sm text-slate-500">
-            Need a quick result? Try the{" "}
-            <Link
-              href="/calculators/concrete-bag-calculator"
-              className="underline"
-            >
-              Concrete Bags Calculator
-            </Link>
-            .
-          </p>
-        </section>
-      )} */}
     </article>
   );
 }

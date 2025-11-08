@@ -3,12 +3,13 @@
 import type { Metadata } from "next";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
-import { Header } from "@/components/app/Header";
-import { Footer } from "@/components/app/Footer";
 import { ThemeProvider } from "@/components/app/theme-provider";
 import { JetBrains_Mono, Poppins } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Header } from "@/components/app/Header";
+import { Footer } from "@/components/app/Footer";
+import { stringifyJsonLd } from "@/lib/jsonLd";
 
 // Load both fonts with CSS variable bindings
 const jetbrains = JetBrains_Mono({
@@ -72,7 +73,7 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
+            __html: stringifyJsonLd({
               "@context": "https://schema.org",
               "@type": "WebSite",
               "@id": "https://concretecalculatormax.com/#website",
@@ -91,7 +92,7 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
+            __html: stringifyJsonLd({
               "@context": "https://schema.org",
               "@type": "Organization",
               "@id": "https://concretecalculatormax.com/#organization",
@@ -122,15 +123,18 @@ export default function RootLayout({
         <meta name="msvalidate.01" content="1CD2FCEA3D1A7CE25462E9DDC3234B05" />
       </head>
       <body>
-        <ThemeProvider 
-          attribute="class" 
-          defaultTheme="dark" 
-          enableSystem 
-          disableTransitionOnChange 
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
           enableColorScheme={false}
-          >          
-            {children}
-          
+        >
+          <div className="flex min-h-screen flex-col">
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />
