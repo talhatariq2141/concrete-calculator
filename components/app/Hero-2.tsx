@@ -1,25 +1,11 @@
 "use client";
 
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Box, Calculator, Ruler } from "lucide-react";
+import { ArrowRight, Calculator, Ruler } from "lucide-react";
 import { Button } from "../ui/button";
 import HomepageCalcTab from "./HomepageCalcsTab";
 
-
-const flipWords = ["Builders", "Contractors", "Engineers", "Architects", "DIY Enthusiasts"];
-
 export default function Hero2() {
-  const [index, setIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIndex((prev) => (prev + 1) % flipWords.length);
-    }, 2500);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <section className=" relative flex flex-col items-center justify-center text-center py-10 px-6 bg-background text-white overflow-hidden">
       
@@ -36,7 +22,7 @@ export default function Hero2() {
 
 
       {/* Subheading */}
-      
+
       <p className=" max-w-2xl text-lg text-slate-400 leading-relaxed mb-10 mt-10" style={{ fontFamily: "var(--font-poppins)" }}>
         Calculate concrete volume instantly for slabs, beams, columns, footings, and walls. Get precise measurements in cubic yards and cubic meters with our easy-to-use calculator.
       </p>

@@ -1,4 +1,11 @@
-import type { Element, Properties, Root, Text } from "hast";
+import type {
+  Content,
+  Element,
+  ElementContent,
+  Properties,
+  Root,
+  Text,
+} from "hast";
 
 type HastParent = Root | Element;
 
@@ -202,14 +209,22 @@ function sanitizeProperties(tagName: string, properties?: Properties): Propertie
   return sanitized;
 }
 
+type RawNode = { type: "raw"; value?: unknown };
+type HastChild = ElementContent | Content | RawNode;
+
+function isRaw(node: HastChild | undefined): node is RawNode {
+  return !!node && node.type === "raw";
+}
+
 function sanitizeChildren(parent: HastParent): void {
   if (!("children" in parent) || !parent.children) return;
-  for (let index = parent.children.length - 1; index >= 0; index -= 1) {
-    const child = parent.children[index] as any;
+  const children = parent.children as HastChild[];
+  for (let index = children.length - 1; index >= 0; index -= 1) {
+    const child = children[index];
 
-    if (child?.type === "raw") {
+    if (isRaw(child)) {
       const textNode: Text = { type: "text", value: String(child.value ?? "") };
-      parent.children.splice(index, 1, textNode);
+      children.splice(index, 1, textNode);
       continue;
     }
 
@@ -220,7 +235,7 @@ function sanitizeChildren(parent: HastParent): void {
     const tagName = child.tagName.toLowerCase();
 
     if (!ALLOWED_TAGS.has(tagName)) {
-      parent.children.splice(index, 1);
+      children.splice(index, 1);
       continue;
     }
 

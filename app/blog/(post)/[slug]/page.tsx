@@ -8,11 +8,7 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import { mdxOptions } from "@/lib/mdx";
 
 import { ClientTOC } from "@/components/blog/ClientTOC";
-import {
-  getAllPostSlugs,
-  getPostBySlug,
-  getRelatedByCategory,
-} from "@/lib/blog-data";
+import { getAllPostSlugs, getPostBySlug } from "@/lib/blog-data";
 
 // SSG: discover all slugs (now recursive)
 export async function generateStaticParams() {
@@ -64,10 +60,6 @@ export default async function BlogPostPage({
   const { frontmatter, content } = post;
   const date = frontmatter.date ? new Date(frontmatter.date) : null;
   const category = (frontmatter.category as string | undefined) || undefined;
-
-  const related = category
-    ? await getRelatedByCategory(category, frontmatter.slug)
-    : [];
 
   const categoryLabel =
     category?.replace(/-/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());

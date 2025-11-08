@@ -184,7 +184,6 @@ export default function ConcreteBagsCalculator() {
   const [customVol, setCustomVol] = React.useState<string>(""); // user will enter in yd³ or m³ via unit pick
 
   // Conversions mini-tool
-  const [convMode, setConvMode] = React.useState<"bagsToYards" | "yardsToBags" | "volToBags">("bagsToYards");
   const [convBags, setConvBags] = React.useState<string>("");
   const [convYards, setConvYards] = React.useState<string>("");
   const [convVol, setConvVol] = React.useState<string>("");
@@ -195,7 +194,7 @@ export default function ConcreteBagsCalculator() {
   /* =========================
      Derived compute
   ========================= */
-  const { errors, totals, resultBags } = React.useMemo(() => {
+  const { errors, totals } = React.useMemo(() => {
     const errs: string[] = [];
 
     // Compute volume in m³ based on project type & inputs
@@ -270,7 +269,7 @@ export default function ConcreteBagsCalculator() {
       bags10: bagsExact * 1.10,
     };
 
-    return { errors: errs, totals, resultBags: bagsExact };
+    return { errors: errs, totals };
   }, [
     system, unit, proj, bag,
     slabL, slabW, slabT,
@@ -292,7 +291,6 @@ export default function ConcreteBagsCalculator() {
     setTubeD(""); setTubeH(""); setTubeCount("");
     setCustomVol("");
 
-    setConvMode("bagsToYards");
     setConvBags(""); setConvYards(""); setConvVol("");
 
     setSubmitted(false);

@@ -122,15 +122,17 @@ export default function RootLayout({
         <meta name="msvalidate.01" content="1CD2FCEA3D1A7CE25462E9DDC3234B05" />
       </head>
       <body>
-        <ThemeProvider 
-          attribute="class" 
-          defaultTheme="dark" 
-          enableSystem 
-          disableTransitionOnChange 
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
           enableColorScheme={false}
-          >          
-            {children}
-          
+        >
+          <Header />
+          {children}
+          <Footer />
+
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />

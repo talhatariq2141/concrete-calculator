@@ -134,7 +134,6 @@ export default function RelatedCalculators({
 
   // Filter by include (preserves order provided by caller)
   if (include && include.length) {
-    const set = new Set(include);
     catalog = include
       .map((slug) => catalog.find((c) => c.slug === slug))
       .filter(Boolean) as CatalogItem[];
