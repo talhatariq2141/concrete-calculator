@@ -126,7 +126,12 @@ export default function BeamConcreteCalcArticle() {
         </div>
 
         {/* H4 How-to */}
-        <h4 className="text-lg font-semibold text-white mt-12 mb-3">How to Use the Beam Concrete Calculator</h4>
+        <h4
+          id="how-to-use"
+          className="text-lg font-semibold text-white mt-12 mb-3"
+        >
+          How to Use the Beam Concrete Calculator
+        </h4>
         <div className="rounded-lg bg-slate-900/60 border border-slate-800 p-5">
           <ol className="list-decimal list-inside space-y-2 text-slate-300">
             <li>Select your <span className="text-white">Units</span> and enter the <span className="text-white">Number of Beams</span>.</li>
