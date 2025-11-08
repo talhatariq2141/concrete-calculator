@@ -5,6 +5,10 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getCategories, getPostsByCategory } from "@/lib/blog-data";
+import {
+  buildCategoryPagination,
+  categoryPagePath,
+} from "@/lib/blog-pagination";
 
 export const revalidate = 300; // ISR refresh
 const PER_PAGE = 9;
@@ -22,11 +26,6 @@ type PageProps = {
 function toIntPage(input?: string) {
   const n = Number(input ?? "1");
   return Number.isFinite(n) && n >= 1 ? Math.floor(n) : 1;
-}
-function pageUrl(slug: string, page: number) {
-  return page <= 1
-    ? `/blog/category/${slug}`
-    : `/blog/category/${slug}?page=${page}`;
 }
 function safeDate(input?: string) {
   if (!input) return null;
@@ -53,8 +52,17 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const cat = cats.find((c) => c.slug === params.slug);
   if (!cat) return { title: "Category Not Found" };
 
-  const baseUrl = `https://concretecalculatormax.com/blog/category/${cat.slug}`;
-  const canonical = page <= 1 ? baseUrl : `${baseUrl}?page=${page}`;
+  const posts = await getPostsByCategory(cat.slug);
+  const pagination = buildCategoryPagination({
+    slug: cat.slug,
+    page,
+    totalPosts: posts.length,
+    perPage: PER_PAGE,
+  });
+
+  if (!pagination.isPageWithinRange) {
+    return { title: "Category Not Found" };
+  }
 
   const titleBase = `${cat.name} — Concrete Calculator Blog`;
   const title = page > 1 ? `${titleBase} (Page ${page})` : titleBase;
@@ -62,13 +70,18 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
     cat.description ||
     `Articles and tutorials in the ${cat.name} category from Concrete Calculator Max.`;
 
+  const otherLinks: Record<string, string> = {};
+  if (pagination.prev) otherLinks["link:prev"] = pagination.prev;
+  if (pagination.next) otherLinks["link:next"] = pagination.next;
+
   return {
     title,
     description,
-    alternates: { canonical },
+    alternates: { canonical: pagination.canonical },
+    other: Object.keys(otherLinks).length ? otherLinks : undefined,
     openGraph: {
       type: "website",
-      url: canonical,
+      url: pagination.canonical,
       title,
       description,
       images: [{ url: "/og/blog-home.png", width: 1200, height: 630, alt: title }],
@@ -98,9 +111,16 @@ export default async function CategoryPage(props: PageProps) {
   const cat = cats.find((c) => c.slug === params.slug);
   if (!cat) return notFound();
 
-  const total = allPosts.length;
-  const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
-  if (page > totalPages) return notFound();
+  const pagination = buildCategoryPagination({
+    slug: cat.slug,
+    page,
+    totalPosts: allPosts.length,
+    perPage: PER_PAGE,
+  });
+
+  if (!pagination.isPageWithinRange) return notFound();
+
+  const totalPages = pagination.totalPages;
 
   const start = (page - 1) * PER_PAGE;
   const posts = allPosts.slice(start, start + PER_PAGE);
@@ -113,7 +133,7 @@ export default async function CategoryPage(props: PageProps) {
     description:
       cat.description ||
       `Articles and tutorials in the ${cat.name} category from Concrete Calculator Max.`,
-    url: `https://concretecalculatormax.com${pageUrl(cat.slug, page)}`,
+    url: pagination.canonical,
   };
 
   return (
@@ -292,7 +312,7 @@ function Pagination({
   return (
     <nav aria-label="Pagination" className="flex items-center justify-between gap-3">
       <Link
-        href={hasPrev ? pageUrl(slug, page - 1) : pageUrl(slug, page)}
+        href={hasPrev ? categoryPagePath(slug, page - 1) : categoryPagePath(slug, page)}
         aria-disabled={!hasPrev}
         className={`inline-flex items-center rounded-md border px-3 py-2 text-sm ${
           hasPrev
@@ -308,7 +328,7 @@ function Pagination({
           <>
             <li>
               <Link
-                href={pageUrl(slug, 1)}
+                href={categoryPagePath(slug, 1)}
                 className="inline-flex min-w-9 justify-center rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
               >
                 1
@@ -328,7 +348,7 @@ function Pagination({
           ) : (
             <li key={p}>
               <Link
-                href={pageUrl(slug, p)}
+                href={categoryPagePath(slug, p)}
                 className="inline-flex min-w-9 justify-center rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
                 aria-label={`Go to page ${p}`}
               >
@@ -343,7 +363,7 @@ function Pagination({
             {end < totalPages - 1 && <li className="px-2 text-slate-400 select-none">…</li>}
             <li>
               <Link
-                href={pageUrl(slug, totalPages)}
+                href={categoryPagePath(slug, totalPages)}
                 className="inline-flex min-w-9 justify-center rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50"
               >
                 {totalPages}
@@ -354,7 +374,7 @@ function Pagination({
       </ul>
 
       <Link
-        href={hasNext ? pageUrl(slug, page + 1) : pageUrl(slug, page)}
+        href={hasNext ? categoryPagePath(slug, page + 1) : categoryPagePath(slug, page)}
         aria-disabled={!hasNext}
         className={`inline-flex items-center rounded-md border px-3 py-2 text-sm ${
           hasNext
