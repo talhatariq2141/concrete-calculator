@@ -3,6 +3,68 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
 
+type RequiredFrontmatterFields = "title" | "slug" | "excerpt";
+
+const REQUIRED_FIELDS: RequiredFrontmatterFields[] = [
+  "title",
+  "slug",
+  "excerpt",
+];
+
+const ALLOWED_COVER_HOSTS = new Set([
+  "concretecalculatormax.com",
+  "www.concretecalculatormax.com",
+  "images.concretecalculatormax.com",
+]);
+
+function validateFrontmatter(
+  frontmatter: BlogFrontmatter
+): asserts frontmatter is BlogFrontmatter & {
+  [K in RequiredFrontmatterFields]: string;
+} {
+  const missing = REQUIRED_FIELDS.filter((field) => {
+    const value = frontmatter[field];
+    return typeof value !== "string" || value.trim().length === 0;
+  });
+
+  if (missing.length > 0) {
+    throw new Error(
+      `Missing required frontmatter field(s): ${missing.join(", ")}`
+    );
+  }
+
+  if (typeof frontmatter.cover === "string" && frontmatter.cover.trim() !== "") {
+    const coverValue = frontmatter.cover.trim();
+
+    if (coverValue.startsWith("/")) {
+      if (coverValue.includes("..")) {
+        throw new Error(
+          "Cover image path must not contain parent directory segments"
+        );
+      }
+    } else {
+      let url: URL;
+      try {
+        url = new URL(coverValue);
+      } catch (error) {
+        throw new Error(
+          `Cover image must be a relative path or a valid HTTPS URL (${error})`
+        );
+      }
+
+      if (url.protocol !== "https:") {
+        throw new Error("Cover image URL must use https scheme");
+      }
+
+      if (!ALLOWED_COVER_HOSTS.has(url.hostname)) {
+        throw new Error(
+          `Cover image host \"${url.hostname}\" is not in the allowed list`
+        );
+      }
+    }
+  }
+}
+
 // ---- Paths -------------------------------------------------
 const POSTS_ROOT = path.join(process.cwd(), "content/blog/posts");
 const CATEGORIES_JSON = path.join(process.cwd(), "content/blog/categories.json");
@@ -58,31 +120,38 @@ async function readAllMdxFrontmatter() {
   const files = await walkMdx(POSTS_ROOT);
   const posts = await Promise.all(
     files.map(async (abs) => {
-      const raw = await fs.readFile(abs, "utf8");
-      const parsed = matter(raw); // { content, data }
-      const fm = parsed.data as BlogFrontmatter;
+      const relPath = path.relative(POSTS_ROOT, abs);
 
-      // Require minimum fields
-      if (!fm?.slug || !fm?.title) return null;
+      try {
+        const raw = await fs.readFile(abs, "utf8");
+        const parsed = matter(raw); // { content, data }
+        const fm = parsed.data as BlogFrontmatter;
 
-      // Normalize cover path: must not include /public prefix
-      if (fm.cover && fm.cover.startsWith("/public/")) {
-        fm.cover = fm.cover.replace(/^\/public/, "");
+        if (typeof fm.cover === "string") {
+          fm.cover = fm.cover.trim();
+        }
+
+        // Normalize cover path: must not include /public prefix
+        if (fm.cover && fm.cover.startsWith("/public/")) {
+          fm.cover = fm.cover.replace(/^\/public/, "");
+        }
+
+        validateFrontmatter(fm, relPath);
+
+        return {
+          absPath: abs,
+          content: parsed.content,
+          frontmatter: fm,
+        };
+      } catch (error) {
+        const message =
+          error instanceof Error ? error.message : "Unknown frontmatter error";
+        throw new Error(`Invalid frontmatter in ${relPath}: ${message}`);
       }
-
-      return {
-        absPath: abs,
-        content: parsed.content,
-        frontmatter: fm,
-      };
     })
   );
 
-  return posts.filter(Boolean) as Array<{
-    absPath: string;
-    content: string;
-    frontmatter: BlogFrontmatter;
-  }>;
+  return posts;
 }
 
 // ---- Public API --------------------------------------------

@@ -5,11 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { MDXRemote } from "next-mdx-remote/rsc";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
-import rehypeSlug from "rehype-slug";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import { mdxOptions } from "@/lib/mdx";
 
 import { ClientTOC } from "@/components/blog/ClientTOC";
 import {
@@ -184,19 +180,7 @@ export default async function BlogPostPage({
         id="post-content"
         className="prose prose-slate max-w-none prose-headings:font-poppins prose-h2:text-2xl sm:prose-h2:text-3xl prose-h3:text-xl sm:prose-h3:text-2xl"
       >
-        <MDXRemote
-          source={content}
-          options={{
-            mdxOptions: {
-              remarkPlugins: [remarkGfm, remarkMath],
-              rehypePlugins: [
-                rehypeSlug,
-                [rehypeAutolinkHeadings, { behavior: "wrap" }],
-                rehypeKatex,
-              ],
-            },
-          }}
-        />
+        <MDXRemote source={content} options={{ mdxOptions }} />
       </div>
 
       {/* In this silo */}
