@@ -136,7 +136,7 @@ async function readAllMdxFrontmatter() {
           fm.cover = fm.cover.replace(/^\/public/, "");
         }
 
-        validateFrontmatter(fm, relPath);
+        validateFrontmatter(fm);
 
         return {
           absPath: abs,
