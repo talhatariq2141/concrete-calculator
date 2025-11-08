@@ -5,8 +5,20 @@ import { useEffect, useMemo, useState } from "react";
 
 type Props = { containerSelector?: string };
 
+export type HeadingItem = { id: string; text: string; level: number };
+
+export function collectHeadings(elements: Iterable<HTMLElement>): HeadingItem[] {
+  return Array.from(elements)
+    .filter((el) => el.id)
+    .map((el) => ({
+      id: el.id,
+      text: el.textContent?.trim() || "",
+      level: el.tagName.toLowerCase() === "h3" ? 3 : 2,
+    }));
+}
+
 export function ClientTOC({ containerSelector = "#post-content" }: Props) {
-  const [headings, setHeadings] = useState<{ id: string; text: string; level: number }[]>([]);
+  const [headings, setHeadings] = useState<HeadingItem[]>([]);
   const [activeId, setActiveId] = useState<string>("");
 
   // Collect headings (h2/h3) from the rendered article (IDs provided by rehypeSlug)
@@ -14,16 +26,8 @@ export function ClientTOC({ containerSelector = "#post-content" }: Props) {
     const root = document.querySelector(containerSelector);
     if (!root) return;
 
-    const nodes = Array.from(root.querySelectorAll("h2")) as HTMLElement[];
-    const list = nodes
-      .filter((el) => el.id)
-      .map((el) => ({
-        id: el.id,
-        text: el.textContent?.trim() || "",
-        level: el.tagName.toLowerCase() === "h3" ? 3 : 2,
-      }));
-
-    setHeadings(list);
+    const nodes = Array.from(root.querySelectorAll("h2, h3")) as HTMLElement[];
+    setHeadings(collectHeadings(nodes));
   }, [containerSelector]);
 
   // Scroll spy: highlight the visible heading

@@ -11,7 +11,7 @@ import rehypeKatex from "rehype-katex";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 
-import { ClientTOC } from "@/components/blog/ClientTOC";
+import { ClientTOCWidget } from "@/components/blog/ClientTOCWidget";
 import {
   getAllPostSlugs,
   getPostBySlug,
@@ -175,7 +175,7 @@ export default async function BlogPostPage({
           </summary>
         </details>
         <div className="px-4 pb-3">
-          <ClientTOC containerSelector="#post-content" />
+          <ClientTOCWidget containerSelector="#post-content" />
         </div>
       </div>
 
