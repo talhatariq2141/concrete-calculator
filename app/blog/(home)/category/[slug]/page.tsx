@@ -9,6 +9,8 @@ import { getCategories, getPostsByCategory } from "@/lib/blog-data";
 export const revalidate = 300; // ISR refresh
 const PER_PAGE = 9;
 
+const SITE_URL = "https://concretecalculatormax.com";
+
 type Params = { slug: string };
 type SearchParams = { page?: string };
 
@@ -53,7 +55,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const cat = cats.find((c) => c.slug === params.slug);
   if (!cat) return { title: "Category Not Found" };
 
-  const baseUrl = `https://concretecalculatormax.com/blog/category/${cat.slug}`;
+  const baseUrl = `${SITE_URL}/blog/category/${cat.slug}`;
   const canonical = page <= 1 ? baseUrl : `${baseUrl}?page=${page}`;
 
   const titleBase = `${cat.name} — Concrete Calculator Blog`;
@@ -61,6 +63,14 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const description =
     cat.description ||
     `Articles and tutorials in the ${cat.name} category from Concrete Calculator Max.`;
+
+  const totalPosts = (await getPostsByCategory(cat.slug)).length;
+  const totalPages = Math.max(1, Math.ceil(totalPosts / PER_PAGE));
+  const prevUrl = page > 1 ? `${SITE_URL}${pageUrl(cat.slug, page - 1)}` : undefined;
+  const nextUrl = page < totalPages ? `${SITE_URL}${pageUrl(cat.slug, page + 1)}` : undefined;
+  const paginationHints: Record<string, string> = {};
+  if (prevUrl) paginationHints["link:prev"] = prevUrl;
+  if (nextUrl) paginationHints["link:next"] = nextUrl;
 
   return {
     title,
@@ -71,8 +81,24 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
       url: canonical,
       title,
       description,
-      images: [{ url: "/og/blog-home.png", width: 1200, height: 630, alt: title }],
+      siteName: "Concrete Calculator Max",
+      images: [
+        {
+          url: `${SITE_URL}/og/blog-home.png`,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
     },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      creator: "@ConcreteCalcMax",
+      images: [`${SITE_URL}/og/blog-home.png`],
+    },
+    other: Object.keys(paginationHints).length ? paginationHints : undefined,
   };
 }
 
@@ -106,14 +132,34 @@ export default async function CategoryPage(props: PageProps) {
   const posts = allPosts.slice(start, start + PER_PAGE);
 
   // JSON-LD CollectionPage for this category
+  const itemListElement = posts.map((post, index) => ({
+    "@type": "ListItem",
+    position: start + index + 1,
+    item: {
+      "@type": "Article",
+      name: post.title,
+      url: `${SITE_URL}/blog/${post.slug}`,
+    },
+  }));
+
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    name: `${cat.name} — Concrete Calculator Blog`,
-    description:
-      cat.description ||
-      `Articles and tutorials in the ${cat.name} category from Concrete Calculator Max.`,
-    url: `https://concretecalculatormax.com${pageUrl(cat.slug, page)}`,
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        name: `${cat.name} — Concrete Calculator Blog`,
+        description:
+          cat.description ||
+          `Articles and tutorials in the ${cat.name} category from Concrete Calculator Max.`,
+        url: `${SITE_URL}${pageUrl(cat.slug, page)}`,
+      },
+      {
+        "@type": "ItemList",
+        itemListOrder: "Descending",
+        numberOfItems: posts.length,
+        itemListElement,
+      },
+    ],
   };
 
   return (
