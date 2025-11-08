@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "npm run test:content",
+    "test:content": "rm -rf dist-test && tsc --project tsconfig.test.json && node --test dist-test/tests"
   },
   "dependencies": {
     "@mdx-js/react": "^3.1.1",
