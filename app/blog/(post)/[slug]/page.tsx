@@ -148,7 +148,7 @@ export default async function BlogPostPage({
     breadcrumbItems.push({
       "@type": "ListItem",
       position: breadcrumbItems.length + 1,
-      name: categoryLabel,
+      name: categoryLabel ?? category,
       item: `${SITE_URL}/blog/category/${category}`,
     });
   }
