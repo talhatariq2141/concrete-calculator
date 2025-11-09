@@ -1,7 +1,13 @@
 import fs from "node:fs/promises";
 import type { Dirent } from "node:fs";
 import path from "node:path";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeSlug from "rehype-slug";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import rehypeKatex from "rehype-katex";
 import { logError } from "./logger";
+import { rehypeSanitize } from "./mdx-sanitize";
 
 export async function walkMdxFiles(root: string): Promise<string[]> {
   const files: string[] = [];
@@ -47,3 +53,20 @@ export async function readFileSafe(filePath: string): Promise<string | null> {
     return null;
   }
 }
+
+const headingLinkOptions = {
+  behavior: "wrap" as const,
+  properties: {
+    className: ["prose-heading-anchor"],
+  },
+};
+
+export const mdxOptions = {
+  remarkPlugins: [remarkGfm, remarkMath],
+  rehypePlugins: [
+    rehypeSlug,
+    [rehypeAutolinkHeadings, headingLinkOptions],
+    rehypeKatex,
+    rehypeSanitize,
+  ],
+};
