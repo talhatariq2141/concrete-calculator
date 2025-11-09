@@ -250,7 +250,7 @@ export default async function BlogPostPage({
         id="post-content"
         className="prose prose-slate max-w-none prose-headings:font-poppins prose-h2:text-2xl sm:prose-h2:text-3xl prose-h3:text-xl sm:prose-h3:text-2xl"
       >
-        <MDXRemote source={content} options={{ mdxOptions }} />
+        <MDXRemote source={content} options={mdxOptions} />
       </div>
 
     </article>
