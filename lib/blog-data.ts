@@ -1,70 +1,9 @@
 // lib/blog-data.ts
-import matter from "gray-matter";
+import type { Dirent } from "node:fs";
+import fs from "node:fs/promises";
 import path from "node:path";
-import { logError } from "./logger";
-import { readFileSafe, readMdxFile, walkMdxFiles } from "./mdx";
-
-type RequiredFrontmatterFields = "title" | "slug" | "excerpt";
-
-const REQUIRED_FIELDS: RequiredFrontmatterFields[] = [
-  "title",
-  "slug",
-  "excerpt",
-];
-
-const ALLOWED_COVER_HOSTS = new Set([
-  "concretecalculatormax.com",
-  "www.concretecalculatormax.com",
-  "images.concretecalculatormax.com",
-]);
-
-function validateFrontmatter(
-  frontmatter: BlogFrontmatter
-): asserts frontmatter is BlogFrontmatter & {
-  [K in RequiredFrontmatterFields]: string;
-} {
-  const missing = REQUIRED_FIELDS.filter((field) => {
-    const value = frontmatter[field];
-    return typeof value !== "string" || value.trim().length === 0;
-  });
-
-  if (missing.length > 0) {
-    throw new Error(
-      `Missing required frontmatter field(s): ${missing.join(", ")}`
-    );
-  }
-
-  if (typeof frontmatter.cover === "string" && frontmatter.cover.trim() !== "") {
-    const coverValue = frontmatter.cover.trim();
-
-    if (coverValue.startsWith("/")) {
-      if (coverValue.includes("..")) {
-        throw new Error(
-          "Cover image path must not contain parent directory segments"
-        );
-      }
-    } else {
-      let url: URL;
-      try {
-        url = new URL(coverValue);
-      } catch (error) {
-        throw new Error(
-          `Cover image must be a relative path or a valid HTTPS URL (${error})`
-        );
-      }
-
-      if (url.protocol !== "https:") {
-        throw new Error("Cover image URL must use https scheme");
-      }
-
-      if (!ALLOWED_COVER_HOSTS.has(url.hostname)) {
-        throw new Error(
-          `Cover image host \"${url.hostname}\" is not in the allowed list`
-        );
-      }
-    }
-  }
-}
+import matter from "gray-matter";
+import { unstable_cache } from "next/cache.js";
 
 // ---- Paths -------------------------------------------------
 const POSTS_ROOT = path.join(process.cwd(), "content/blog/posts");
@@ -100,48 +39,133 @@ export type BlogListItem = {
   calculator?: string;
 };
 
-// ---- Internal: read all posts (front-matter + content optionally)
-async function readAllMdxFrontmatter() {
-  const files = await walkMdxFiles(POSTS_ROOT);
-  if (files.length === 0) return [];
+// ---- FS walk (recursively collect all *.mdx under POSTS_ROOT)
+type CachedEntry = {
+  absPath: string;
+  content: string;
+  frontmatter: BlogFrontmatter;
+};
+
+let frontmatterLoadCount = 0;
+let cacheGeneration = 0;
+
+async function walkMdx(dir: string): Promise<string[]> {
+  const out: string[] = [];
+  async function walk(current: string) {
+    let entries: Dirent[];
+    try {
+      entries = await fs.readdir(current, { withFileTypes: true });
+    } catch (error) {
+      console.error(`[blog-data] Failed to read directory: ${current}`, error);
+      return;
+    }
+
+    for (const e of entries) {
+      if (e.name.startsWith(".")) continue;
+      const abs = path.join(current, e.name);
+      if (e.isDirectory()) {
+        await walk(abs);
+      } else if (e.isFile() && e.name.endsWith(".mdx")) {
+        out.push(abs);
+      }
+    }
+  }
+  await walk(dir);
+  return out;
+}
+
+async function loadAllMdxFrontmatter(): Promise<CachedEntry[]> {
+  const files = await walkMdx(POSTS_ROOT);
+  if (!files.length) return [];
 
   const posts = await Promise.all(
     files.map(async (abs) => {
-      const raw = await readMdxFile(abs);
-      if (!raw) return null;
-
-      let parsed;
-      try {
-        parsed = matter(raw);
-      } catch (error) {
-        logError(`failed to parse frontmatter for ${abs}`, error);
-        return null;
-      }
-
-      const fm = parsed.data as BlogFrontmatter;
-
       try {
         const raw = await fs.readFile(abs, "utf8");
         const parsed = matter(raw); // { content, data }
         const fm = parsed.data as BlogFrontmatter;
 
-      // Normalize cover path: must not include /public prefix
-      if (fm.cover && typeof fm.cover === "string" && fm.cover.startsWith("/public/")) {
-        fm.cover = fm.cover.replace(/^\/public/, "");
+        // Require minimum fields
+        if (!fm?.slug || !fm?.title) return null;
+
+        // Normalize cover path: must not include /public prefix
+        if (fm.cover && typeof fm.cover === "string" && fm.cover.startsWith("/public/")) {
+          fm.cover = fm.cover.replace(/^\/public/, "");
+        }
+
+        return {
+          absPath: abs,
+          content: parsed.content,
+          frontmatter: fm,
+        } satisfies CachedEntry;
+      } catch (error) {
+        console.error(`[blog-data] Failed to read or parse file: ${abs}`, error);
+        return null;
       }
     })
   );
 
-  return posts;
+  return posts.filter(Boolean) as CachedEntry[];
+}
+
+function createCachedFrontmatterReader() {
+  const cacheKey = `blog-data:frontmatter:${cacheGeneration}`;
+  let fallbackMemo: Promise<CachedEntry[]> | null = null;
+
+  const loader = async () => {
+    frontmatterLoadCount += 1;
+    try {
+      return await loadAllMdxFrontmatter();
+    } catch (error) {
+      console.error("[blog-data] Failed to load MDX frontmatter", error);
+      return [];
+    }
+  };
+
+  const cached = unstable_cache(loader, [cacheKey], { revalidate: false });
+
+  return async () => {
+    try {
+      return await cached();
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message.includes("incrementalCache missing")
+      ) {
+        if (!fallbackMemo) {
+          fallbackMemo = loader().catch((err) => {
+            fallbackMemo = null;
+            throw err;
+          });
+        }
+        return await fallbackMemo;
+      }
+      throw error;
+    }
+  };
+}
+
+let readAllMdxFrontmatter = createCachedFrontmatterReader();
+
+async function getCachedFrontmatter() {
+  return readAllMdxFrontmatter();
+}
+
+export function __dangerous__resetBlogCacheForTests() {
+  cacheGeneration += 1;
+  readAllMdxFrontmatter = createCachedFrontmatterReader();
+  frontmatterLoadCount = 0;
+}
+
+export function __dangerous__getFrontmatterLoadCount() {
+  return frontmatterLoadCount;
 }
 
 // ---- Public API --------------------------------------------
 
 // Flat list for listings (newest first by date)
-export const getAllPosts = cache(async function getAllPosts(): Promise<BlogListItem[]> {
-  const entries = await readAllMdxFrontmatter();
-  if (entries.length === 0) return [];
-
+export async function getAllPosts(): Promise<BlogListItem[]> {
+  const entries = await getCachedFrontmatter();
   const items = entries.map(({ frontmatter }) => ({
     title: frontmatter.title,
     slug: frontmatter.slug,
@@ -168,8 +192,7 @@ export async function getAllPostSlugs(): Promise<string[]> {
 }
 
 export async function getPostBySlug(slug: string) {
-  if (!slug) return null;
-  const entries = await readAllMdxFrontmatter();
+  const entries = await getCachedFrontmatter();
   const hit = entries.find((e) => e.frontmatter.slug === slug);
   if (!hit) return null;
   return { content: hit.content, frontmatter: hit.frontmatter };
@@ -195,15 +218,20 @@ export async function getRelatedByCategory(
 export async function getCategories(): Promise<
   { slug: string; name: string; description?: string; feature_calculator?: string }[]
 > {
-  const raw = await readFileSafe(CATEGORIES_JSON);
-  if (!raw) return [];
-
   try {
+    const raw = await fs.readFile(CATEGORIES_JSON, "utf8");
     const parsed = JSON.parse(raw);
     if (Array.isArray(parsed)) return parsed;
-    if (Array.isArray(parsed.categories)) return parsed.categories;
+    if (Array.isArray((parsed as { categories?: unknown }).categories)) {
+      return (parsed as { categories: unknown[] }).categories as {
+        slug: string;
+        name: string;
+        description?: string;
+        feature_calculator?: string;
+      }[];
+    }
   } catch (error) {
-    logError(`failed to parse categories JSON ${CATEGORIES_JSON}`, error);
+    console.error("[blog-data] Failed to read categories", error);
   }
   return [];
 }
