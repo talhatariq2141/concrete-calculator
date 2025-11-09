@@ -10,6 +10,7 @@ import {
   buildCategoryPagination,
   categoryPagePath,
 } from "@/lib/blog-pagination";
+import { stringifyJsonLd } from "@/lib/jsonLd";
 
 export const revalidate = 300; // ISR refresh
 const PER_PAGE = 9;
