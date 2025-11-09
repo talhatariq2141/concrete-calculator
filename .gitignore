@@ -12,7 +12,7 @@
 
 # testing
 /coverage
-/dist-test
+.tmp/tests
 
 # next.js
 /.next/

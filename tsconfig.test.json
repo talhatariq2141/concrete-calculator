@@ -2,11 +2,13 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "noEmit": false,
-    "outDir": "dist-test",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "isolatedModules": false
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "outDir": ".tmp/tests",
+    "rootDir": ".",
+    "allowJs": false,
+    "declaration": false,
+    "emitDeclarationOnly": false
   },
-  "include": ["lib/**/*.ts", "tests/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["lib/**/*.ts", "__tests__/**/*.ts"]
 }
