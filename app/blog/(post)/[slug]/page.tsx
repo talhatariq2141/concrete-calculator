@@ -5,146 +5,10 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { MDXRemote } from "next-mdx-remote/rsc";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
-import rehypeKatex from "rehype-katex";
-import rehypeSlug from "rehype-slug";
-import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import { mdxOptions } from "@/lib/mdx";
 
 import { ClientTOC } from "@/components/blog/ClientTOC";
 import { getAllPostSlugs, getPostBySlug } from "@/lib/blog-data";
-
-type SiloCalculator = {
-  title: string;
-  href: string;
-  description: string;
-};
-
-const SILO_CALCULATORS: Record<string, SiloCalculator[]> = {
-  slab: [
-    {
-      title: "Slab Concrete Calculator",
-      href: "/calculators/slab-concrete-calculator#how-to-use",
-      description: "Jump to the how-to steps for slab pours and waste planning.",
-    },
-    {
-      title: "Concrete Bag Calculator",
-      href: "/calculators/concrete-bag-calculator#how-to-use",
-      description: "Translate slab volumes into bag counts without guesswork.",
-    },
-    {
-      title: "Concrete Yards Calculator",
-      href: "/calculators/concrete-yards-calculator#how-to-use",
-      description: "Convert area and thickness into cubic yards before ordering.",
-    },
-  ],
-  beam: [
-    {
-      title: "Beam Concrete Calculator",
-      href: "/calculators/beam-concrete-calculator#how-to-use",
-      description: "Review the workflow for beams with haunches or voids.",
-    },
-    {
-      title: "Column Concrete Calculator",
-      href: "/calculators/column-concrete-calculator#how-to-use",
-      description: "Plan companion columns or posts tied into your beam design.",
-    },
-    {
-      title: "Concrete Bag Calculator",
-      href: "/calculators/concrete-bag-calculator#how-to-use",
-      description: "Jump to the bag conversion steps for smaller beam pours.",
-    },
-  ],
-  column: [
-    {
-      title: "Column Concrete Calculator",
-      href: "/calculators/column-concrete-calculator#how-to-use",
-      description: "Follow the column checklist for square or round shafts.",
-    },
-    {
-      title: "Pier / Caisson Calculator",
-      href: "/calculators/pier-caisson-concrete-calculator#how-to-use",
-      description: "Use the pier workflow when columns continue below grade.",
-    },
-    {
-      title: "Concrete Bag Calculator",
-      href: "/calculators/concrete-bag-calculator#how-to-use",
-      description: "Translate column volumes into precise bag totals instantly.",
-    },
-  ],
-  wall: [
-    {
-      title: "Wall Concrete Calculator",
-      href: "/calculators/wall-concrete-calculator#how-to-use",
-      description: "Jump to the wall calculator steps covering openings and waste.",
-    },
-    {
-      title: "Footing Concrete Calculator",
-      href: "/calculators/footing-concrete-calculator#how-to-use",
-      description: "Review footing guidance for stem walls and retaining runs.",
-    },
-    {
-      title: "Concrete Bag Calculator",
-      href: "/calculators/concrete-bag-calculator#how-to-use",
-      description: "Convert wall pours into manageable bag counts.",
-    },
-  ],
-  "tank-trench": [
-    {
-      title: "Tank / Trench Concrete Calculator",
-      href: "/calculators/tank-trench-concrete-calculator#how-to-use",
-      description: "See the trench calculator workflow for benches and slopes.",
-    },
-    {
-      title: "Footing Concrete Calculator",
-      href: "/calculators/footing-concrete-calculator#how-to-use",
-      description: "Use the footing steps for slab-on-grade trench bases.",
-    },
-    {
-      title: "Concrete Yards Calculator",
-      href: "/calculators/concrete-yards-calculator#how-to-use",
-      description: "Quickly convert long runs into cubic yard totals.",
-    },
-  ],
-  staircase: [
-    {
-      title: "Staircase Concrete Calculator",
-      href: "/calculators/staircase-concrete-calculator#how-to-use",
-      description: "Jump to the staircase how-to section for flights and landings.",
-    },
-    {
-      title: "Concrete Bag Calculator",
-      href: "/calculators/concrete-bag-calculator#how-to-use",
-      description: "Plan bag counts for precast or cast-in-place stairs.",
-    },
-    {
-      title: "Concrete Yards Calculator",
-      href: "/calculators/concrete-yards-calculator#how-to-use",
-      description: "Check yardage for stair pads and approaches.",
-    },
-  ],
-  "concrete-bags": [
-    {
-      title: "Concrete Bag Calculator",
-      href: "/calculators/concrete-bag-calculator#how-to-use",
-      description: "Skip straight to the how-to workflow for bag conversions.",
-    },
-    {
-      title: "Concrete Yards Calculator",
-      href: "/calculators/concrete-yards-calculator#how-to-use",
-      description: "Use the yards calculator steps before converting to bags.",
-    },
-    {
-      title: "Slab Concrete Calculator",
-      href: "/calculators/slab-concrete-calculator#how-to-use",
-      description: "Validate slab volumes before you buy bags.",
-    },
-  ],
-};
-
-const SILO_ALIASES: Record<string, keyof typeof SILO_CALCULATORS> = {
-  "concrete-slab": "slab",
-};
 
 // SSG: discover all slugs (now recursive)
 export async function generateStaticParams() {
@@ -209,16 +73,6 @@ export default async function BlogPostPage({
   const { frontmatter, content } = post;
   const date = frontmatter.date ? new Date(frontmatter.date) : null;
   const category = (frontmatter.category as string | undefined) || undefined;
-
-  const rawSiloKey =
-    (frontmatter.silo as string | undefined) ?? (category as string | undefined);
-  const normalizedSiloKey = rawSiloKey
-    ? (SILO_ALIASES[rawSiloKey] ?? rawSiloKey)
-    : undefined;
-  const siloCalculators =
-    normalizedSiloKey && normalizedSiloKey in SILO_CALCULATORS
-      ? SILO_CALCULATORS[normalizedSiloKey]
-      : undefined;
 
   const categoryLabel =
     category?.replace(/-/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
@@ -395,19 +249,7 @@ export default async function BlogPostPage({
         id="post-content"
         className="prose prose-slate max-w-none prose-headings:font-poppins prose-h2:text-2xl sm:prose-h2:text-3xl prose-h3:text-xl sm:prose-h3:text-2xl"
       >
-        <MDXRemote
-          source={content}
-          options={{
-            mdxOptions: {
-              remarkPlugins: [remarkGfm, remarkMath],
-              rehypePlugins: [
-                rehypeSlug,
-                [rehypeAutolinkHeadings, { behavior: "wrap" }],
-                rehypeKatex,
-              ],
-            },
-          }}
-        />
+        <MDXRemote source={content} options={{ mdxOptions }} />
       </div>
 
       {siloCalculators && siloCalculators.length ? (
