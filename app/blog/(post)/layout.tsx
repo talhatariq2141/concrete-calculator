@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Header } from "@/components/app/Header";
 import { Footer } from "@/components/app/Footer";
-import { ClientTOC } from "@/components/blog/ClientTOC";
+import { ClientTOCWidget } from "@/components/blog/ClientTOCWidget";
 import { stringifyJsonLd } from "@/lib/jsonLd";
 
 export const metadata: Metadata = {

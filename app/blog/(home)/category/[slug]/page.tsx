@@ -163,6 +163,7 @@ export default async function CategoryPage(props: PageProps) {
       cat.description ||
       `Articles and tutorials in the ${cat.name} category from Concrete Calculator Max.`,
     url: pagination.canonical,
+    itemListElement,
   };
 
   return (

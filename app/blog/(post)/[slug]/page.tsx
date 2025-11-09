@@ -7,7 +7,7 @@ import Image from "next/image";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { mdxOptions } from "@/lib/mdx";
 
-import { ClientTOC } from "@/components/blog/ClientTOC";
+import { ClientTOCWidget } from "@/components/blog/ClientTOCWidget";
 import { getAllPostSlugs, getPostBySlug } from "@/lib/blog-data";
 import { stringifyJsonLd } from "@/lib/jsonLd";
 
