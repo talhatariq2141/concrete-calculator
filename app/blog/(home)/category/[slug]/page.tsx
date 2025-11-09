@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import Image from "next/image";
+import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
 import { getCategories, getPostsByCategory } from "@/lib/blog-data";
 import {
@@ -339,17 +340,15 @@ function Pagination({
 
   return (
     <nav aria-label="Pagination" className="flex items-center justify-between gap-3">
-      <Link
-        href={hasPrev ? categoryPagePath(slug, page - 1) : categoryPagePath(slug, page)}
-        aria-disabled={!hasPrev}
-        className={`inline-flex items-center rounded-md border px-3 py-2 text-sm ${
-          hasPrev
-            ? "border-slate-300 text-slate-700 hover:bg-slate-50"
-            : "border-slate-200 text-slate-300 cursor-not-allowed"
-        }`}
+      <PaginationLink
+        href={pageUrl(slug, page - 1)}
+        disabled={!hasPrev}
+        className="inline-flex items-center rounded-md border px-3 py-2 text-sm"
+        activeClassName="border-slate-300 text-slate-700 hover:bg-slate-50"
+        disabledClassName="border-slate-200 text-slate-300 cursor-not-allowed pointer-events-none"
       >
         ← Previous
-      </Link>
+      </PaginationLink>
 
       <ul className="flex items-center gap-1">
         {start > 1 && (
@@ -401,17 +400,68 @@ function Pagination({
         )}
       </ul>
 
-      <Link
-        href={hasNext ? categoryPagePath(slug, page + 1) : categoryPagePath(slug, page)}
-        aria-disabled={!hasNext}
-        className={`inline-flex items-center rounded-md border px-3 py-2 text-sm ${
-          hasNext
-            ? "border-slate-300 text-slate-700 hover:bg-slate-50"
-            : "border-slate-200 text-slate-300 cursor-not-allowed"
-        }`}
+      <PaginationLink
+        href={pageUrl(slug, page + 1)}
+        disabled={!hasNext}
+        className="inline-flex items-center rounded-md border px-3 py-2 text-sm"
+        activeClassName="border-slate-300 text-slate-700 hover:bg-slate-50"
+        disabledClassName="border-slate-200 text-slate-300 cursor-not-allowed pointer-events-none"
       >
         Next →
-      </Link>
+      </PaginationLink>
     </nav>
+  );
+}
+
+type PaginationLinkProps = {
+  href: string;
+  disabled?: boolean;
+  children: ReactNode;
+  className?: string;
+  activeClassName?: string;
+  disabledClassName?: string;
+};
+
+function PaginationLink({
+  href,
+  disabled = false,
+  children,
+  className = "",
+  activeClassName = "",
+  disabledClassName = "",
+}: PaginationLinkProps) {
+  const classes = [className, disabled ? disabledClassName : activeClassName]
+    .filter(Boolean)
+    .join(" ");
+
+  if (disabled) {
+    return (
+      <Link
+        href="#"
+        aria-disabled={true}
+        tabIndex={-1}
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+        }}
+        onKeyDown={(event) => {
+          if (event.key === "Enter" || event.key === " " || event.key === "Spacebar") {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        }}
+        className={classes}
+        role="link"
+        prefetch={false}
+      >
+        {children}
+      </Link>
+    );
+  }
+
+  return (
+    <Link href={href} className={classes} prefetch={false}>
+      {children}
+    </Link>
   );
 }
