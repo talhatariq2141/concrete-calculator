@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { getCategories, getPostsByCategory } from "@/lib/blog-data";
+import { stringifyJsonLd } from "@/lib/jsonLd";
 
 export const revalidate = 300; // ISR refresh
 const PER_PAGE = 9;
@@ -167,7 +168,7 @@ export default async function CategoryPage(props: PageProps) {
       {/* JSON-LD */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: stringifyJsonLd(jsonLd) }}
       />
 
       {/* Header */}

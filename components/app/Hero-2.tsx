@@ -9,14 +9,6 @@ export default function Hero2() {
   return (
     <section className=" relative flex flex-col items-center justify-center text-center py-10 px-6 bg-background text-white overflow-hidden">
 
-      <h1
-        className="text-3xl sm:text-4xl font-semibold tracking-tight text-white font-poppins"
-        style={{ fontFamily: "var(--font-poppins)" }}
-      >
-        Precision Concrete Calculators for {" "}
-        <span className="text-teal-400">{flipWords[index]}</span>
-      </h1>
-
       {/* Badge */}
       {/* <div className="mb-10">
         <span className="bg-green-800/40 text-green-300 text-sm font-poppins font-medium px-4 py-2 rounded-full">
@@ -24,8 +16,15 @@ export default function Hero2() {
         </span>
       </div> */}
 
+      <p
+        className="text-sm uppercase tracking-[0.3em] text-teal-300/80"
+        aria-live="polite"
+      >
+        BUILT FOR {flipWords[index]}
+      </p>
+
       {/* Homepage Calculator Tabs */}
-      
+
       <HomepageCalcTab />
 
 

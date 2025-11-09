@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 import { Card } from "@/components/ui/card";
 import { getAllPosts, getCategories } from "@/lib/blog-data";
+import { stringifyJsonLd } from "@/lib/jsonLd";
 
 export const revalidate = 300;
 
@@ -42,7 +43,7 @@ export default async function BlogHomePage() {
       {/* JSON-LD */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: stringifyJsonLd(jsonLd) }}
       />
 
       {/* Hero */}

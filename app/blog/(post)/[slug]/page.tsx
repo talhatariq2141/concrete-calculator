@@ -9,6 +9,7 @@ import { mdxOptions } from "@/lib/mdx";
 
 import { ClientTOC } from "@/components/blog/ClientTOC";
 import { getAllPostSlugs, getPostBySlug } from "@/lib/blog-data";
+import { stringifyJsonLd } from "@/lib/jsonLd";
 
 // SSG: discover all slugs (now recursive)
 export async function generateStaticParams() {
@@ -171,7 +172,7 @@ export default async function BlogPostPage({
     <article className="max-w-3xl mx-auto px-2 sm:px-6 lg:px-2 py-2">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: stringifyJsonLd(jsonLd) }}
       />
 
       {/* Breadcrumb */}
@@ -252,29 +253,6 @@ export default async function BlogPostPage({
         <MDXRemote source={content} options={{ mdxOptions }} />
       </div>
 
-      {siloCalculators && siloCalculators.length ? (
-        <section className="mt-12 border-t border-slate-200 pt-6">
-          <h2 className="text-lg font-semibold text-slate-900 mb-3">
-            In this silo
-          </h2>
-          <p className="text-sm text-slate-600 mb-4">
-            Jump straight into the calculators that expand on this topic.
-          </p>
-          <ul className="grid gap-4 sm:grid-cols-2">
-            {siloCalculators.map((item) => (
-              <li key={item.href} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-                <Link
-                  href={item.href}
-                  className="text-teal-700 hover:text-teal-800 font-semibold"
-                >
-                  {item.title}
-                </Link>
-                <p className="text-sm text-slate-600 mt-2">{item.description}</p>
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : null}
     </article>
   );
 }

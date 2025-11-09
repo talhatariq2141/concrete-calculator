@@ -7,6 +7,9 @@ import { ThemeProvider } from "@/components/app/theme-provider";
 import { JetBrains_Mono, Poppins } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Header } from "@/components/app/Header";
+import { Footer } from "@/components/app/Footer";
+import { stringifyJsonLd } from "@/lib/jsonLd";
 
 // Load both fonts with CSS variable bindings
 const jetbrains = JetBrains_Mono({
@@ -70,7 +73,7 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
+            __html: stringifyJsonLd({
               "@context": "https://schema.org",
               "@type": "WebSite",
               "@id": "https://concretecalculatormax.com/#website",
@@ -89,7 +92,7 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
+            __html: stringifyJsonLd({
               "@context": "https://schema.org",
               "@type": "Organization",
               "@id": "https://concretecalculatormax.com/#organization",
@@ -127,10 +130,11 @@ export default function RootLayout({
           disableTransitionOnChange
           enableColorScheme={false}
         >
-          <Header />
-          {children}
-          <Footer />
-
+          <div className="flex min-h-screen flex-col">
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />

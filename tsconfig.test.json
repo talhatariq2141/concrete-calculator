@@ -2,18 +2,15 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "noEmit": false,
-    "outDir": "dist-tests",
+    "outDir": ".tests-dist",
+    "rootDir": ".",
     "module": "commonjs",
     "moduleResolution": "node",
-    "jsx": "react-jsx",
-    "types": ["node"],
-    "baseUrl": ".",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "target": "ES2019",
+    "declaration": false,
+    "emitDeclarationOnly": false,
+    "esModuleInterop": true
   },
-  "include": [
-    "components/blog/ClientTOC.tsx",
-    "components/blog/ClientTOCWidget.tsx",
-    "tests/**/*.test.ts"
-  ]
+  "include": ["lib/jsonLd.ts"],
+  "exclude": []
 }
