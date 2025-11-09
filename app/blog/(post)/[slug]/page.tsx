@@ -11,8 +11,12 @@ import rehypeKatex from "rehype-katex";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 
-import { ClientTOC } from "@/components/blog/ClientTOC";
-import { getAllPostSlugs, getPostBySlug } from "@/lib/blog-data";
+import { ClientTOCWidget } from "@/components/blog/ClientTOCWidget";
+import {
+  getAllPostSlugs,
+  getPostBySlug,
+  getRelatedByCategory,
+} from "@/lib/blog-data";
 
 // SSG: discover all slugs (now recursive)
 export async function generateStaticParams() {
@@ -244,7 +248,7 @@ export default async function BlogPostPage({
           </summary>
         </details>
         <div className="px-4 pb-3">
-          <ClientTOC containerSelector="#post-content" />
+          <ClientTOCWidget containerSelector="#post-content" />
         </div>
       </div>
 

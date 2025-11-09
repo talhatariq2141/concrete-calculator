@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Header } from "@/components/app/Header";
 import { Footer } from "@/components/app/Footer";
-import { ClientTOC } from "@/components/blog/ClientTOC";
+import { ClientTOCWidget } from "@/components/blog/ClientTOCWidget";
 
 export const metadata: Metadata = {
   title: {
@@ -73,7 +73,7 @@ export default function BlogPostLayout({
                 <p className="text-sm font-semibold text-slate-900 mb-2">
                   Table of Contents
                 </p>
-                <ClientTOC containerSelector="#post-content" />
+                <ClientTOCWidget containerSelector="#post-content" />
               </div>
             </div>
           </aside>
