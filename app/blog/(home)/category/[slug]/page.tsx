@@ -73,15 +73,15 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
     cat.description ||
     `Articles and tutorials in the ${cat.name} category from Concrete Calculator Max.`;
 
-  const otherLinks: Record<string, string> = {};
-  if (pagination.prev) otherLinks["link:prev"] = pagination.prev;
-  if (pagination.next) otherLinks["link:next"] = pagination.next;
+  const paginationHints: Record<string, string> = {};
+  if (pagination.prev) paginationHints["link:prev"] = pagination.prev;
+  if (pagination.next) paginationHints["link:next"] = pagination.next;
 
   return {
     title,
     description,
     alternates: { canonical: pagination.canonical },
-    other: Object.keys(otherLinks).length ? otherLinks : undefined,
+    other: Object.keys(paginationHints).length ? paginationHints : undefined,
     openGraph: {
       type: "website",
       url: pagination.canonical,
@@ -104,7 +104,6 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
       creator: "@ConcreteCalcMax",
       images: [`${SITE_URL}/og/blog-home.png`],
     },
-    other: Object.keys(paginationHints).length ? paginationHints : undefined,
   };
 }
 
