@@ -1,8 +1,8 @@
 // lib/blog-data.ts
-import fs from "node:fs/promises";
-import path from "node:path";
-import { cache } from "react";
 import matter from "gray-matter";
+import path from "node:path";
+import { logError } from "./logger";
+import { readFileSafe, readMdxFile, walkMdxFiles } from "./mdx";
 
 type RequiredFrontmatterFields = "title" | "slug" | "excerpt";
 
@@ -68,7 +68,10 @@ function validateFrontmatter(
 
 // ---- Paths -------------------------------------------------
 const POSTS_ROOT = path.join(process.cwd(), "content/blog/posts");
-const CATEGORIES_JSON = path.join(process.cwd(), "content/blog/categories.json");
+const CATEGORIES_JSON = path.join(
+  process.cwd(),
+  "content/blog/categories.json"
+);
 
 // ---- Types (loose enough to match MDX front-matter) --------
 export type BlogFrontmatter = {
@@ -76,11 +79,10 @@ export type BlogFrontmatter = {
   slug: string;
   date?: string;
   excerpt?: string;
-  cover?: string;       // e.g. "/images/blog/your-image.png"
-  category?: string;    // e.g. "concrete-bags"
+  cover?: string; // e.g. "/images/blog/your-image.png"
+  category?: string; // e.g. "concrete-bags"
   silo?: string;
-  calculator?: string;  // e.g. "concrete-bags"
-  relatedCalculators?: string[];
+  calculator?: string; // e.g. "concrete-bags"
   related_posts?: string[];
   related_calculator_link?: string;
   // Allow additional frontmatter fields but avoid `any` so linting stays strict.
@@ -98,57 +100,34 @@ export type BlogListItem = {
   calculator?: string;
 };
 
-// ---- FS walk (recursively collect all *.mdx under POSTS_ROOT)
-async function walkMdx(dir: string): Promise<string[]> {
-  const out: string[] = [];
-  async function walk(current: string) {
-    const entries = await fs.readdir(current, { withFileTypes: true });
-    for (const e of entries) {
-      if (e.name.startsWith(".")) continue;
-      const abs = path.join(current, e.name);
-      if (e.isDirectory()) {
-        await walk(abs);
-      } else if (e.isFile() && e.name.endsWith(".mdx")) {
-        out.push(abs);
-      }
-    }
-  }
-  await walk(dir);
-  return out;
-}
-
 // ---- Internal: read all posts (front-matter + content optionally)
-const readAllMdxFrontmatter = cache(async function readAllMdxFrontmatter() {
-  const files = await walkMdx(POSTS_ROOT);
+async function readAllMdxFrontmatter() {
+  const files = await walkMdxFiles(POSTS_ROOT);
+  if (files.length === 0) return [];
+
   const posts = await Promise.all(
     files.map(async (abs) => {
-      const relPath = path.relative(POSTS_ROOT, abs);
+      const raw = await readMdxFile(abs);
+      if (!raw) return null;
+
+      let parsed;
+      try {
+        parsed = matter(raw);
+      } catch (error) {
+        logError(`failed to parse frontmatter for ${abs}`, error);
+        return null;
+      }
+
+      const fm = parsed.data as BlogFrontmatter;
 
       try {
         const raw = await fs.readFile(abs, "utf8");
         const parsed = matter(raw); // { content, data }
         const fm = parsed.data as BlogFrontmatter;
 
-        if (typeof fm.cover === "string") {
-          fm.cover = fm.cover.trim();
-        }
-
-        // Normalize cover path: must not include /public prefix
-        if (fm.cover && fm.cover.startsWith("/public/")) {
-          fm.cover = fm.cover.replace(/^\/public/, "");
-        }
-
-        validateFrontmatter(fm);
-
-        return {
-          absPath: abs,
-          content: parsed.content,
-          frontmatter: fm,
-        };
-      } catch (error) {
-        const message =
-          error instanceof Error ? error.message : "Unknown frontmatter error";
-        throw new Error(`Invalid frontmatter in ${relPath}: ${message}`);
+      // Normalize cover path: must not include /public prefix
+      if (fm.cover && typeof fm.cover === "string" && fm.cover.startsWith("/public/")) {
+        fm.cover = fm.cover.replace(/^\/public/, "");
       }
     })
   );
@@ -161,6 +140,8 @@ const readAllMdxFrontmatter = cache(async function readAllMdxFrontmatter() {
 // Flat list for listings (newest first by date)
 export const getAllPosts = cache(async function getAllPosts(): Promise<BlogListItem[]> {
   const entries = await readAllMdxFrontmatter();
+  if (entries.length === 0) return [];
+
   const items = entries.map(({ frontmatter }) => ({
     title: frontmatter.title,
     slug: frontmatter.slug,
@@ -187,6 +168,7 @@ export async function getAllPostSlugs(): Promise<string[]> {
 }
 
 export async function getPostBySlug(slug: string) {
+  if (!slug) return null;
   const entries = await readAllMdxFrontmatter();
   const hit = entries.find((e) => e.frontmatter.slug === slug);
   if (!hit) return null;
@@ -195,10 +177,9 @@ export async function getPostBySlug(slug: string) {
 
 export async function getPostsByCategory(categorySlug: string) {
   const all = await getAllPosts();
+  if (all.length === 0) return [];
   const wanted = (categorySlug || "").toLowerCase();
-  return all.filter(
-    (p) => (p.category || "").toLowerCase() === wanted
-  );
+  return all.filter((p) => (p.category || "").toLowerCase() === wanted);
 }
 
 export async function getRelatedByCategory(
@@ -214,9 +195,15 @@ export async function getRelatedByCategory(
 export async function getCategories(): Promise<
   { slug: string; name: string; description?: string; feature_calculator?: string }[]
 > {
-  const raw = await fs.readFile(CATEGORIES_JSON, "utf8");
-  const parsed = JSON.parse(raw);
-  if (Array.isArray(parsed)) return parsed;
-  if (Array.isArray(parsed.categories)) return parsed.categories;
+  const raw = await readFileSafe(CATEGORIES_JSON);
+  if (!raw) return [];
+
+  try {
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(parsed)) return parsed;
+    if (Array.isArray(parsed.categories)) return parsed.categories;
+  } catch (error) {
+    logError(`failed to parse categories JSON ${CATEGORIES_JSON}`, error);
+  }
   return [];
 }

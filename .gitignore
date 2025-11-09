@@ -12,7 +12,7 @@
 
 # testing
 /coverage
-dist-tests/
+/dist-test
 
 # next.js
 /.next/
@@ -50,3 +50,4 @@ next-env.d.ts
 # Others
 article-writing-prompt.md
 pillar-article-concrete-bags-calc.md
+
