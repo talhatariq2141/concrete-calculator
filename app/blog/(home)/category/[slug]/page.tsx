@@ -342,7 +342,7 @@ function Pagination({
   return (
     <nav aria-label="Pagination" className="flex items-center justify-between gap-3">
       <PaginationLink
-        href={pageUrl(slug, page - 1)}
+        href={categoryPagePath(slug, page - 1)}
         disabled={!hasPrev}
         className="inline-flex items-center rounded-md border px-3 py-2 text-sm"
         activeClassName="border-slate-300 text-slate-700 hover:bg-slate-50"
@@ -402,7 +402,7 @@ function Pagination({
       </ul>
 
       <PaginationLink
-        href={pageUrl(slug, page + 1)}
+        href={categoryPagePath(slug, page + 1)}
         disabled={!hasNext}
         className="inline-flex items-center rounded-md border px-3 py-2 text-sm"
         activeClassName="border-slate-300 text-slate-700 hover:bg-slate-50"
