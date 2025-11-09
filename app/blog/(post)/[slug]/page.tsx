@@ -12,16 +12,20 @@ import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 
 import { ClientTOC } from "@/components/blog/ClientTOC";
-import {
-  getAllPostSlugs,
-  getPostBySlug,
-  getRelatedByCategory,
-} from "@/lib/blog-data";
+import { getAllPostSlugs, getPostBySlug } from "@/lib/blog-data";
 
 // SSG: discover all slugs (now recursive)
 export async function generateStaticParams() {
   const slugs = await getAllPostSlugs();
   return slugs.map((slug) => ({ slug }));
+}
+
+const SITE_URL = "https://concretecalculatormax.com";
+
+function absoluteUrl(pathOrUrl?: string) {
+  if (!pathOrUrl) return undefined;
+  if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
+  return `${SITE_URL}${pathOrUrl.startsWith("/") ? "" : "/"}${pathOrUrl}`;
 }
 
 export async function generateMetadata({
@@ -33,8 +37,9 @@ export async function generateMetadata({
   if (!post) return { title: "Post Not Found" };
 
   const { title, excerpt, cover } = post.frontmatter;
-  const url = `https://concretecalculatormax.com/blog/${params.slug}`;
+  const url = `${SITE_URL}/blog/${params.slug}`;
   const desc = excerpt || "Concrete calculation tutorial and guide.";
+  const imageUrl = absoluteUrl(cover);
 
   return {
     title: `${title} — Concrete Calculator Blog`,
@@ -45,13 +50,17 @@ export async function generateMetadata({
       url,
       title,
       description: desc,
-      images: cover ? [{ url: cover, width: 1200, height: 630, alt: title }] : [],
+      siteName: "Concrete Calculator Max",
+      images: imageUrl
+        ? [{ url: imageUrl, width: 1200, height: 630, alt: title }]
+        : undefined,
     },
     twitter: {
       card: "summary_large_image",
       title,
       description: desc,
-      images: cover ? [cover] : [],
+      creator: "@ConcreteCalcMax",
+      images: imageUrl ? [imageUrl] : undefined,
     },
     robots: { index: true, follow: true },
   };
@@ -69,37 +78,97 @@ export default async function BlogPostPage({
   const date = frontmatter.date ? new Date(frontmatter.date) : null;
   const category = (frontmatter.category as string | undefined) || undefined;
 
-  const related = category
-    ? await getRelatedByCategory(category, frontmatter.slug)
-    : [];
-
   const categoryLabel =
     category?.replace(/-/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());
 
-  const jsonLd = {
-    "@context": "https://schema.org",
+  const wordCount = content
+    .replace(/<[\s\S]*?>/g, " ")
+    .split(/\s+/)
+    .filter(Boolean).length;
+
+  const datePublished =
+    typeof frontmatter.date === "string" ? frontmatter.date : undefined;
+  const modifiedCandidates = ["updated", "modified", "dateModified", "lastmod"].map(
+    (key) => frontmatter[key] as unknown
+  );
+  const dateModified = (modifiedCandidates.find(
+    (value): value is string => typeof value === "string"
+  ) || datePublished) as string | undefined;
+
+  const authorName =
+    typeof frontmatter["author"] === "string"
+      ? (frontmatter["author"] as string)
+      : "Concrete Calculator Max Team";
+  const keywordsValue = Array.isArray(frontmatter["tags"])
+    ? (frontmatter["tags"] as unknown[])
+        .filter((tag): tag is string => typeof tag === "string")
+        .join(", ")
+    : typeof frontmatter["keywords"] === "string"
+    ? (frontmatter["keywords"] as string)
+    : undefined;
+
+  const articleEntity = {
     "@type": "Article",
     headline: frontmatter.title,
     description: frontmatter.excerpt,
-    image: frontmatter.cover,
+    image: absoluteUrl(frontmatter.cover),
     author: {
       "@type": "Organization",
-      name: "Concrete Calculator Max",
-      url: "https://concretecalculatormax.com",
+      name: authorName,
+      url: SITE_URL,
     },
     publisher: {
       "@type": "Organization",
       name: "Concrete Calculator Max",
       logo: {
         "@type": "ImageObject",
-        url: "https://concretecalculatormax.com/og/logo.png",
+        url: `${SITE_URL}/og/logo.png`,
       },
     },
-    datePublished: frontmatter.date,
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://concretecalculatormax.com/blog/${params.slug}`,
+      "@id": `${SITE_URL}/blog/${params.slug}`,
     },
+    ...(datePublished ? { datePublished } : {}),
+    ...(dateModified ? { dateModified } : {}),
+    ...(wordCount ? { wordCount } : {}),
+    ...(keywordsValue ? { keywords: keywordsValue } : {}),
+  };
+
+  const breadcrumbItems = [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: "Blog",
+      item: `${SITE_URL}/blog`,
+    },
+  ];
+
+  if (category) {
+    breadcrumbItems.push({
+      "@type": "ListItem",
+      position: breadcrumbItems.length + 1,
+      name: categoryLabel ?? category,
+      item: `${SITE_URL}/blog/category/${category}`,
+    });
+  }
+
+  breadcrumbItems.push({
+    "@type": "ListItem",
+    position: breadcrumbItems.length + 1,
+    name: frontmatter.title,
+    item: `${SITE_URL}/blog/${frontmatter.slug}`,
+  });
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      articleEntity,
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: breadcrumbItems,
+      },
+    ],
   };
 
   return (

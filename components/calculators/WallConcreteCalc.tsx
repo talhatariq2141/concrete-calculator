@@ -41,7 +41,6 @@ const MIX_PARTS: Record<Mix, { c: number; s: number; a: number; total: number }>
   };
 
 // Physics / industry constants
-const DENSITY_CONCRETE_KG_M3 = 2400;
 const BULK_DENSITY_CEMENT_KG_M3 = 1440;
 const CEMENT_BAG_KG = 50;
 const DRY_LOSS_FACTOR = 1.54;
