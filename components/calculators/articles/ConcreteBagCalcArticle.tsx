@@ -137,7 +137,10 @@ export default function ConcreteBagsCalcArticle() {
         </div>
 
         {/* H4 How-to */}
-        <h4 className="text-lg font-semibold text-white mt-12 mb-3">
+        <h4
+          id="how-to-use"
+          className="text-lg font-semibold text-white mt-12 mb-3"
+        >
           How to Use the Concrete Bags Calculator
         </h4>
         <div className="rounded-lg bg-slate-900/60 border border-slate-800 p-5">

@@ -1,6 +1,7 @@
 // lib/blog-data.ts
 import fs from "node:fs/promises";
 import path from "node:path";
+import { cache } from "react";
 import matter from "gray-matter";
 
 // ---- Paths -------------------------------------------------
@@ -17,6 +18,7 @@ export type BlogFrontmatter = {
   category?: string;    // e.g. "concrete-bags"
   silo?: string;
   calculator?: string;  // e.g. "concrete-bags"
+  relatedCalculators?: string[];
   related_posts?: string[];
   related_calculator_link?: string;
   // Allow additional frontmatter fields but avoid `any` so linting stays strict.
@@ -54,7 +56,7 @@ async function walkMdx(dir: string): Promise<string[]> {
 }
 
 // ---- Internal: read all posts (front-matter + content optionally)
-async function readAllMdxFrontmatter() {
+const readAllMdxFrontmatter = cache(async function readAllMdxFrontmatter() {
   const files = await walkMdx(POSTS_ROOT);
   const posts = await Promise.all(
     files.map(async (abs) => {
@@ -83,12 +85,12 @@ async function readAllMdxFrontmatter() {
     content: string;
     frontmatter: BlogFrontmatter;
   }>;
-}
+});
 
 // ---- Public API --------------------------------------------
 
 // Flat list for listings (newest first by date)
-export async function getAllPosts(): Promise<BlogListItem[]> {
+export const getAllPosts = cache(async function getAllPosts(): Promise<BlogListItem[]> {
   const entries = await readAllMdxFrontmatter();
   const items = entries.map(({ frontmatter }) => ({
     title: frontmatter.title,
@@ -101,12 +103,14 @@ export async function getAllPosts(): Promise<BlogListItem[]> {
     calculator: frontmatter.calculator,
   })) as BlogListItem[];
 
-  return items.sort((a, b) => {
-    const ad = a.date ? Date.parse(a.date) : 0;
-    const bd = b.date ? Date.parse(b.date) : 0;
-    return bd - ad;
-  });
-}
+  return items
+    .slice()
+    .sort((a, b) => {
+      const ad = a.date ? Date.parse(a.date) : 0;
+      const bd = b.date ? Date.parse(b.date) : 0;
+      return bd - ad;
+    });
+});
 
 export async function getAllPostSlugs(): Promise<string[]> {
   const list = await getAllPosts();

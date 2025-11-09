@@ -132,7 +132,12 @@ export default function SlabConcreteCalcArticle() {
         </div>
 
         {/* How To — must be H4 per your rule */}
-        <h4 className="text-lg font-semibold text-white mt-12 mb-3">How to Use the Slab Concrete Calculator</h4>
+        <h4
+          id="how-to-use"
+          className="text-lg font-semibold text-white mt-12 mb-3"
+        >
+          How to Use the Slab Concrete Calculator
+        </h4>
         <div className="rounded-lg bg-slate-900/60 border border-slate-800 p-5">
         <ol className="list-decimal list-inside space-y-2 text-slate-300">
           

@@ -142,7 +142,10 @@ export default function TankTrenchConcreteCalcArticle() {
         </div>
 
         {/* How-to (H4) */}
-        <h4 className="text-lg font-semibold text-white mt-12 mb-3">
+        <h4
+          id="how-to-use"
+          className="text-lg font-semibold text-white mt-12 mb-3"
+        >
           How to Use the Tank / Trench Concrete Calculator
         </h4>
         <div className="rounded-lg border border-slate-800 p-5 space-y-6">
