@@ -10,6 +10,7 @@ import {
   buildCategoryPagination,
   categoryPagePath,
 } from "@/lib/blog-pagination";
+import { stringifyJsonLd } from "@/lib/jsonLd";
 
 export const revalidate = 300; // ISR refresh
 const PER_PAGE = 9;
@@ -73,15 +74,15 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
     cat.description ||
     `Articles and tutorials in the ${cat.name} category from Concrete Calculator Max.`;
 
-  const otherLinks: Record<string, string> = {};
-  if (pagination.prev) otherLinks["link:prev"] = pagination.prev;
-  if (pagination.next) otherLinks["link:next"] = pagination.next;
+  const paginationHints: Record<string, string> = {};
+  if (pagination.prev) paginationHints["link:prev"] = pagination.prev;
+  if (pagination.next) paginationHints["link:next"] = pagination.next;
 
   return {
     title,
     description,
     alternates: { canonical: pagination.canonical },
-    other: Object.keys(otherLinks).length ? otherLinks : undefined,
+    other: Object.keys(paginationHints).length ? paginationHints : undefined,
     openGraph: {
       type: "website",
       url: pagination.canonical,
@@ -104,7 +105,6 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
       creator: "@ConcreteCalcMax",
       images: [`${SITE_URL}/og/blog-home.png`],
     },
-    other: Object.keys(paginationHints).length ? paginationHints : undefined,
   };
 }
 
@@ -163,6 +163,7 @@ export default async function CategoryPage(props: PageProps) {
       cat.description ||
       `Articles and tutorials in the ${cat.name} category from Concrete Calculator Max.`,
     url: pagination.canonical,
+    itemListElement,
   };
 
   return (
@@ -341,7 +342,7 @@ function Pagination({
   return (
     <nav aria-label="Pagination" className="flex items-center justify-between gap-3">
       <PaginationLink
-        href={pageUrl(slug, page - 1)}
+        href={categoryPagePath(slug, page - 1)}
         disabled={!hasPrev}
         className="inline-flex items-center rounded-md border px-3 py-2 text-sm"
         activeClassName="border-slate-300 text-slate-700 hover:bg-slate-50"
@@ -401,7 +402,7 @@ function Pagination({
       </ul>
 
       <PaginationLink
-        href={pageUrl(slug, page + 1)}
+        href={categoryPagePath(slug, page + 1)}
         disabled={!hasNext}
         className="inline-flex items-center rounded-md border px-3 py-2 text-sm"
         activeClassName="border-slate-300 text-slate-700 hover:bg-slate-50"

@@ -184,7 +184,7 @@ export async function getAllPosts(): Promise<BlogListItem[]> {
       const bd = b.date ? Date.parse(b.date) : 0;
       return bd - ad;
     });
-});
+}
 
 export async function getAllPostSlugs(): Promise<string[]> {
   const list = await getAllPosts();
