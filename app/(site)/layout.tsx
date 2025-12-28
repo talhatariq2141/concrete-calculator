@@ -6,7 +6,7 @@ import { Footer } from "@/components/app/Footer";
 export const metadata: Metadata = {
   // Section defaults for non-blog pages (home, calculators, legal, etc.)
   title: {
-    default: "Concrete Calculators — Concrete Calculator Max",
+    default: "Concrete Calculator Max – Free Concrete Volume & Bag Calculators",
     template: "%s — Concrete Calculator Max",
   },
   description:
