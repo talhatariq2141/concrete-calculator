@@ -16,8 +16,6 @@ import { Info, Printer, Calculator } from "lucide-react";
 
 /* -------------------- Types -------------------- */
 type LinearUnit = "meters" | "yards" | "feet" | "inches" | "centimeter";
-type AreaUnit = "m2" | "yd2" | "ft2" | "in2" | "cm2";
-type VolumeUnit = "m3" | "yd3" | "ft3" | "in3" | "cm3";
 
 /* ----------------- Unit helpers ---------------- */
 const toMetersFactor: Record<LinearUnit, number> = {

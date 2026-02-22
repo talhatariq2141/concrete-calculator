@@ -27,7 +27,10 @@ const routes: string[] = [
   "/calculators/tank-or-trench-concrete-calculator",
   "/calculators/wall-concrete-calculator",
   "/calculators/concrete-bag-calculator",
-  "/calculators/concrete-slab-cost-calculator"
+  "/calculators/concrete-slab-cost-calculator",
+  "/calculators/concrete-slab-weight-calculator",
+  "/calculators/concrete-slab-load-capacity-calculator",
+
 ];
 
 // ✅ Single source of truth for blog post slugs

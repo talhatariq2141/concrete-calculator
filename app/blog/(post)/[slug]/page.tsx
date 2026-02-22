@@ -15,7 +15,6 @@ import { ClientTOC } from "@/components/blog/ClientTOC";
 import {
   getAllPostSlugs,
   getPostBySlug,
-  getRelatedByCategory,
 } from "@/lib/blog-data";
 
 // SSG: discover all slugs (now recursive)
