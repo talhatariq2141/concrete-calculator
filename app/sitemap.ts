@@ -15,6 +15,7 @@ const routes: string[] = [
   "/about-us",
   "/privacy-policy",
   "/terms-of-service",
+  "/disclaimer",
   "/calculators",
   "/calculators/beam-concrete-calculator",
   "/calculators/column-concrete-calculator",
