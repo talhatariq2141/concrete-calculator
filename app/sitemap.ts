@@ -26,33 +26,34 @@ const routes: string[] = [
   "/calculators/staircase-concrete-calculator",
   "/calculators/tank-or-trench-concrete-calculator",
   "/calculators/wall-concrete-calculator",
-  "/calculators/concrete-bag-calculator"
+  "/calculators/concrete-bag-calculator",
+  "/calculators/concrete-slab-cost-calculator"
 ];
 
 // ✅ Single source of truth for blog post slugs
 // Fill this with your 20 posts (pillar + 19). A few are prefilled from our earlier work.
 const blogSlugs: string[] = [
   // Pillar + Concrete Bags cluster (examples — add the rest of your 20 here)
-    "reference-calculating-bags-of-concrete",
-    "calculate-cement-bags-in-concrete",
-    "calculate-bags-of-concrete-mix",
-    "estimate-bags-of-concrete",
-    "science-behind-concrete-bag-calculations", 
-    "convert-concrete-volume-into-bags",
-    "concrete-bags-per-yard",
-    "concrete-bag-mix-ratios", 
-    "choosing-right-concrete-mix-bag", 
-    "ready-mix-concrete-how-many-bags", 
-    "sonotube-bags-of-concrete",
-    "slab-bags-of-concrete", 
-    "fence-post-bags-of-concrete", 
-    "footing-bags-of-concrete",
-    "concrete-bags-in-a-yard",
-    "convert-yards-to-bags",
-    "concrete-bag-size-differences-us-uk-au", 
-    "cement-bag-calculator-projects",
-    "concrete-bag-coverage-and-yield", 
-    "retaining-wall-bags-of-concrete",
+  "reference-calculating-bags-of-concrete",
+  "calculate-cement-bags-in-concrete",
+  "calculate-bags-of-concrete-mix",
+  "estimate-bags-of-concrete",
+  "science-behind-concrete-bag-calculations",
+  "convert-concrete-volume-into-bags",
+  "concrete-bags-per-yard",
+  "concrete-bag-mix-ratios",
+  "choosing-right-concrete-mix-bag",
+  "ready-mix-concrete-how-many-bags",
+  "sonotube-bags-of-concrete",
+  "slab-bags-of-concrete",
+  "fence-post-bags-of-concrete",
+  "footing-bags-of-concrete",
+  "concrete-bags-in-a-yard",
+  "convert-yards-to-bags",
+  "concrete-bag-size-differences-us-uk-au",
+  "cement-bag-calculator-projects",
+  "concrete-bag-coverage-and-yield",
+  "retaining-wall-bags-of-concrete",
   // 👉 Add your remaining slugs here...
 ];
 // Map slugs to absolute paths

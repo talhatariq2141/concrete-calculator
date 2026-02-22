@@ -38,14 +38,14 @@ export const CALCULATORS: CalcCard[] = [
     desc: "Volume for square, rectangular, and circular columns.",
     category: "Column",
     icon: Columns2,
-  },  
+  },
   {
     id: "calculators/concrete-yards-calculator",
     title: "Concrete Yards Calculator",
     desc: "Convert and compute volume into cubic yards.",
     category: "Concrete Yards",
     icon: Ruler,
-  },  
+  },
   {
     id: "calculators/footing-concrete-calculator",
     title: "Footing Concrete Calculator",
@@ -66,7 +66,7 @@ export const CALCULATORS: CalcCard[] = [
     desc: "Cylindrical shafts and drilled piers by length.",
     category: "Pier/Caisson",
     icon: Box,
-  },    
+  },
   {
     id: "calculators/slab-concrete-calculator",
     title: "Slab Concrete Calculator",
@@ -101,8 +101,29 @@ export const CALCULATORS: CalcCard[] = [
     desc: "Calculate how many concrete bags you need with unit conversions",
     category: "Concrete Bags",
     icon: Briefcase,
+  },
+  {
+    id: "calculators/concrete-slab-cost-calculator",
+    title: "Concrete Slab Cost Calculator",
+    desc: "Estimate cost of concrete for slabs, patios, and floors.",
+    category: "Slab",
+    icon: Container,
+  },
+  {
+    id: "calculators/concrete-slab-weight-calculator",
+    title: "Concrete Slab Weight Calculator",
+    desc: "Estimate weight of concrete for slabs, patios, and floors.",
+    category: "Slab",
+    icon: Container,
+  },
+  {
+    id: "calculators/concrete-slab-load-capacity-calculator",
+    title: "Concrete Slab Load Capacity Calculator",
+    desc: "Estimate load capacity of concrete slabs.",
+    category: "Slab",
+    icon: Container,
   }
-  
+
 ];
 
 export const CATEGORIES: Category[] = ["All", "Beam", "Column", "Concrete Yards", "Cost", "Footing", "Concrete Mix", "Pier/Caisson", "Slab", "Staircase", "Tank/Trench", "Wall", "Concrete Bags"];
