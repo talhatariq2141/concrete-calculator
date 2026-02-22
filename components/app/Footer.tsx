@@ -18,8 +18,8 @@ export const Footer: React.FC<FooterProps> = ({ variant = "dark", className }) =
     (className ?? "");
 
   const textPrimary = isLight ? "text-slate-600" : "text-slate-400";
-  const textLinks   = isLight ? "text-slate-600" : "text-slate-500";
-  const linkHover   = isLight ? "hover:text-teal-700" : "hover:text-teal-400";
+  const textLinks = isLight ? "text-slate-600" : "text-slate-500";
+  const linkHover = isLight ? "hover:text-teal-700" : "hover:text-teal-400";
 
   return (
     <footer className={wrapper}>
@@ -33,6 +33,9 @@ export const Footer: React.FC<FooterProps> = ({ variant = "dark", className }) =
           </Link>
           <Link href="/terms-of-service" className={`transition-colors ${linkHover}`}>
             Terms of Service
+          </Link>
+          <Link href="/disclaimer" className={`transition-colors ${linkHover}`}>
+            Disclaimer
           </Link>
           <Link href="/about-us" className={`transition-colors ${linkHover}`}>
             About Us
