@@ -184,7 +184,6 @@ export default function ConcreteBagsCalculator() {
   const [customVol, setCustomVol] = React.useState<string>(""); // user will enter in yd³ or m³ via unit pick
 
   // Conversions mini-tool
-  const [convMode, setConvMode] = React.useState<"bagsToYards" | "yardsToBags" | "volToBags">("bagsToYards");
   const [convBags, setConvBags] = React.useState<string>("");
   const [convYards, setConvYards] = React.useState<string>("");
   const [convVol, setConvVol] = React.useState<string>("");
@@ -195,7 +194,7 @@ export default function ConcreteBagsCalculator() {
   /* =========================
      Derived compute
   ========================= */
-  const { errors, totals, resultBags } = React.useMemo(() => {
+  const { errors, totals } = React.useMemo(() => {
     const errs: string[] = [];
 
     // Compute volume in m³ based on project type & inputs
@@ -270,7 +269,7 @@ export default function ConcreteBagsCalculator() {
       bags10: bagsExact * 1.10,
     };
 
-    return { errors: errs, totals, resultBags: bagsExact };
+    return { errors: errs, totals };
   }, [
     system, unit, proj, bag,
     slabL, slabW, slabT,
@@ -292,7 +291,6 @@ export default function ConcreteBagsCalculator() {
     setTubeD(""); setTubeH(""); setTubeCount("");
     setCustomVol("");
 
-    setConvMode("bagsToYards");
     setConvBags(""); setConvYards(""); setConvVol("");
 
     setSubmitted(false);
@@ -388,23 +386,23 @@ export default function ConcreteBagsCalculator() {
       <div class="card">
         <div class="label">Volume</div>
         <div class="kv"><div class="k">m³</div><div class="v">${nf(totals.m3)}</div></div>
-        <div class="kv"><div class="k">yd³</div><div class="v">${nf(totals.yd3,3)}</div></div>
-        <div class="kv"><div class="k">ft³</div><div class="v">${nf(totals.ft3,3)}</div></div>
+        <div class="kv"><div class="k">yd³</div><div class="v">${nf(totals.yd3, 3)}</div></div>
+        <div class="kv"><div class="k">ft³</div><div class="v">${nf(totals.ft3, 3)}</div></div>
       </div>
       <div class="card">
         <div class="label">Bags Needed</div>
-        <div class="kv"><div class="k">Exact</div><div class="v">${nf(totals.bagsExact,3)}</div></div>
-        <div class="kv"><div class="k">+5%</div><div class="v">${nf(totals.bags5,3)}</div></div>
-        <div class="kv"><div class="k">+10%</div><div class="v">${nf(totals.bags10,3)}</div></div>
+        <div class="kv"><div class="k">Exact</div><div class="v">${nf(totals.bagsExact, 3)}</div></div>
+        <div class="kv"><div class="k">+5%</div><div class="v">${nf(totals.bags5, 3)}</div></div>
+        <div class="kv"><div class="k">+10%</div><div class="v">${nf(totals.bags10, 3)}</div></div>
       </div>
     </div>
 
     <!-- Ordering Helper (Yards) -->
     <h2 style="margin-top:16px;">Cubic Yards (for ordering)</h2>
     <div class="grid">
-      <div class="card"><div class="label">yd³ (net)</div><div class="value-md">${nf(totals.yd3,3)}</div></div>
-      <div class="card"><div class="label">yd³ (+5%)</div><div class="value-md">${nf(totals.yd3*1.05,3)}</div></div>
-      <div class="card"><div class="label">yd³ (+10%)</div><div class="value-md">${nf(totals.yd3*1.10,3)}</div></div>
+      <div class="card"><div class="label">yd³ (net)</div><div class="value-md">${nf(totals.yd3, 3)}</div></div>
+      <div class="card"><div class="label">yd³ (+5%)</div><div class="value-md">${nf(totals.yd3 * 1.05, 3)}</div></div>
+      <div class="card"><div class="label">yd³ (+10%)</div><div class="value-md">${nf(totals.yd3 * 1.10, 3)}</div></div>
     </div>
 
     <div class="footer">
@@ -737,10 +735,10 @@ export default function ConcreteBagsCalculator() {
                         <Input readOnly value={
                           convVol
                             ? toFixedSmart(
-                                (system === "imperial"
-                                  ? clampMin(safeNum(convVol)) * YD3_TO_M3
-                                  : clampMin(safeNum(convVol))) / bagYieldM3[bag],
-                                3)
+                              (system === "imperial"
+                                ? clampMin(safeNum(convVol)) * YD3_TO_M3
+                                : clampMin(safeNum(convVol))) / bagYieldM3[bag],
+                              3)
                             : ""
                         } className={fieldInputClass} />
                         <span className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-200 text-xs">bags</span>

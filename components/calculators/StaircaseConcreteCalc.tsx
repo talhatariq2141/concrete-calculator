@@ -341,12 +341,6 @@ export default function StaircaseConcreteCalc() {
   const handlePrint = () => {
     if (!submitted || !totals.valid) return;
 
-    const breakdownRows =
-      Object.entries(breakdown).length > 0
-        ? Object.entries(breakdown)
-            .map(([k, v]) => `<div class="kv"><div class="k">${k}</div><div class="v">${nf(v)}</div></div>`)
-            .join("")
-        : `<div class="kv"><div class="k">Breakdown</div><div class="v">—</div></div>`;
 
     const now = new Date().toLocaleString();
 
@@ -425,12 +419,11 @@ export default function StaircaseConcreteCalc() {
     <!-- Breakdown -->
     <h2 style="margin-top:16px;">Breakdown (m³)</h2>
     <div class="grid">
-      ${
-        Object.entries(breakdown).length > 0
-          ? Object.entries(breakdown)
-              .map(([k, v]) => `<div class="kv"><div class="k">${k}</div><div class="v">${nf(v)}</div></div>`)
-              .join("")
-          : `<div class="kv"><div class="k">—</div><div class="v">—</div></div>`
+      ${Object.entries(breakdown).length > 0
+        ? Object.entries(breakdown)
+          .map(([k, v]) => `<div class="kv"><div class="k">${k}</div><div class="v">${nf(v)}</div></div>`)
+          .join("")
+        : `<div class="kv"><div class="k">—</div><div class="v">—</div></div>`
       }
     </div>
 

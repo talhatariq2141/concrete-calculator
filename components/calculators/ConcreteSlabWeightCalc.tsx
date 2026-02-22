@@ -178,7 +178,6 @@ export default function ConcreteSlabWeightCalc() {
     };
 
     /* ---------------- PRINT / SAVE ---------------- */
-    const LOGO_URL = "/logo.svg";
 
     const fmt = (n: number, decimals = 2) =>
         Intl.NumberFormat(undefined, {

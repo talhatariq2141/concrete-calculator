@@ -3,8 +3,6 @@
 import type { Metadata } from "next";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
-import { Header } from "@/components/app/Header";
-import { Footer } from "@/components/app/Footer";
 import { ThemeProvider } from "@/components/app/theme-provider";
 import { JetBrains_Mono, Poppins } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
@@ -122,15 +120,15 @@ export default function RootLayout({
         <meta name="msvalidate.01" content="1CD2FCEA3D1A7CE25462E9DDC3234B05" />
       </head>
       <body>
-        <ThemeProvider 
-          attribute="class" 
-          defaultTheme="dark" 
-          enableSystem 
-          disableTransitionOnChange 
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
           enableColorScheme={false}
-          >          
-            {children}
-          
+        >
+          {children}
+
         </ThemeProvider>
         <Analytics />
         <SpeedInsights />

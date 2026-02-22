@@ -28,20 +28,7 @@ const toMetersFactor: Record<LinearUnit, number> = {
     centimeter: 0.01,
 };
 
-const areaUnits: { key: AreaUnit; label: string; fromMeters2: (m2: number) => number }[] = [
-    { key: "m2", label: "m² (square meters)", fromMeters2: (m2) => m2 },
-    { key: "yd2", label: "yd² (square yards)", fromMeters2: (m2) => m2 / (0.9144 ** 2) },
-    { key: "ft2", label: "ft² (square feet)", fromMeters2: (m2) => m2 / (0.3048 ** 2) },
-    { key: "in2", label: "in² (square inches)", fromMeters2: (m2) => m2 / (0.0254 ** 2) },
-    { key: "cm2", label: "cm² (square centimeters)", fromMeters2: (m2) => m2 / (0.01 ** 2) },
-];
 
-const volumeUnits: { key: VolumeUnit; label: string; fromMeters3: (m3: number) => number }[] = [
-    { key: "m3", label: "m³ (cubic meters)", fromMeters3: (m3) => m3 },
-    { key: "yd3", label: "yd³ (cubic yards)", fromMeters3: (m3) => m3 / (0.9144 ** 3) },
-    { key: "ft3", label: "ft³ (cubic feet)", fromMeters3: (m3) => m3 / (0.3048 ** 3) },
-    { key: "in3", label: "in³ (cubic inches)", fromMeters3: (m3) => m3 / (0.0254 ** 3) },
-];
 
 const linearUnitOptions: { value: LinearUnit; label: string }[] = [
     { value: "feet", label: "feet" },
@@ -166,7 +153,6 @@ export default function ConcreteSlabCostCalc() {
 
         // 3. Adjusted Volume (with waste)
         const adjusted_cuyd = volume_cuyd * (1 + orPercent);
-        const adjusted_cuft = volume_cuft * (1 + orPercent);
 
         // 4. Labor & Extras (based on physical area)
         const labor_total = area_sqft * lRate;
@@ -445,7 +431,7 @@ export default function ConcreteSlabCostCalc() {
                         <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                             <div>
                                 <Label className="text-teal-500">Supply Method</Label>
-                                <Select value={method} onValueChange={(v: any) => { setMethod(v); setSubmitted(false); }}>
+                                <Select value={method} onValueChange={(v: string) => { setMethod(v as "ready-mix" | "bagged"); setSubmitted(false); }}>
                                     <SelectTrigger className={selectTriggerClass}>
                                         <SelectValue />
                                     </SelectTrigger>

@@ -208,7 +208,6 @@ export default function ConcreteSlabLoadCapacityCalc() {
         setSubmitted(true);
     };
 
-    const numberOrEmpty = (v: string) => (v === "" ? "" : v.replace(/[^0-9.]/g, ""));
 
     const resetAll = () => {
         setThickness("6");
@@ -349,7 +348,7 @@ export default function ConcreteSlabLoadCapacityCalc() {
                                 <NumberInput id="span" value={span} onChange={setSpan} badge="ft" />
                             </div>
                             <div>
-                                <Label htmlFor="fc" className="text-slate-300">Concrete Strength (f'c)</Label>
+                                <Label htmlFor="fc" className="text-slate-300">Concrete Strength (f&apos;c)</Label>
                                 <NumberInput id="fc" value={fc} onChange={setFc} badge="psi" />
                             </div>
                             <div>

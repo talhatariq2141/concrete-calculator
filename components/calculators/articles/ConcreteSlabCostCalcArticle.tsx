@@ -110,7 +110,7 @@ export default function ConcreteSlabCostCalcArticle() {
                 <div className="rounded-lg bg-slate-900/60 border border-slate-800 p-5">
                     <ul className="space-y-4 text-slate-300">
                         <WhyItem>Accurate financial planning for patios, driveways, garage floors, and shed bases.</WhyItem>
-                        <WhyItem>Avoid "sticker shock" by understanding the breakdown between material and labor costs upfront.</WhyItem>
+                        <WhyItem>Avoid &quot;sticker shock&quot; by understanding the breakdown between material and labor costs upfront.</WhyItem>
                         <WhyItem>Transparent formulas based on current US industry standards for ready-mix and labor averages.</WhyItem>
                         <WhyItem>Compare supply methods to see if DIY bagging is truly cheaper than a professional truck delivery.</WhyItem>
                         <WhyItem>SEO and construction-ready precise calculations that help you negotiate better with local suppliers.</WhyItem>

@@ -69,9 +69,9 @@ export default async function BlogPostPage({
   const date = frontmatter.date ? new Date(frontmatter.date) : null;
   const category = (frontmatter.category as string | undefined) || undefined;
 
-  const related = category
-    ? await getRelatedByCategory(category, frontmatter.slug)
-    : [];
+  // const related = category
+  //   ? await getRelatedByCategory(category, frontmatter.slug)
+  //   : [];
 
   const categoryLabel =
     category?.replace(/-/g, " ").replace(/\b\w/g, (m) => m.toUpperCase());

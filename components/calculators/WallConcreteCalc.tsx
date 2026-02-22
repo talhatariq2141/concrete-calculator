@@ -34,14 +34,13 @@ type Opening = {
 type Mix = "1:1.5:3" | "1:2:4" | "1:3:6";
 
 const MIX_PARTS: Record<Mix, { c: number; s: number; a: number; total: number }> =
-  {
-    "1:1.5:3": { c: 1, s: 1.5, a: 3, total: 5.5 },
-    "1:2:4": { c: 1, s: 2, a: 4, total: 7 },
-    "1:3:6": { c: 1, s: 3, a: 6, total: 10 },
-  };
+{
+  "1:1.5:3": { c: 1, s: 1.5, a: 3, total: 5.5 },
+  "1:2:4": { c: 1, s: 2, a: 4, total: 7 },
+  "1:3:6": { c: 1, s: 3, a: 6, total: 10 },
+};
 
 // Physics / industry constants
-const DENSITY_CONCRETE_KG_M3 = 2400;
 const BULK_DENSITY_CEMENT_KG_M3 = 1440;
 const CEMENT_BAG_KG = 50;
 const DRY_LOSS_FACTOR = 1.54;
@@ -241,23 +240,23 @@ export default function WallConcreteCalc() {
   =========================================================================== */
 
   function buildPrintHtml() {
-  const now = new Date().toLocaleString();
+    const now = new Date().toLocaleString();
 
-  const openingsRows =
-    openings
-      .filter((o) => o.width || o.height || o.count)
-      .map(
-        (o) => `
+    const openingsRows =
+      openings
+        .filter((o) => o.width || o.height || o.count)
+        .map(
+          (o) => `
       <div class="kv"><div class="k">Opening</div>
         <div class="v">
           ${o.width || "—"}×${o.height || "—"} ${unitAbbrev[lenUnit]} × ${o.count || "—"} pcs
         </div>
       </div>`
-      )
-      .join("") ||
-    `<div class="kv"><div class="k">Openings</div><div class="v">—</div></div>`;
+        )
+        .join("") ||
+      `<div class="kv"><div class="k">Openings</div><div class="v">—</div></div>`;
 
-  return `<!doctype html>
+    return `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8" />
@@ -316,10 +315,10 @@ export default function WallConcreteCalc() {
       <div class="card">
         <div class="label">Materials</div>
         <div class="kv"><div class="k">Dry Volume (m³)</div><div class="v">${nf(dryVol)}</div></div>
-        <div class="kv"><div class="k">Cement (bags)</div><div class="v">${nf(cementBags,2)}</div></div>
+        <div class="kv"><div class="k">Cement (bags)</div><div class="v">${nf(cementBags, 2)}</div></div>
         <div class="kv"><div class="k">Sand (m³)</div><div class="v">${nf(sandVolM3)}</div></div>
         <div class="kv"><div class="k">Aggregate (m³)</div><div class="v">${nf(aggVolM3)}</div></div>
-        <div class="kv"><div class="k">Water (liters)</div><div class="v">${nf(waterLiters,0)}</div></div>
+        <div class="kv"><div class="k">Water (liters)</div><div class="v">${nf(waterLiters, 0)}</div></div>
       </div>
     </div>
 
@@ -344,7 +343,7 @@ export default function WallConcreteCalc() {
   <script>window.addEventListener('load',()=>setTimeout(()=>window.print(),100));</script>
 </body>
 </html>`;
-}
+  }
 
 
   function handlePrint() {

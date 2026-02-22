@@ -196,7 +196,7 @@ export default function ConcreteSlabCostCalculatorPage() {
                             </div>
                             <p className="mt-3 ml-2 text-sm sm:text-base lg:text-lg text-slate-400 leading-relaxed font-poppins">
                                 Our Concrete Slab Cost Calculator helps you estimate the total financial layout for your next pour.
-                                Whether it's a small backyard patio or a full garage slab, compare Ready-Mix and Bagged costs,
+                                Whether it&apos;s a small backyard patio or a full garage slab, compare Ready-Mix and Bagged costs,
                                 factor in local labor rates, and account for reinforcement extras.
                             </p>
                         </div>

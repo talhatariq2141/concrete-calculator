@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
-import { CheckCircle2, Ruler, ShieldCheck, Info, HelpingHand, ListChecks, Scale } from "lucide-react";
+import { CheckCircle2, Ruler, ShieldCheck, HelpingHand, ListChecks, Scale } from "lucide-react";
 
 export default function ConcreteSlabLoadCapacityCalcArticle() {
     const [open, setOpen] = useState(false);
@@ -114,7 +114,7 @@ export default function ConcreteSlabLoadCapacityCalcArticle() {
                     </p>
                     <ul className="space-y-4">
                         <WhyItem>Flexural Strength: The ability of the tension reinforcement (rebar) to resist bending moments under downward loads.</WhyItem>
-                        <WhyItem>Shear Resistance: The capacity of the concrete section itself to resist being 'cut' near the supports.</WhyItem>
+                        <WhyItem>Shear Resistance: The capacity of the concrete section itself to resist being &apos;cut&apos; near the supports.</WhyItem>
                         <WhyItem>Dead vs Live Load: Dead load remains constant (slab weight, finishes), while Live Load (occupants, furniture) is the variable capacity we seek to determine.</WhyItem>
                         <WhyItem>Effective Depth (d): The distance from the top of the concrete to the center of the rebar; this factor is critical for mechanical advantage in bending.</WhyItem>
                     </ul>
