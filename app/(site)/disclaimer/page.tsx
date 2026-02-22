@@ -79,9 +79,9 @@ export default function DisclaimerPage() {
 
                         <div className="bg-slate-800 border border-slate-700 rounded-lg p-6">
                             <Info className="h-12 w-12 text-teal-400 mb-4" />
-                            <h2 className="text-2xl font-semibold text-white mb-3">"As Is" Basis</h2>
+                            <h2 className="text-2xl font-semibold text-white mb-3">&quot;As Is&quot; Basis</h2>
                             <p className="text-slate-300">
-                                Our services are provided on an "as is" and "as available" basis without any warranties of any kind, either express or implied.
+                                Our services are provided on an &quot;as is&quot; and &quot;as available&quot; basis without any warranties of any kind, either express or implied.
                             </p>
                         </div>
                     </div>
