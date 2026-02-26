@@ -122,6 +122,13 @@ export const CALCULATORS: CalcCard[] = [
     desc: "Estimate load capacity of concrete slabs.",
     category: "Slab",
     icon: Container,
+  },
+  {
+    id: "calculators/concrete-driveway-cost-calculator",
+    title: "Concrete Driveway Cost Calculator",
+    desc: "Estimate cost of concrete for driveways.",
+    category: "Cost",
+    icon: Container,
   }
 
 ];
