@@ -19,16 +19,16 @@ import EEATBlock from "@/components/app/EEATBlock";
 
 /** Page-level metadata: precise title/desc, canonical, OG/Twitter parity */
 export const metadata: Metadata = {
-  "title": "Footing Concrete Calculator — Concrete Calculator Max",
+  "title": "Footing Concrete Calculator",
   "description":
     "Quickly calculate concrete volume for rectangular, square, or circular footings. Includes waste allowance, dry-volume factor, and unit switching (m³/yd³/ft³).",
   "alternates": {
     "canonical":
-      "https://concretecalculatormax.com/calculators/footing-concrete-calculator"
+      "https://www.concretecalculatormax.com/calculators/footing-concrete-calculator"
   },
   "openGraph": {
     "type": "article",
-    "url": "https://concretecalculatormax.com/calculators/footing-concrete-calculator",
+    "url": "https://www.concretecalculatormax.com/calculators/footing-concrete-calculator",
     "title": "Footing Concrete Calculator",
     "description":
       "Estimate footing concrete volume (rectangular/square or circular) with waste and dry-volume options. m³/yd³ supported.",
@@ -61,157 +61,157 @@ export default function FootingConcreteCalculatorPage() {
    * - FAQPage: common Qs (ensure these Q/As also appear visibly in the Article)
    */
   const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebApplication",
-      "@id":
-        "https://concretecalculatormax.com/calculators/footing-concrete-calculator#app",
-      "name": "Footing Concrete Calculator",
-      "url": "https://concretecalculatormax.com/calculators/footing-concrete-calculator",
-      "applicationCategory": "UtilityApplication",
-      "operatingSystem": "Web",
-      "description":
-        "Calculate concrete volume for rectangular/square and circular footings with waste allowance and dry-volume factor. Toggle outputs in m³, yd³, or ft³.",
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-      "publisher": {
-        "@type": "Organization",
-        "name": "Concrete Calculator Max",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://concretecalculatormax.com/og/logo.png"
-        }
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id":
+          "https://www.concretecalculatormax.com/calculators/footing-concrete-calculator#app",
+        "name": "Footing Concrete Calculator",
+        "url": "https://www.concretecalculatormax.com/calculators/footing-concrete-calculator",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "Web",
+        "description":
+          "Calculate concrete volume for rectangular/square and circular footings with waste allowance and dry-volume factor. Toggle outputs in m³, yd³, or ft³.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Concrete Calculator Max",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://www.concretecalculatormax.com/og/logo.png"
+          }
+        },
+        "potentialAction": { "@type": "Action", "name": "Calculate Footing Concrete" }
       },
-      "potentialAction": { "@type": "Action", "name": "Calculate Footing Concrete" }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://concretecalculatormax.com"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Calculators",
-          "item": "https://concretecalculatormax.com/calculators"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Footing Concrete Calculator",
-          "item":
-            "https://concretecalculatormax.com/calculators/footing-concrete-calculator"
-        }
-      ]
-    },
-    {
-      "@type": "HowTo",
-      "name": "How to calculate concrete for a footing",
-      "totalTime": "PT1M",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "name": "Choose footing shape",
-          "text":
-            "Select rectangular/square or circular footing based on your design."
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Enter dimensions",
-          "text":
-            "For rectangular/square: enter L, W, and D. For circular: enter diameter and depth. Choose input units."
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Add allowances (optional)",
-          "text":
-            "Include a waste percentage and a dry-volume factor for material sizing if required."
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Calculate",
-          "text":
-            "Click Calculate to get total volume in m³ and yd³ (and ft³ if enabled)."
-        }
-      ],
-      "supply": [
-        { "@type": "HowToSupply", "name": "Footing dimensions and specifications" }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Can I calculate both rectangular and circular footings?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text":
-              "Yes. Use the tabs to switch between Rectangular/Square and Circular modes; each uses the appropriate geometric formula."
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://www.concretecalculatormax.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Calculators",
+            "item": "https://www.concretecalculatormax.com/calculators"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Footing Concrete Calculator",
+            "item":
+              "https://www.concretecalculatormax.com/calculators/footing-concrete-calculator"
           }
-        },
-        {
-          "@type": "Question",
-          "name": "Which input units are supported?",
-          "acceptedAnswer": {
-            "@type": "Answer",
+        ]
+      },
+      {
+        "@type": "HowTo",
+        "name": "How to calculate concrete for a footing",
+        "totalTime": "PT1M",
+        "step": [
+          {
+            "@type": "HowToStep",
+            "name": "Choose footing shape",
             "text":
-              "Meters (m), centimeters (cm), feet (ft), and inches (in). You can display results in m³, yd³, or ft³."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How much waste should I add for footings?",
-          "acceptedAnswer": {
-            "@type": "Answer",
+              "Select rectangular/square or circular footing based on your design."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Enter dimensions",
             "text":
-              "5–10% is common to account for over-excavation, trench irregularities, and placement losses. Follow your project specifications."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Why is there a ‘Show in’ selector?",
-          "acceptedAnswer": {
-            "@type": "Answer",
+              "For rectangular/square: enter L, W, and D. For circular: enter diameter and depth. Choose input units."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Add allowances (optional)",
             "text":
-              "It lets you view the same computed volume in cubic meters, cubic yards, or cubic feet, which helps when coordinating with suppliers."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What does the yards helper do?",
-          "acceptedAnswer": {
-            "@type": "Answer",
+              "Include a waste percentage and a dry-volume factor for material sizing if required."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Calculate",
             "text":
-              "It provides yd³ with +5% and +10% additions to quickly round orders for ready-mix deliveries."
+              "Click Calculate to get total volume in m³ and yd³ (and ft³ if enabled)."
           }
-        },
-        {
-          "@type": "Question",
-          "name": "Does this include rebar, cover, or mix design?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text":
-              "No. The calculator focuses on volume. Reinforcement and mix grade must follow your structural drawings and local codes."
+        ],
+        "supply": [
+          { "@type": "HowToSupply", "name": "Footing dimensions and specifications" }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Can I calculate both rectangular and circular footings?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "Yes. Use the tabs to switch between Rectangular/Square and Circular modes; each uses the appropriate geometric formula."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which input units are supported?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "Meters (m), centimeters (cm), feet (ft), and inches (in). You can display results in m³, yd³, or ft³."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How much waste should I add for footings?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "5–10% is common to account for over-excavation, trench irregularities, and placement losses. Follow your project specifications."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Why is there a ‘Show in’ selector?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "It lets you view the same computed volume in cubic meters, cubic yards, or cubic feet, which helps when coordinating with suppliers."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What does the yards helper do?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "It provides yd³ with +5% and +10% additions to quickly round orders for ready-mix deliveries."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does this include rebar, cover, or mix design?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "No. The calculator focuses on volume. Reinforcement and mix grade must follow your structural drawings and local codes."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I print or save the calculation?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "Yes. Use the Print / Save button to export a clean, A4-friendly summary of your inputs and results."
+            }
           }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I print or save the calculation?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text":
-              "Yes. Use the Print / Save button to export a clean, A4-friendly summary of your inputs and results."
-          }
-        }
-      ]
-    }
-  ]
-};
+        ]
+      }
+    ]
+  };
 
 
   return (
@@ -255,21 +255,21 @@ export default function FootingConcreteCalculatorPage() {
                   </div>
                   <h1 className="text-lg sm:text-2xl lg:text-3xl text-slate-200 font-bold font-poppins tracking-tight leading-tight">
                     Footing Concrete Calculator
-                  </h1>                  
+                  </h1>
                 </div>
                 <EEATBlock
-                    reviewerName="Engr. Talha Tariq"
-                    licenseNumber="PEC-CIVIL-37815"
-                    lastUpdated="2025-10-24"
-                  />
+                  reviewerName="Engr. Talha Tariq"
+                  licenseNumber="PEC-CIVIL-37815"
+                  lastUpdated="2025-10-24"
+                />
               </div>
               <div>
-              <p className="mt-3 ml-2 text-sm sm:text-base lg:text-lg text-slate-400 leading-relaxed font-poppins">
-                Quickly estimate concrete volume for rectangular, square, or circular footings. Enter your dimensions,
-                choose units, and add waste or dry-volume factors. Results show in m³ and yd³ (ft³ available).
-              </p>
+                <p className="mt-3 ml-2 text-sm sm:text-base lg:text-lg text-slate-400 leading-relaxed font-poppins">
+                  Quickly estimate concrete volume for rectangular, square, or circular footings. Enter your dimensions,
+                  choose units, and add waste or dry-volume factors. Results show in m³ and yd³ (ft³ available).
+                </p>
               </div>
-            </div>            
+            </div>
 
             {/* ===== Calculator Slot ===== */}
             <FootingConcreteCalc />

@@ -12,11 +12,11 @@ export const metadata: Metadata = {
   description:
     "Guides, tutorials, and concrete calculation formulas for slabs, columns, beams, walls, and more.",
   alternates: {
-    canonical: "https://concretecalculatormax.com/blog",
+    canonical: "https://www.concretecalculatormax.com/blog",
   },
   openGraph: {
     type: "website",
-    url: "https://concretecalculatormax.com/blog",
+    url: "https://www.concretecalculatormax.com/blog",
     title: "Concrete Calculator Blog",
     description:
       "Practical concrete calculation guides, examples, and how-tos — by Concrete Calculator Max.",

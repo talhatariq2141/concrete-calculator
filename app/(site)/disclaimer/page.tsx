@@ -6,7 +6,7 @@ export const metadata = {
     description:
         'Read our professional disclaimer regarding the use of our concrete calculators. Learn about estimate accuracy, professional advice, and limitation of liability.',
     alternates: {
-        canonical: 'https://concretecalculatormax.com/disclaimer',
+        canonical: 'https://www.concretecalculatormax.com/disclaimer',
     },
 };
 
@@ -21,16 +21,15 @@ export default function DisclaimerPage() {
     const jsonLd = {
         "@context": "https://schema.org",
         "@type": "WebPage",
-        "@id": "https://concretecalculatormax.com/disclaimer#policy",
-        url: "https://concretecalculatormax.com/disclaimer",
-        name: "Disclaimer — Concrete Calculator Max",
-        description:
-            "Concrete Calculator Max professional disclaimer regarding calculation accuracy and professional advice.",
+        "@id": "https://www.concretecalculatormax.com/disclaimer#policy",
+        url: "https://www.concretecalculatormax.com/disclaimer",
+        name: "Disclaimer",
+        description: "Official liability and accuracy disclaimer for our calculator tools.",
         inLanguage: "en",
         datePublished: "2023-11-01",
         dateModified: lastUpdatedIso,
         publisher: {
-            "@id": "https://concretecalculatormax.com/#organization",
+            "@id": "https://www.concretecalculatormax.com/#organization",
         },
     };
 

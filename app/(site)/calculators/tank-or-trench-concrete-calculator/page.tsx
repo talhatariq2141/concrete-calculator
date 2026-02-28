@@ -18,16 +18,16 @@ import EEATBlock from "@/components/app/EEATBlock";
 
 /** Page-level metadata: precise title/desc, canonical, OG/Twitter parity */
 export const metadata: Metadata = {
-  "title": "Tank / Trench Concrete Calculator — Concrete Calculator Max",
+  "title": "Tank / Trench Concrete Calculator",
   "description":
     "Compute concrete volume for rectangular and circular tanks and foundation trenches. Enter internal dimensions and thickness, add waste allowance, and get results in m³/yd³/ft³.",
   "alternates": {
     "canonical":
-      "https://concretecalculatormax.com/calculators/tank-or-trench-concrete-calculator"
+      "https://www.concretecalculatormax.com/calculators/tank-or-trench-concrete-calculator"
   },
   "openGraph": {
     "type": "article",
-    "url": "https://concretecalculatormax.com/calculators/tank-or-trench-concrete-calculator",
+    "url": "https://www.concretecalculatormax.com/calculators/tank-or-trench-concrete-calculator",
     "title": "Tank / Trench Concrete Calculator",
     "description":
       "Instant concrete volumes for tanks (rectangular/circular) and trenches with waste and unit switching.",
@@ -59,157 +59,157 @@ export default function TankTrenchCalculatorPage() {
    * - FAQPage: common Qs (ensure these Q/As also appear visibly in the Article)
    */
   const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebApplication",
-      "@id":
-        "https://concretecalculatormax.com/calculators/tank-or-trench-concrete-calculator#app",
-      "name": "Tank / Trench Concrete Calculator",
-      "url": "https://concretecalculatormax.com/calculators/tank-or-trench-concrete-calculator",
-      "applicationCategory": "UtilityApplication",
-      "operatingSystem": "Web",
-      "description":
-        "Calculate concrete volume for rectangular/circular tanks and foundation trenches. Includes unit switching, thickness handling, waste allowance, and ordering helpers.",
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-      "publisher": {
-        "@type": "Organization",
-        "name": "Concrete Calculator Max",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://concretecalculatormax.com/og/logo.png"
-        }
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id":
+          "https://www.concretecalculatormax.com/calculators/tank-or-trench-concrete-calculator#app",
+        "name": "Tank / Trench Concrete Calculator",
+        "url": "https://www.concretecalculatormax.com/calculators/tank-or-trench-concrete-calculator",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "Web",
+        "description":
+          "Calculate concrete volume for rectangular/circular tanks and foundation trenches. Includes unit switching, thickness handling, waste allowance, and ordering helpers.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Concrete Calculator Max",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://www.concretecalculatormax.com/og/logo.png"
+          }
+        },
+        "potentialAction": { "@type": "Action", "name": "Calculate Tank/Trench Concrete" }
       },
-      "potentialAction": { "@type": "Action", "name": "Calculate Tank/Trench Concrete" }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://concretecalculatormax.com"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Calculators",
-          "item": "https://concretecalculatormax.com/calculators"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Tank / Trench Concrete Calculator",
-          "item":
-            "https://concretecalculatormax.com/calculators/tank-or-trench-concrete-calculator"
-        }
-      ]
-    },
-    {
-      "@type": "HowTo",
-      "name": "How to calculate concrete for a tank or trench",
-      "totalTime": "PT1M",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "name": "Choose structure",
-          "text":
-            "Select Rectangular Tank, Circular Tank, or Trench based on your project."
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Enter internal dimensions & thickness",
-          "text":
-            "Provide internal length/width/height (or diameter/height) and wall/base thickness; choose input units."
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Apply allowances (optional)",
-          "text":
-            "Add 5–10% waste to cover losses and tolerances; optionally apply a dry-volume factor if you’re sizing dry constituents."
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Calculate and review outputs",
-          "text":
-            "Click Calculate to get total volume in m³ and yd³ (and ft³ if enabled). Use the ordering helpers (+5%/+10%) as needed."
-        }
-      ],
-      "supply": [
-        { "@type": "HowToSupply", "name": "Internal dimensions and thicknesses" }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Can I calculate both rectangular and trapezoidal trenches?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text":
-              "Yes. Choose Rectangular to use a single width, or Trapezoidal to enter top and bottom widths; the calculator uses the correct area formula."
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://www.concretecalculatormax.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Calculators",
+            "item": "https://www.concretecalculatormax.com/calculators"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Tank / Trench Concrete Calculator",
+            "item":
+              "https://www.concretecalculatormax.com/calculators/tank-or-trench-concrete-calculator"
           }
-        },
-        {
-          "@type": "Question",
-          "name": "How are tank volumes computed?",
-          "acceptedAnswer": {
-            "@type": "Answer",
+        ]
+      },
+      {
+        "@type": "HowTo",
+        "name": "How to calculate concrete for a tank or trench",
+        "totalTime": "PT1M",
+        "step": [
+          {
+            "@type": "HowToStep",
+            "name": "Choose structure",
             "text":
-              "Both tank modes compute an outer concrete shell minus the inner water volume. We also show a breakdown for base slab, walls, and cover slab."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Which units can I use?",
-          "acceptedAnswer": {
-            "@type": "Answer",
+              "Select Rectangular Tank, Circular Tank, or Trench based on your project."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Enter internal dimensions & thickness",
             "text":
-              "Meters, centimeters, feet, or inches. Pick one unit and enter all dimensions consistently; the tool converts internally."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "What waste percentage should I add?",
-          "acceptedAnswer": {
-            "@type": "Answer",
+              "Provide internal length/width/height (or diameter/height) and wall/base thickness; choose input units."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Apply allowances (optional)",
             "text":
-              "5–10% is common for over-excavation and placement losses. Use higher allowances if site access or formwork is challenging."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How do I get cubic yards for ordering?",
-          "acceptedAnswer": {
-            "@type": "Answer",
+              "Add 5–10% waste to cover losses and tolerances; optionally apply a dry-volume factor if you’re sizing dry constituents."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Calculate and review outputs",
             "text":
-              "After calculating, yardage is shown along with +5% and +10% helpers to round orders to supplier increments."
+              "Click Calculate to get total volume in m³ and yd³ (and ft³ if enabled). Use the ordering helpers (+5%/+10%) as needed."
           }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I print or save the results?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text":
-              "Yes. Use the Print / Save function to export an A4-friendly summary with inputs, volumes, breakdown, and yardage."
+        ],
+        "supply": [
+          { "@type": "HowToSupply", "name": "Internal dimensions and thicknesses" }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Can I calculate both rectangular and trapezoidal trenches?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "Yes. Choose Rectangular to use a single width, or Trapezoidal to enter top and bottom widths; the calculator uses the correct area formula."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How are tank volumes computed?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "Both tank modes compute an outer concrete shell minus the inner water volume. We also show a breakdown for base slab, walls, and cover slab."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which units can I use?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "Meters, centimeters, feet, or inches. Pick one unit and enter all dimensions consistently; the tool converts internally."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What waste percentage should I add?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "5–10% is common for over-excavation and placement losses. Use higher allowances if site access or formwork is challenging."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I get cubic yards for ordering?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "After calculating, yardage is shown along with +5% and +10% helpers to round orders to supplier increments."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I print or save the results?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "Yes. Use the Print / Save function to export an A4-friendly summary with inputs, volumes, breakdown, and yardage."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does the calculator handle reinforcement or water-tightness checks?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "No. It focuses on concrete volume. Reinforcement, crack control, and waterproofing must follow your design and local codes."
+            }
           }
-        },
-        {
-          "@type": "Question",
-          "name": "Does the calculator handle reinforcement or water-tightness checks?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text":
-              "No. It focuses on concrete volume. Reinforcement, crack control, and waterproofing must follow your design and local codes."
-          }
-        }
-      ]
-    }
-  ]
-};
+        ]
+      }
+    ]
+  };
 
 
   return (
@@ -256,10 +256,10 @@ export default function TankTrenchCalculatorPage() {
                   </h1>
                 </div>
                 <EEATBlock
-                    reviewerName="Engr. Talha Tariq"
-                    licenseNumber="PEC-CIVIL-37815"
-                    lastUpdated="2025-10-24"
-                  />
+                  reviewerName="Engr. Talha Tariq"
+                  licenseNumber="PEC-CIVIL-37815"
+                  lastUpdated="2025-10-24"
+                />
               </div>
               <p className="mt-3 ml-2 text-sm sm:text-base lg:text-lg text-slate-400 leading-relaxed font-poppins">
                 Quickly compute concrete volumes for rectangular and circular tanks and foundation trenches. Enter clear internal

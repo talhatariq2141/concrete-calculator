@@ -18,16 +18,16 @@ import EEATBlock from "@/components/app/EEATBlock";
 
 /** Page-level metadata: precise title/desc, canonical, OG/Twitter parity */
 export const metadata: Metadata = {
-  "title": "Slab Concrete Calculator — Concrete Calculator Max",
+  "title": "Slab Concrete Calculator",
   "description":
     "Estimate concrete volume for slabs, patios, driveways, and floors. Enter length, width, thickness, add waste allowance, and get results in m³/yd³/ft³.",
   "alternates": {
     "canonical":
-      "https://concretecalculatormax.com/calculators/slab-concrete-calculator"
+      "https://www.concretecalculatormax.com/calculators/slab-concrete-calculator"
   },
   "openGraph": {
     "type": "article",
-    "url": "https://concretecalculatormax.com/calculators/slab-concrete-calculator",
+    "url": "https://www.concretecalculatormax.com/calculators/slab-concrete-calculator",
     "title": "Slab Concrete Calculator",
     "description":
       "Instant slab concrete volume with waste allowance and unit switching (m³/yd³/ft³).",
@@ -59,113 +59,113 @@ export default function SlabConcreteCalculatorPage() {
    * - HowTo: short steps to use
    * - FAQPage: common Qs (ensure these Q/As also appear visibly in the Article)
    */
- const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebApplication",
-      "@id":
-        "https://concretecalculatormax.com/calculators/slab-concrete-calculator#app",
-      "name": "Slab Concrete Calculator",
-      "url": "https://concretecalculatormax.com/calculators/slab-concrete-calculator",
-      "applicationCategory": "UtilityApplication",
-      "operatingSystem": "Web",
-      "description":
-        "Calculate concrete volume for slabs, patios, driveways, and floors. Add waste allowance and toggle outputs in m³, yd³, or ft³.",
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-      "publisher": {
-        "@type": "Organization",
-        "name": "Concrete Calculator Max",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://concretecalculatormax.com/og/logo.png"
-        }
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id":
+          "https://www.concretecalculatormax.com/calculators/slab-concrete-calculator#app",
+        "name": "Slab Concrete Calculator",
+        "url": "https://www.concretecalculatormax.com/calculators/slab-concrete-calculator",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "Web",
+        "description":
+          "Calculate concrete volume for slabs, patios, driveways, and floors. Add waste allowance and toggle outputs in m³, yd³, or ft³.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Concrete Calculator Max",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://www.concretecalculatormax.com/og/logo.png"
+          }
+        },
+        "potentialAction": { "@type": "Action", "name": "Calculate Slab Concrete" }
       },
-      "potentialAction": { "@type": "Action", "name": "Calculate Slab Concrete" }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://concretecalculatormax.com" },
-        { "@type": "ListItem", "position": 2, "name": "Calculators", "item": "https://concretecalculatormax.com/calculators" },
-        { "@type": "ListItem", "position": 3, "name": "Slab Concrete Calculator", "item": "https://concretecalculatormax.com/calculators/slab-concrete-calculator" }
-      ]
-    },
-    {
-      "@type": "HowTo",
-      "name": "How to calculate concrete for a slab",
-      "totalTime": "PT1M",
-      "step": [
-        { "@type": "HowToStep", "name": "Enter slab dimensions", "text": "Provide length and width of the slab and its thickness. Choose your preferred units." },
-        { "@type": "HowToStep", "name": "Add waste allowance (optional)", "text": "Include 5–10% to cover spillage, pump line losses, and tolerances." },
-        { "@type": "HowToStep", "name": "Calculate", "text": "Click Calculate to get total volume in m³ and yd³ (and ft³ if enabled)." },
-        { "@type": "HowToStep", "name": "Review ordering helpers", "text": "Use the yardage helper values to see +5% and +10% options for suppliers." }
-      ],
-      "supply": [{ "@type": "HowToSupply", "name": "Slab dimensions and thickness" }]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "How accurate is the Slab Concrete Calculator?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "It uses straightforward geometry with strict unit conversion to provide reliable cubic yard and cubic meter estimates. Always round up when placing an order and consider a 5–10% waste allowance."
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.concretecalculatormax.com" },
+          { "@type": "ListItem", "position": 2, "name": "Calculators", "item": "https://www.concretecalculatormax.com/calculators" },
+          { "@type": "ListItem", "position": 3, "name": "Slab Concrete Calculator", "item": "https://www.concretecalculatormax.com/calculators/slab-concrete-calculator" }
+        ]
+      },
+      {
+        "@type": "HowTo",
+        "name": "How to calculate concrete for a slab",
+        "totalTime": "PT1M",
+        "step": [
+          { "@type": "HowToStep", "name": "Enter slab dimensions", "text": "Provide length and width of the slab and its thickness. Choose your preferred units." },
+          { "@type": "HowToStep", "name": "Add waste allowance (optional)", "text": "Include 5–10% to cover spillage, pump line losses, and tolerances." },
+          { "@type": "HowToStep", "name": "Calculate", "text": "Click Calculate to get total volume in m³ and yd³ (and ft³ if enabled)." },
+          { "@type": "HowToStep", "name": "Review ordering helpers", "text": "Use the yardage helper values to see +5% and +10% options for suppliers." }
+        ],
+        "supply": [{ "@type": "HowToSupply", "name": "Slab dimensions and thickness" }]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "How accurate is the Slab Concrete Calculator?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "It uses straightforward geometry with strict unit conversion to provide reliable cubic yard and cubic meter estimates. Always round up when placing an order and consider a 5–10% waste allowance."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What slab thickness should I use?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Light patios and walkways often use 4 in (100 mm). Driveways or heavier loads may require 5–6 in (125–150 mm) or engineer-specified thickness. Always follow local codes and structural drawings."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does the calculator support both imperial and metric units?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Enter dimensions in feet/meters and thickness in inches/mm/cm—the tool converts everything and outputs both yd³ and m³."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I add extra concrete for waste and uneven sub-base?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Use the Waste/Overage field (e.g., 5–10%). The calculator multiplies the raw volume by this factor to show an adjusted order quantity."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Will this tell me how many concrete trucks I need?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "You can divide the total cubic yards by your supplier’s truck capacity (commonly 8–10 yd³). Order policies vary—confirm with your ready-mix provider."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I use this for irregular or multiple slab sections?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "For L-shapes or complex layouts, break the area into rectangles, calculate each area, then sum the volumes. Add a suitable waste allowance before ordering."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does the calculator include reinforcement or mix design?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No—those are specified by your engineer or code official. The tool focuses on concrete volume; reinforcement, fiber, and mix design must follow project specifications."
+            }
           }
-        },
-        {
-          "@type": "Question",
-          "name": "What slab thickness should I use?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Light patios and walkways often use 4 in (100 mm). Driveways or heavier loads may require 5–6 in (125–150 mm) or engineer-specified thickness. Always follow local codes and structural drawings."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Does the calculator support both imperial and metric units?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. Enter dimensions in feet/meters and thickness in inches/mm/cm—the tool converts everything and outputs both yd³ and m³."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How do I add extra concrete for waste and uneven sub-base?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Use the Waste/Overage field (e.g., 5–10%). The calculator multiplies the raw volume by this factor to show an adjusted order quantity."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Will this tell me how many concrete trucks I need?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "You can divide the total cubic yards by your supplier’s truck capacity (commonly 8–10 yd³). Order policies vary—confirm with your ready-mix provider."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I use this for irregular or multiple slab sections?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "For L-shapes or complex layouts, break the area into rectangles, calculate each area, then sum the volumes. Add a suitable waste allowance before ordering."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Does the calculator include reinforcement or mix design?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No—those are specified by your engineer or code official. The tool focuses on concrete volume; reinforcement, fiber, and mix design must follow project specifications."
-          }
-        }
-      ]
-    }
-  ]
-};
+        ]
+      }
+    ]
+  };
 
 
   return (
@@ -212,10 +212,10 @@ export default function SlabConcreteCalculatorPage() {
                   </h1>
                 </div>
                 <EEATBlock
-                    reviewerName="Engr. Talha Tariq"
-                    licenseNumber="PEC-CIVIL-37815"
-                    lastUpdated="2025-10-24"
-                  />
+                  reviewerName="Engr. Talha Tariq"
+                  licenseNumber="PEC-CIVIL-37815"
+                  lastUpdated="2025-10-24"
+                />
               </div>
               <p className="mt-3 ml-2 text-sm sm:text-base lg:text-lg text-slate-400 leading-relaxed font-poppins">
                 Use our free Slab Concrete Calculator to estimate the concrete volume for floors, patios, driveways, and

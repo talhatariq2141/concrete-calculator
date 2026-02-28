@@ -32,7 +32,7 @@ export async function generateMetadata({
   if (!post) return { title: "Post Not Found" };
 
   const { title, excerpt, cover } = post.frontmatter;
-  const url = `https://concretecalculatormax.com/blog/${params.slug}`;
+  const url = `https://www.concretecalculatormax.com/blog/${params.slug}`;
   const desc = excerpt || "Concrete calculation tutorial and guide.";
 
   return {
@@ -84,20 +84,20 @@ export default async function BlogPostPage({
     author: {
       "@type": "Organization",
       name: "Concrete Calculator Max",
-      url: "https://concretecalculatormax.com",
+      url: "https://www.concretecalculatormax.com",
     },
     publisher: {
       "@type": "Organization",
       name: "Concrete Calculator Max",
       logo: {
         "@type": "ImageObject",
-        url: "https://concretecalculatormax.com/og/logo.png",
+        url: "https://www.concretecalculatormax.com/og/logo.png",
       },
     },
     datePublished: frontmatter.date,
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://concretecalculatormax.com/blog/${params.slug}`,
+      "@id": `https://www.concretecalculatormax.com/blog/${params.slug}`,
     },
   };
 

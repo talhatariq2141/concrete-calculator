@@ -18,16 +18,16 @@ import EEATBlock from "@/components/app/EEATBlock";
 
 /** Page-level metadata: precise title/desc, canonical, OG/Twitter parity */
 export const metadata: Metadata = {
-  "title": "Wall Concrete Calculator — Concrete Calculator Max",
+  "title": "Wall Concrete Calculator",
   "description":
     "Calculate concrete volume for walls with or without openings. Enter length, height, thickness, subtract door/window voids, add waste allowance, and get results in m³/yd³/ft³.",
   "alternates": {
     "canonical":
-      "https://concretecalculatormax.com/calculators/wall-concrete-calculator"
+      "https://www.concretecalculatormax.com/calculators/wall-concrete-calculator"
   },
   "openGraph": {
     "type": "article",
-    "url": "https://concretecalculatormax.com/calculators/wall-concrete-calculator",
+    "url": "https://www.concretecalculatormax.com/calculators/wall-concrete-calculator",
     "title": "Wall Concrete Calculator",
     "description":
       "Instant wall concrete volume with openings handling, waste allowance, and unit switching (m³/yd³/ft³).",
@@ -59,157 +59,157 @@ export default function WallConcreteCalculatorPage() {
    * - FAQPage: common Qs (ensure these Q/As also appear visibly in the Article)
    */
   const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebApplication",
-      "@id":
-        "https://concretecalculatormax.com/calculators/wall-concrete-calculator#app",
-      "name": "Wall Concrete Calculator",
-      "url": "https://concretecalculatormax.com/calculators/wall-concrete-calculator",
-      "applicationCategory": "UtilityApplication",
-      "operatingSystem": "Web",
-      "description":
-        "Calculate concrete volume for walls, including openings subtraction, waste allowance, and unit switching (m³/yd³/ft³).",
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-      "publisher": {
-        "@type": "Organization",
-        "name": "Concrete Calculator Max",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://concretecalculatormax.com/og/logo.png"
-        }
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id":
+          "https://www.concretecalculatormax.com/calculators/wall-concrete-calculator#app",
+        "name": "Wall Concrete Calculator",
+        "url": "https://www.concretecalculatormax.com/calculators/wall-concrete-calculator",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "Web",
+        "description":
+          "Calculate concrete volume for walls, including openings subtraction, waste allowance, and unit switching (m³/yd³/ft³).",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Concrete Calculator Max",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://www.concretecalculatormax.com/og/logo.png"
+          }
+        },
+        "potentialAction": { "@type": "Action", "name": "Calculate Wall Concrete" }
       },
-      "potentialAction": { "@type": "Action", "name": "Calculate Wall Concrete" }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://concretecalculatormax.com"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Calculators",
-          "item": "https://concretecalculatormax.com/calculators"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Wall Concrete Calculator",
-          "item":
-            "https://concretecalculatormax.com/calculators/wall-concrete-calculator"
-        }
-      ]
-    },
-    {
-      "@type": "HowTo",
-      "name": "How to calculate concrete for a wall",
-      "totalTime": "PT1M",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "name": "Enter wall dimensions",
-          "text":
-            "Provide total wall length, height, and thickness. Choose your input units."
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Subtract openings (optional)",
-          "text":
-            "Enter door/window opening sizes to subtract their volume from the gross wall volume."
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Add allowances",
-          "text":
-            "Optionally include a waste percentage and a dry-volume factor if you’re sizing dry constituents."
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Calculate",
-          "text":
-            "Click Calculate to get net wall volume in m³ and yd³ (and ft³ if enabled)."
-        }
-      ],
-      "supply": [
-        { "@type": "HowToSupply", "name": "Wall dimensions and opening sizes" }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Can I mix units when entering dimensions?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text":
-              "Use meters or feet for length and height, and meters/centimeters/inches for thickness. The tool converts internally—just keep each field’s unit consistent with its selector."
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://www.concretecalculatormax.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Calculators",
+            "item": "https://www.concretecalculatormax.com/calculators"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Wall Concrete Calculator",
+            "item":
+              "https://www.concretecalculatormax.com/calculators/wall-concrete-calculator"
           }
-        },
-        {
-          "@type": "Question",
-          "name": "How are openings handled?",
-          "acceptedAnswer": {
-            "@type": "Answer",
+        ]
+      },
+      {
+        "@type": "HowTo",
+        "name": "How to calculate concrete for a wall",
+        "totalTime": "PT1M",
+        "step": [
+          {
+            "@type": "HowToStep",
+            "name": "Enter wall dimensions",
             "text":
-              "Each opening’s volume is width × height × wall thickness × count. The calculator subtracts the total of all openings from the gross wall volume."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Which nominal mixes are available?",
-          "acceptedAnswer": {
-            "@type": "Answer",
+              "Provide total wall length, height, and thickness. Choose your input units."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Subtract openings (optional)",
             "text":
-              "1:1.5:3, 1:2:4, and 1:3:6 by volume. The calculator uses a 1.54 dry-volume factor to derive ingredient volumes."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How do you compute cement bags and water?",
-          "acceptedAnswer": {
-            "@type": "Answer",
+              "Enter door/window opening sizes to subtract their volume from the gross wall volume."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Add allowances",
             "text":
-              "Cement volume (from mix split) is converted to mass using 1440 kg/m³, then divided by 50 kg/bag. Water = w/c × cement mass, reported in liters."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I view the result in cubic yards?",
-          "acceptedAnswer": {
-            "@type": "Answer",
+              "Optionally include a waste percentage and a dry-volume factor if you’re sizing dry constituents."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Calculate",
             "text":
-              "Yes. Set the output unit to yd³. A helper also shows yd³ with +5% and +10% additions for ordering."
+              "Click Calculate to get net wall volume in m³ and yd³ (and ft³ if enabled)."
           }
-        },
-        {
-          "@type": "Question",
-          "name": "Is cost estimation included?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text":
-              "Yes. Choose Rate per m³ or By Materials to get a quick cost; you control unit rates and bag price."
+        ],
+        "supply": [
+          { "@type": "HowToSupply", "name": "Wall dimensions and opening sizes" }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Can I mix units when entering dimensions?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "Use meters or feet for length and height, and meters/centimeters/inches for thickness. The tool converts internally—just keep each field’s unit consistent with its selector."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How are openings handled?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "Each opening’s volume is width × height × wall thickness × count. The calculator subtracts the total of all openings from the gross wall volume."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which nominal mixes are available?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "1:1.5:3, 1:2:4, and 1:3:6 by volume. The calculator uses a 1.54 dry-volume factor to derive ingredient volumes."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do you compute cement bags and water?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "Cement volume (from mix split) is converted to mass using 1440 kg/m³, then divided by 50 kg/bag. Water = w/c × cement mass, reported in liters."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I view the result in cubic yards?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "Yes. Set the output unit to yd³. A helper also shows yd³ with +5% and +10% additions for ordering."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is cost estimation included?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "Yes. Choose Rate per m³ or By Materials to get a quick cost; you control unit rates and bag price."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I print or save the results?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text":
+                "Use the Print / Save button to export an A4-friendly summary of inputs, volumes, materials, yardage, and cost."
+            }
           }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I print or save the results?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text":
-              "Use the Print / Save button to export an A4-friendly summary of inputs, volumes, materials, yardage, and cost."
-          }
-        }
-      ]
-    }
-  ]
-};
+        ]
+      }
+    ]
+  };
 
 
   return (
@@ -256,10 +256,10 @@ export default function WallConcreteCalculatorPage() {
                   </h1>
                 </div>
                 <EEATBlock
-                    reviewerName="Engr. Talha Tariq"
-                    licenseNumber="PEC-CIVIL-37815"
-                    lastUpdated="2025-10-24"
-                  />
+                  reviewerName="Engr. Talha Tariq"
+                  licenseNumber="PEC-CIVIL-37815"
+                  lastUpdated="2025-10-24"
+                />
               </div>
               <p className="mt-3 ml-2 text-sm sm:text-base lg:text-lg text-slate-400 leading-relaxed font-poppins">
                 Calculate wall concrete volume quickly and accurately. Enter wall length, height and thickness,

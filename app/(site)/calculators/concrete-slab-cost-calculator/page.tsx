@@ -14,11 +14,11 @@ export const metadata: Metadata = {
         "Free Concrete Slab Cost Calculator. Estimate total costs for slabs, patios, and driveways including ready-mix concrete, DIY bagged mix, armor/rebar, and labor.",
     alternates: {
         canonical:
-            "https://concretecalculatormax.com/calculators/concrete-slab-cost-calculator",
+            "https://www.concretecalculatormax.com/calculators/concrete-slab-cost-calculator",
     },
     openGraph: {
         type: "article",
-        url: "https://concretecalculatormax.com/calculators/concrete-slab-cost-calculator",
+        url: "https://www.concretecalculatormax.com/calculators/concrete-slab-cost-calculator",
         title: "Concrete Slab Cost Calculator",
         description:
             "Estimate concrete cost accurately. Includes ready-mix vs bagged comparison, labor rates, and printable PDF quotes.",
@@ -47,9 +47,9 @@ export default function ConcreteSlabCostCalculatorPage() {
         "@graph": [
             {
                 "@type": "WebApplication",
-                "@id": "https://concretecalculatormax.com/calculators/concrete-slab-cost-calculator#app",
+                "@id": "https://www.concretecalculatormax.com/calculators/concrete-slab-cost-calculator#app",
                 name: "Concrete Slab Cost Calculator",
-                url: "https://concretecalculatormax.com/calculators/concrete-slab-cost-calculator",
+                url: "https://www.concretecalculatormax.com/calculators/concrete-slab-cost-calculator",
                 applicationCategory: "UtilityApplication",
                 operatingSystem: "Web",
                 description:
@@ -60,7 +60,7 @@ export default function ConcreteSlabCostCalculatorPage() {
                     "name": "Concrete Calculator Max",
                     "logo": {
                         "@type": "ImageObject",
-                        "url": "https://concretecalculatormax.com/og/logo.png",
+                        "url": "https://www.concretecalculatormax.com/og/logo.png",
                     },
                 },
                 potentialAction: { "@type": "Action", name: "Calculate Slab Cost" },
@@ -72,19 +72,19 @@ export default function ConcreteSlabCostCalculatorPage() {
                         "@type": "ListItem",
                         position: 1,
                         name: "Home",
-                        item: "https://concretecalculatormax.com",
+                        item: "https://www.concretecalculatormax.com",
                     },
                     {
                         "@type": "ListItem",
                         position: 2,
                         name: "Calculators",
-                        item: "https://concretecalculatormax.com/calculators",
+                        item: "https://www.concretecalculatormax.com/calculators",
                     },
                     {
                         "@type": "ListItem",
                         position: 3,
                         name: "Concrete Slab Cost Calculator",
-                        item: "https://concretecalculatormax.com/calculators/concrete-slab-cost-calculator",
+                        item: "https://www.concretecalculatormax.com/calculators/concrete-slab-cost-calculator",
                     },
                 ],
             },

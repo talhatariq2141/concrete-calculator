@@ -9,16 +9,16 @@ import RelatedCalculators from "@/components/app/RelatedCalculators";
 import EEATBlock from "@/components/app/EEATBlock";
 
 export const metadata: Metadata = {
-    title: "Concrete Driveway Cost Calculator | Ready-Mix & Bagged Estimate",
+    title: "Concrete Driveway Cost Calculator",
     description:
         "Free Concrete Driveway Cost Calculator. Estimate total costs for driveways including ready-mix delivery, bagged DIY mix, supplier fees, add-ons, and waste allowance.",
     alternates: {
         canonical:
-            "https://concretecalculatormax.com/calculators/concrete-driveway-cost-calculator",
+            "https://www.concretecalculatormax.com/calculators/concrete-driveway-cost-calculator",
     },
     openGraph: {
         type: "article",
-        url: "https://concretecalculatormax.com/calculators/concrete-driveway-cost-calculator",
+        url: "https://www.concretecalculatormax.com/calculators/concrete-driveway-cost-calculator",
         title: "Concrete Driveway Cost Calculator",
         description:
             "Estimate driveway concrete cost accurately. Compare Ready-Mix vs Bagged pricing, handle supplier fees, and export printable PDF quotes.",
@@ -47,9 +47,9 @@ export default function ConcreteDrivewayCostCalculatorPage() {
         "@graph": [
             {
                 "@type": "WebApplication",
-                "@id": "https://concretecalculatormax.com/calculators/concrete-driveway-cost-calculator#app",
+                "@id": "https://www.concretecalculatormax.com/calculators/concrete-driveway-cost-calculator#app",
                 name: "Concrete Driveway Cost Calculator",
-                url: "https://concretecalculatormax.com/calculators/concrete-driveway-cost-calculator",
+                url: "https://www.concretecalculatormax.com/calculators/concrete-driveway-cost-calculator",
                 applicationCategory: "UtilityApplication",
                 operatingSystem: "Web",
                 description:
@@ -60,7 +60,7 @@ export default function ConcreteDrivewayCostCalculatorPage() {
                     "name": "Concrete Calculator Max",
                     "logo": {
                         "@type": "ImageObject",
-                        "url": "https://concretecalculatormax.com/og/logo.png",
+                        "url": "https://www.concretecalculatormax.com/og/logo.png",
                     },
                 },
                 potentialAction: { "@type": "Action", name: "Calculate Driveway Cost" },
@@ -72,19 +72,19 @@ export default function ConcreteDrivewayCostCalculatorPage() {
                         "@type": "ListItem",
                         position: 1,
                         name: "Home",
-                        item: "https://concretecalculatormax.com",
+                        item: "https://www.concretecalculatormax.com",
                     },
                     {
                         "@type": "ListItem",
                         position: 2,
                         name: "Calculators",
-                        item: "https://concretecalculatormax.com/calculators",
+                        item: "https://www.concretecalculatormax.com/calculators",
                     },
                     {
                         "@type": "ListItem",
                         position: 3,
                         name: "Concrete Driveway Cost Calculator",
-                        item: "https://concretecalculatormax.com/calculators/concrete-driveway-cost-calculator",
+                        item: "https://www.concretecalculatormax.com/calculators/concrete-driveway-cost-calculator",
                     },
                 ],
             },

@@ -53,7 +53,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const cat = cats.find((c) => c.slug === params.slug);
   if (!cat) return { title: "Category Not Found" };
 
-  const baseUrl = `https://concretecalculatormax.com/blog/category/${cat.slug}`;
+  const baseUrl = `https://www.concretecalculatormax.com/blog/category/${cat.slug}`;
   const canonical = page <= 1 ? baseUrl : `${baseUrl}?page=${page}`;
 
   const titleBase = `${cat.name} — Concrete Calculator Blog`;
@@ -113,7 +113,7 @@ export default async function CategoryPage(props: PageProps) {
     description:
       cat.description ||
       `Articles and tutorials in the ${cat.name} category from Concrete Calculator Max.`,
-    url: `https://concretecalculatormax.com${pageUrl(cat.slug, page)}`,
+    url: `https://www.concretecalculatormax.com${pageUrl(cat.slug, page)}`,
   };
 
   return (
@@ -294,11 +294,10 @@ function Pagination({
       <Link
         href={hasPrev ? pageUrl(slug, page - 1) : pageUrl(slug, page)}
         aria-disabled={!hasPrev}
-        className={`inline-flex items-center rounded-md border px-3 py-2 text-sm ${
-          hasPrev
+        className={`inline-flex items-center rounded-md border px-3 py-2 text-sm ${hasPrev
             ? "border-slate-300 text-slate-700 hover:bg-slate-50"
             : "border-slate-200 text-slate-300 cursor-not-allowed"
-        }`}
+          }`}
       >
         ← Previous
       </Link>
@@ -356,11 +355,10 @@ function Pagination({
       <Link
         href={hasNext ? pageUrl(slug, page + 1) : pageUrl(slug, page)}
         aria-disabled={!hasNext}
-        className={`inline-flex items-center rounded-md border px-3 py-2 text-sm ${
-          hasNext
+        className={`inline-flex items-center rounded-md border px-3 py-2 text-sm ${hasNext
             ? "border-slate-300 text-slate-700 hover:bg-slate-50"
             : "border-slate-200 text-slate-300 cursor-not-allowed"
-        }`}
+          }`}
       >
         Next →
       </Link>

@@ -4,7 +4,7 @@ import SidebarQuickLinks from "@/components/app/QuickLinks";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://concretecalculatormax.com"),
+  metadataBase: new URL("https://www.concretecalculatormax.com"),
   title: {
     default: "Concrete Calculator Max",
     template: "%s — Concrete Calculator Max",
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Concrete Calculator Max",
-    url: "https://concretecalculatormax.com",
+    url: "https://www.concretecalculatormax.com",
     images: [{ url: "/og/default.png", width: 1200, height: 630 }],
   },
   twitter: {

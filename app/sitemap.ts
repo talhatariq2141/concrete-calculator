@@ -4,7 +4,7 @@ export const revalidate = 3600;               // cache for 1 hour
 export const contentType = "application/xml"; // proper XML MIME type
 export const dynamic = "force-static";        // static response for bots
 
-const baseUrl = "https://concretecalculatormax.com";
+const baseUrl = "https://www.concretecalculatormax.com";
 
 // Adjust if your blog base path differs (e.g. "/articles")
 const BLOG_BASE = "/blog";

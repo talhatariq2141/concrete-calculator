@@ -4,10 +4,10 @@ import CalculatorsIndexClient from "./_components/CalculatorsIndexClient";
 
 // Page-level SEO (allowed because this file is a Server Component)
 export const metadata: Metadata = {
-  title: "All Concrete Calculators — Concrete Calculator Max",
+  title: "All Concrete Calculators",
   description:
     "Browse free concrete calculators: slabs, columns, beams, walls, footings and more. Search and filter by category.",
-  alternates: { canonical: "https://concretecalculatormax.com/calculators" },
+  alternates: { canonical: "https://www.concretecalculatormax.com/calculators" },
 };
 
 export default function CalculatorsPage() {

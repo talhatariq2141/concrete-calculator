@@ -28,7 +28,7 @@ const poppins = Poppins({
  * added robots hints, solid OG/Twitter defaults. Keep images lightweight.
  */
 export const metadata: Metadata = {
-  metadataBase: new URL("https://concretecalculatormax.com"),
+  metadataBase: new URL("https://www.concretecalculatormax.com"),
   title: {
     default: "Concrete Calculator Max",
     template: "%s — Concrete Calculator Max",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Concrete Calculator Max", // fixed label
-    url: "https://concretecalculatormax.com",
+    url: "https://www.concretecalculatormax.com",
     images: [{ url: "/og/default.png", width: 1200, height: 630, alt: "Concrete Calculator Max" }],
   },
   twitter: {
@@ -74,12 +74,12 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
-              "@id": "https://concretecalculatormax.com/#website",
-              url: "https://concretecalculatormax.com",
+              "@id": "https://www.concretecalculatormax.com/#website",
+              url: "https://www.concretecalculatormax.com",
               name: "Concrete Calculator Max",
               potentialAction: {
                 "@type": "SearchAction",
-                target: "https://concretecalculatormax.com/search?q={query}",
+                target: "https://www.concretecalculatormax.com/search?q={query}",
                 "query-input": "required name=query",
               },
               publisher: { "@type": "Organization", name: "Concrete Calculator Max" },
@@ -93,10 +93,10 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
-              "@id": "https://concretecalculatormax.com/#organization",
+              "@id": "https://www.concretecalculatormax.com/#organization",
               name: "Concrete Calculator Max",
-              url: "https://concretecalculatormax.com",
-              logo: "https://concretecalculatormax.com/og/logo.png",
+              url: "https://www.concretecalculatormax.com",
+              logo: "https://www.concretecalculatormax.com/og/logo.png",
               contactPoint: [
                 {
                   "@type": "ContactPoint",

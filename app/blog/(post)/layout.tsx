@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     "In-depth articles, formulas, and tutorials for concrete volume, mix, and cost calculations — by Concrete Calculator Max.",
   openGraph: {
     type: "website",
-    url: "https://concretecalculatormax.com/blog",
+    url: "https://www.concretecalculatormax.com/blog",
     title: "Concrete Calculator Blog — Articles & Tutorials",
     description:
       "Guides and tutorials for concrete calculation and estimation across slabs, beams, columns, and more.",
@@ -48,7 +48,7 @@ export default function BlogPostLayout({
     name: "Concrete Calculator Blog — Post",
     description:
       "Concrete Calculator Max — professional insights, tutorials, and formulas for concrete calculation.",
-    url: "https://concretecalculatormax.com/blog",
+    url: "https://www.concretecalculatormax.com/blog",
   };
 
   return (
@@ -63,7 +63,7 @@ export default function BlogPostLayout({
 
       {/* ── Main container ─────────────────────────────── */}
       <main className="mx-auto max-w-[1280px] px-2 sm:px-6 lg:px-4 py-4">
-        
+
         {/* --- 3-column layout --- */}
         <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_280px] lg:grid-cols-[250px_minmax(0,1fr)_280px] gap-5">
           {/* LEFT: Sticky TOC (desktop only) */}
@@ -92,32 +92,32 @@ export default function BlogPostLayout({
                   Quick links
                 </p>
                 <ul className="space-y-2 text-sm">
-                <li>
-                  <Link href="/" className="text-teal-600 hover:text-teal-700">
-                    Home
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/calculators" className="text-teal-600 hover:text-teal-700">
-                    All Calculators
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/about-us" className="text-teal-600 hover:text-teal-700">
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/privacy-policy" className="text-teal-600 hover:text-teal-700">
-                    Privacy Policy
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/terms-of-service" className="text-teal-600 hover:text-teal-700">
-                    Terms of Service
-                  </Link>
-                </li>
-              </ul>
+                  <li>
+                    <Link href="/" className="text-teal-600 hover:text-teal-700">
+                      Home
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/calculators" className="text-teal-600 hover:text-teal-700">
+                      All Calculators
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/about-us" className="text-teal-600 hover:text-teal-700">
+                      About Us
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/privacy-policy" className="text-teal-600 hover:text-teal-700">
+                      Privacy Policy
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/terms-of-service" className="text-teal-600 hover:text-teal-700">
+                      Terms of Service
+                    </Link>
+                  </li>
+                </ul>
               </div>
 
               {/* Ad / Widget */}

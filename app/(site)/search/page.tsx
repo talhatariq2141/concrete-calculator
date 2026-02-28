@@ -14,9 +14,9 @@ function safeDecode(value: string) {
 }
 
 export const metadata: Metadata = {
-  title: `${TITLE} — Concrete Calculator Max`,
+  title: `${TITLE}`,
   description: DESCRIPTION,
-  alternates: { canonical: "https://concretecalculatormax.com/search" },
+  alternates: { canonical: "https://www.concretecalculatormax.com/search" },
 };
 
 export default async function SearchPage({

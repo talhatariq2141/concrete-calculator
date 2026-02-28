@@ -6,7 +6,7 @@ export const metadata = {
   description:
     'Our concise privacy policy explains what we collect, how we use it, cookies, data retention, and your rights when using our free online concrete calculators.',
   alternates: {
-    canonical: 'https://concretecalculatormax.com/privacy-policy',
+    canonical: 'https://www.concretecalculatormax.com/privacy-policy',
   },
 };
 
@@ -21,16 +21,15 @@ export default function PrivacyPolicyPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "PrivacyPolicy",
-    "@id": "https://concretecalculatormax.com/privacy-policy#policy",
-    url: "https://concretecalculatormax.com/privacy-policy",
-    name: "Privacy Policy — Concrete Calculator Max",
-    description:
-      "Concrete Calculator Max privacy policy outlining analytics, cookies, and user choices for our construction calculators.",
+    "@id": "https://www.concretecalculatormax.com/privacy-policy#policy",
+    url: "https://www.concretecalculatormax.com/privacy-policy",
+    name: "Privacy Policy",
+    description: "Our commitment to protecting your data and privacy.",
     inLanguage: "en",
     datePublished: "2023-11-01",
     dateModified: lastUpdatedIso,
     publisher: {
-      "@id": "https://concretecalculatormax.com/#organization",
+      "@id": "https://www.concretecalculatormax.com/#organization",
     },
   };
 
@@ -167,39 +166,39 @@ export default function PrivacyPolicyPage() {
             </div>
           </article>
 
-            {/* Quick FAQ */}
-            <section className="mt-16 bg-slate-900/60 border border-slate-800 rounded-lg p-8">
-              <div className="flex items-center gap-3 mb-6">
-                <MessageCircleQuestion className="h-6 w-6 text-teal-400" />
-                <h2 className="text-2xl font-semibold text-white">Privacy FAQs (2024 Update)</h2>
+          {/* Quick FAQ */}
+          <section className="mt-16 bg-slate-900/60 border border-slate-800 rounded-lg p-8">
+            <div className="flex items-center gap-3 mb-6">
+              <MessageCircleQuestion className="h-6 w-6 text-teal-400" />
+              <h2 className="text-2xl font-semibold text-white">Privacy FAQs (2024 Update)</h2>
+            </div>
+            <div className="space-y-6 text-slate-300">
+              <div>
+                <h3 className="text-lg font-semibold text-white">Why was this policy updated in July 2024?</h3>
+                <p>
+                  We reviewed our analytics stack and confirmed that we only use aggregated Ahrefs analytics. No personal data is
+                  stored, and this summary documents the review for transparency.
+                </p>
               </div>
-              <div className="space-y-6 text-slate-300">
-                <div>
-                  <h3 className="text-lg font-semibold text-white">Why was this policy updated in July 2024?</h3>
-                  <p>
-                    We reviewed our analytics stack and confirmed that we only use aggregated Ahrefs analytics. No personal data is
-                    stored, and this summary documents the review for transparency.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-white">Can I request data deletion?</h3>
-                  <p>
-                    Yes. Email <a className="text-teal-400 underline" href="mailto:info@concretecalculatormax.com">info@concretecalculatormax.com</a>{' '}
-                    with your request and details. We will erase non-essential logs within 30 days where legally possible.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-white">Where can I review related legal terms?</h3>
-                  <p>
-                    For usage rights, disclaimers, and acceptable use, please read our{' '}
-                    <Link href="/terms-of-service" className="text-teal-400 hover:underline">
-                      Terms of Service
-                    </Link>
-                    . They work together with this privacy summary.
-                  </p>
-                </div>
+              <div>
+                <h3 className="text-lg font-semibold text-white">Can I request data deletion?</h3>
+                <p>
+                  Yes. Email <a className="text-teal-400 underline" href="mailto:info@concretecalculatormax.com">info@concretecalculatormax.com</a>{' '}
+                  with your request and details. We will erase non-essential logs within 30 days where legally possible.
+                </p>
               </div>
-            </section>
+              <div>
+                <h3 className="text-lg font-semibold text-white">Where can I review related legal terms?</h3>
+                <p>
+                  For usage rights, disclaimers, and acceptable use, please read our{' '}
+                  <Link href="/terms-of-service" className="text-teal-400 hover:underline">
+                    Terms of Service
+                  </Link>
+                  . They work together with this privacy summary.
+                </p>
+              </div>
+            </div>
+          </section>
         </div>
       </main>
     </>

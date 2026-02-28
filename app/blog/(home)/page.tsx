@@ -29,11 +29,11 @@ export default async function BlogHomePage() {
     name: "Concrete Calculator Blog",
     description:
       "Guides, tutorials, and formulas for concrete calculations across slab, column, beam, wall, tank/trench, and staircase categories.",
-    url: "https://concretecalculatormax.com/blog",
+    url: "https://www.concretecalculatormax.com/blog",
     hasPart: grouped.map((cat) => ({
       "@type": "CollectionPage",
       name: cat.name,
-      url: `https://concretecalculatormax.com/blog/category/${cat.slug}`,
+      url: `https://www.concretecalculatormax.com/blog/category/${cat.slug}`,
     })),
   };
 

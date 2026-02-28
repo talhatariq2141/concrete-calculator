@@ -9,16 +9,16 @@ import RelatedCalculators from "@/components/app/RelatedCalculators";
 import EEATBlock from "@/components/app/EEATBlock";
 
 export const metadata: Metadata = {
-    title: "Concrete Slab Load Capacity Calculator | ACI Strength Design",
+    title: "Concrete Slab Load Capacity Calculator",
     description:
         "Free Concrete Slab Load Capacity Calculator. Estimate max service live load and factored uniform load capacity for reinforced one-way suspended slabs per ACI 318 standards.",
     alternates: {
         canonical:
-            "https://concretecalculatormax.com/calculators/concrete-slab-load-capacity-calculator",
+            "https://www.concretecalculatormax.com/calculators/concrete-slab-load-capacity-calculator",
     },
     openGraph: {
         type: "article",
-        url: "https://concretecalculatormax.com/calculators/concrete-slab-load-capacity-calculator",
+        url: "https://www.concretecalculatormax.com/calculators/concrete-slab-load-capacity-calculator",
         title: "Concrete Slab Load Capacity Calculator",
         description:
             "Estimate structural load capacity for reinforced concrete slabs. Professional LRFD analysis for engineers and builders.",
@@ -47,9 +47,9 @@ export default function ConcreteSlabLoadCapacityCalculatorPage() {
         "@graph": [
             {
                 "@type": "WebApplication",
-                "@id": "https://concretecalculatormax.com/calculators/concrete-slab-load-capacity-calculator#app",
+                "@id": "https://www.concretecalculatormax.com/calculators/concrete-slab-load-capacity-calculator#app",
                 name: "Concrete Slab Load Capacity Calculator",
-                url: "https://concretecalculatormax.com/calculators/concrete-slab-load-capacity-calculator",
+                url: "https://www.concretecalculatormax.com/calculators/concrete-slab-load-capacity-calculator",
                 applicationCategory: "DesignApplication",
                 operatingSystem: "Web",
                 description:
@@ -60,7 +60,7 @@ export default function ConcreteSlabLoadCapacityCalculatorPage() {
                     "name": "Concrete Calculator Max",
                     "logo": {
                         "@type": "ImageObject",
-                        "url": "https://concretecalculatormax.com/og/logo.png",
+                        "url": "https://www.concretecalculatormax.com/og/logo.png",
                     },
                 },
                 potentialAction: { "@type": "Action", name: "Calculate Slab Capacity" },
@@ -72,19 +72,19 @@ export default function ConcreteSlabLoadCapacityCalculatorPage() {
                         "@type": "ListItem",
                         position: 1,
                         name: "Home",
-                        item: "https://concretecalculatormax.com",
+                        item: "https://www.concretecalculatormax.com",
                     },
                     {
                         "@type": "ListItem",
                         position: 2,
                         name: "Calculators",
-                        item: "https://concretecalculatormax.com/calculators",
+                        item: "https://www.concretecalculatormax.com/calculators",
                     },
                     {
                         "@type": "ListItem",
                         position: 3,
                         name: "Concrete Slab Load Capacity Calculator",
-                        item: "https://concretecalculatormax.com/calculators/concrete-slab-load-capacity-calculator",
+                        item: "https://www.concretecalculatormax.com/calculators/concrete-slab-load-capacity-calculator",
                     },
                 ],
             },

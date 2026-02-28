@@ -19,16 +19,16 @@ import EEATBlock from "@/components/app/EEATBlock";
 
 /** Page-level metadata: precise title/desc, canonical, OG/Twitter parity */
 export const metadata: Metadata = {
-  "title": "Concrete Yards Calculator — Concrete Calculator Max",
+  "title": "Concrete Yards Calculator",
   "description":
     "Instantly convert concrete volume to cubic yards for slabs, footings, walls, and more. Enter dimensions or ft³/m³, add waste allowance, and get yd³ for ordering.",
   "alternates": {
     "canonical":
-      "https://concretecalculatormax.com/calculators/concrete-yards-calculator"
+      "https://www.concretecalculatormax.com/calculators/concrete-yards-calculator"
   },
   "openGraph": {
     "type": "article",
-    "url": "https://concretecalculatormax.com/calculators/concrete-yards-calculator",
+    "url": "https://www.concretecalculatormax.com/calculators/concrete-yards-calculator",
     "title": "Concrete Yards Calculator",
     "description":
       "Calculate concrete yardage quickly. Convert from ft³ or m³ to yd³ and add waste for ordering.",
@@ -60,147 +60,148 @@ export default function ConcreteYardCalculatorPage() {
    * - FAQPage: common Qs (make sure these also appear visibly in the Article)
    */
   const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebApplication",
-      "@id":
-        "https://concretecalculatormax.com/calculators/concrete-yards-calculator#app",
-      "name": "Concrete Yards Calculator",
-      "url": "https://concretecalculatormax.com/calculators/concrete-yards-calculator",
-      "applicationCategory": "UtilityApplication",
-      "operatingSystem": "Web",
-      "description":
-        "Convert concrete volume to cubic yards (yd³) from dimensions or known volume. Add waste and toggle display units.",
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-      "publisher": {
-        "@type": "Organization",
-        "name": "Concrete Calculator Max",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://concretecalculatormax.com/og/logo.png" // ensure file exists
-        }
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id":
+          "https://www.concretecalculatormax.com/calculators/concrete-yards-calculator#app",
+        "name": "Concrete Yards Calculator",
+        "url": "https://www.concretecalculatormax.com/calculators/concrete-yards-calculator",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "Web",
+        "description":
+          "Convert concrete volume to cubic yards (yd³) from dimensions or known volume. Add waste and toggle display units.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Concrete Calculator Max",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://www.concretecalculatormax.com/og/logo.png"
+            // ensure file exists
+          }
+        },
+        "potentialAction": { "@type": "Action", "name": "Calculate Concrete Yardage" }
       },
-      "potentialAction": { "@type": "Action", "name": "Calculate Concrete Yardage" }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": "https://concretecalculatormax.com"
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Calculators",
-          "item": "https://concretecalculatormax.com/calculators"
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": "Concrete Yards Calculator",
-          "item":
-            "https://concretecalculatormax.com/calculators/concrete-yards-calculator"
-        }
-      ]
-    },
-    {
-      "@type": "HowTo",
-      "name": "How to calculate concrete in cubic yards (yd³)",
-      "totalTime": "PT1M",
-      "step": [
-        {
-          "@type": "HowToStep",
-          "name": "Enter dimensions or volume",
-          "text":
-            "Provide slab/footing dimensions or a known volume in ft³ or m³. The tool converts to yd³."
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Choose units",
-          "text": "Select your input units and preferred output display (yd³/m³/ft³)."
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Add waste allowance (optional)",
-          "text":
-            "Include 5–10% waste to account for spillage, pumping, and tolerances."
-        },
-        {
-          "@type": "HowToStep",
-          "name": "Calculate",
-          "text":
-            "Click Calculate to get total yardage (yd³) and optional +5%/+10% ordering helpers."
-        }
-      ],
-      "supply": [{ "@type": "HowToSupply", "name": "Project dimensions or volume" }]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Do I have to enter all dimensions in the same unit?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. Pick a single input unit in the dropdown and enter all fields using that unit. The calculator handles the conversions internally."
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://www.concretecalculatormax.com"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Calculators",
+            "item": "https://www.concretecalculatormax.com/calculators"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": "Concrete Yards Calculator",
+            "item":
+              "https://www.concretecalculatormax.com/calculators/concrete-yards-calculator"
           }
-        },
-        {
-          "@type": "Question",
-          "name": "Why are the results shown in cubic yards?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Ready-mix concrete is typically ordered in cubic yards. We also display ft³ and m³ for engineering checks and international projects."
+        ]
+      },
+      {
+        "@type": "HowTo",
+        "name": "How to calculate concrete in cubic yards (yd³)",
+        "totalTime": "PT1M",
+        "step": [
+          {
+            "@type": "HowToStep",
+            "name": "Enter dimensions or volume",
+            "text":
+              "Provide slab/footing dimensions or a known volume in ft³ or m³. The tool converts to yd³."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Choose units",
+            "text": "Select your input units and preferred output display (yd³/m³/ft³)."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Add waste allowance (optional)",
+            "text":
+              "Include 5–10% waste to account for spillage, pumping, and tolerances."
+          },
+          {
+            "@type": "HowToStep",
+            "name": "Calculate",
+            "text":
+              "Click Calculate to get total yardage (yd³) and optional +5%/+10% ordering helpers."
           }
-        },
-        {
-          "@type": "Question",
-          "name": "Which waste percentage should I use?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "5% is a common minimum; use 10% for uneven subgrade, edge forms, or when pumping. Follow your project standards."
+        ],
+        "supply": [{ "@type": "HowToSupply", "name": "Project dimensions or volume" }]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Do I have to enter all dimensions in the same unit?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Pick a single input unit in the dropdown and enter all fields using that unit. The calculator handles the conversions internally."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Why are the results shown in cubic yards?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Ready-mix concrete is typically ordered in cubic yards. We also display ft³ and m³ for engineering checks and international projects."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which waste percentage should I use?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "5% is a common minimum; use 10% for uneven subgrade, edge forms, or when pumping. Follow your project standards."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "What if my slab isn’t perfectly rectangular or circular?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Break complex shapes into rectangles or circles, calculate each area’s yardage, then add them together. Apply a suitable waste allowance before ordering."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I print the results?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Use the Print / Save button to export an A4-friendly summary of your inputs and yardage."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does this tool include rebar or mix design?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. It focuses on volume. Reinforcement, control joints, and mix grade should follow your engineer’s drawings and local codes."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is there support for inches or millimeters?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. You can select inches or millimeters (and other units) as the single input unit for all fields."
+            }
           }
-        },
-        {
-          "@type": "Question",
-          "name": "What if my slab isn’t perfectly rectangular or circular?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Break complex shapes into rectangles or circles, calculate each area’s yardage, then add them together. Apply a suitable waste allowance before ordering."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I print the results?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. Use the Print / Save button to export an A4-friendly summary of your inputs and yardage."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Does this tool include rebar or mix design?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No. It focuses on volume. Reinforcement, control joints, and mix grade should follow your engineer’s drawings and local codes."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Is there support for inches or millimeters?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. You can select inches or millimeters (and other units) as the single input unit for all fields."
-          }
-        }
-      ]
-    }
-  ]
-};
+        ]
+      }
+    ]
+  };
 
   return (
     <>
@@ -244,21 +245,21 @@ export default function ConcreteYardCalculatorPage() {
                   </div>
                   <h1 className="text-lg sm:text-2xl lg:text-3xl text-slate-200 font-bold font-poppins tracking-tight leading-tight">
                     Concrete Yards Calculator
-                  </h1>                  
+                  </h1>
                 </div>
                 <EEATBlock
-                    reviewerName="Engr. Talha Tariq"
-                    licenseNumber="PEC-CIVIL-37815"
-                    lastUpdated="2025-10-24"
-                  />
+                  reviewerName="Engr. Talha Tariq"
+                  licenseNumber="PEC-CIVIL-37815"
+                  lastUpdated="2025-10-24"
+                />
               </div>
               <div>
-              <p className="mt-3 ml-2 text-sm sm:text-base lg:text-lg text-slate-400 leading-relaxed font-poppins">
-                Quickly estimate yardage in yd³ for slabs, footings, walls, and more. Convert
+                <p className="mt-3 ml-2 text-sm sm:text-base lg:text-lg text-slate-400 leading-relaxed font-poppins">
+                  Quickly estimate yardage in yd³ for slabs, footings, walls, and more. Convert
                   from ft³ or m³, add waste allowance, and switch display units for ordering.
-              </p>
+                </p>
               </div>
-            </div>           
+            </div>
 
             {/* ===== Calculator Slot ===== */}
             <ConcreteYardsCalc />

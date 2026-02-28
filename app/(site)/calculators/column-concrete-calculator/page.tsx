@@ -11,15 +11,15 @@ import EEATBlock from "@/components/app/EEATBlock";
 
 /** Page-level metadata: precise title/desc, canonical, OG/Twitter parity */
 export const metadata: Metadata = {
-  "title": "Column Concrete Calculator (Rectangular & Circular) — Concrete Calculator Max",
+  "title": "Column Concrete Calculator (Rectangular & Circular)",
   "description":
     "Instant column concrete volume for rectangular/square and circular columns. Includes waste allowance, dry-volume factor, unit switching (m³/yd³), and worked examples.",
   "alternates": {
-    "canonical": "https://concretecalculatormax.com/calculators/column-concrete-calculator"
+    "canonical": "https://www.concretecalculatormax.com/calculators/column-concrete-calculator"
   },
   "openGraph": {
     "type": "article",
-    "url": "https://concretecalculatormax.com/calculators/column-concrete-calculator",
+    "url": "https://www.concretecalculatormax.com/calculators/column-concrete-calculator",
     "title": "Column Concrete Calculator (Rectangular & Circular)",
     "description":
       "Calculate column concrete volume with waste allowance and dry-volume factor. m³/yd³ supported.",
@@ -51,111 +51,111 @@ export default function ColumnConcreteCalculatorPage() {
    * - FAQPage: common Qs (visible content also lives in the Article component)
    */
   const jsonLd = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebApplication",
-      "@id": "https://concretecalculatormax.com/calculators/column-concrete-calculator#app",
-      "name": "Column Concrete Calculator",
-      "url": "https://concretecalculatormax.com/calculators/column-concrete-calculator",
-      "applicationCategory": "UtilityApplication",
-      "operatingSystem": "Web",
-      "description":
-        "Calculate concrete volume for rectangular/square and circular columns with waste allowance and dry-volume factor.",
-      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-      "publisher": {
-        "@type": "Organization",
-        "name": "Concrete Calculator Max",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://concretecalculatormax.com/og/logo.png"
-        }
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://www.concretecalculatormax.com/calculators/column-concrete-calculator#app",
+        "name": "Column Concrete Calculator",
+        "url": "https://www.concretecalculatormax.com/calculators/column-concrete-calculator",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "Web",
+        "description":
+          "Calculate concrete volume for rectangular/square and circular columns with waste allowance and dry-volume factor.",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Concrete Calculator Max",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://www.concretecalculatormax.com/og/logo.png"
+          }
+        },
+        "potentialAction": { "@type": "Action", "name": "Calculate Column Concrete" }
       },
-      "potentialAction": { "@type": "Action", "name": "Calculate Column Concrete" }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://concretecalculatormax.com" },
-        { "@type": "ListItem", "position": 2, "name": "Calculators", "item": "https://concretecalculatormax.com/calculators" },
-        { "@type": "ListItem", "position": 3, "name": "Column Concrete Calculator", "item": "https://concretecalculatormax.com/calculators/column-concrete-calculator" }
-      ]
-    },
-    {
-      "@type": "HowTo",
-      "name": "How to calculate concrete for a column",
-      "totalTime": "PT1M",
-      "step": [
-        { "@type": "HowToStep", "name": "Select shape", "text": "Choose rectangular/square or circular column." },
-        { "@type": "HowToStep", "name": "Enter dimensions", "text": "Input height and cross-section dimensions; choose units." },
-        { "@type": "HowToStep", "name": "Add allowances", "text": "Optionally add waste (%) and dry-volume factor." },
-        { "@type": "HowToStep", "name": "Calculate", "text": "Click Calculate to get volume in m³ and yd³." }
-      ],
-      "supply": [{ "@type": "HowToSupply", "name": "Dimensions of the column" }]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Does the calculator handle both rectangular and circular columns?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. Use the tabs to switch between Rectangular/Square and Circular modes; each uses the appropriate geometric formula."
+      {
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.concretecalculatormax.com" },
+          { "@type": "ListItem", "position": 2, "name": "Calculators", "item": "https://www.concretecalculatormax.com/calculators" },
+          { "@type": "ListItem", "position": 3, "name": "Column Concrete Calculator", "item": "https://www.concretecalculatormax.com/calculators/column-concrete-calculator" }
+        ]
+      },
+      {
+        "@type": "HowTo",
+        "name": "How to calculate concrete for a column",
+        "totalTime": "PT1M",
+        "step": [
+          { "@type": "HowToStep", "name": "Select shape", "text": "Choose rectangular/square or circular column." },
+          { "@type": "HowToStep", "name": "Enter dimensions", "text": "Input height and cross-section dimensions; choose units." },
+          { "@type": "HowToStep", "name": "Add allowances", "text": "Optionally add waste (%) and dry-volume factor." },
+          { "@type": "HowToStep", "name": "Calculate", "text": "Click Calculate to get volume in m³ and yd³." }
+        ],
+        "supply": [{ "@type": "HowToSupply", "name": "Dimensions of the column" }]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Does the calculator handle both rectangular and circular columns?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Use the tabs to switch between Rectangular/Square and Circular modes; each uses the appropriate geometric formula."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Which input units are supported?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Meters, centimeters, feet, and inches for dimensions. You can display results in cubic meters, cubic yards, or cubic feet."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How much waste should I add?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Many projects use 5–10% to cover spillage, pumping losses, and subgrade variation. Always follow your project’s specification."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I enter multiple columns at once?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Enter the quantity of columns; the tool multiplies per-column volume to produce net totals and totals with waste."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How do I get cubic yards for ordering?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "After calculating, set the display to yd³, or use the built-in yardage helper that also shows +5% and +10% options."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Does this include reinforcement or mix design?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The tool focuses on volume. Reinforcement, cover, and mix grade must follow your structural drawings and local codes."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I print or save the results?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes. Use the Print / Save button in the calculator to export a clean, paper-friendly summary."
+            }
           }
-        },
-        {
-          "@type": "Question",
-          "name": "Which input units are supported?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Meters, centimeters, feet, and inches for dimensions. You can display results in cubic meters, cubic yards, or cubic feet."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How much waste should I add?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Many projects use 5–10% to cover spillage, pumping losses, and subgrade variation. Always follow your project’s specification."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I enter multiple columns at once?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. Enter the quantity of columns; the tool multiplies per-column volume to produce net totals and totals with waste."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "How do I get cubic yards for ordering?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "After calculating, set the display to yd³, or use the built-in yardage helper that also shows +5% and +10% options."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Does this include reinforcement or mix design?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "No. The tool focuses on volume. Reinforcement, cover, and mix grade must follow your structural drawings and local codes."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Can I print or save the results?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Yes. Use the Print / Save button in the calculator to export a clean, paper-friendly summary."
-          }
-        }
-      ]
-    }
-  ]
-};
+        ]
+      }
+    ]
+  };
 
 
   return (
@@ -199,10 +199,10 @@ export default function ColumnConcreteCalculatorPage() {
                   </h1>
                 </div>
                 <EEATBlock
-                    reviewerName="Engr. Talha Tariq"
-                    licenseNumber="PEC-CIVIL-37815"
-                    lastUpdated="2025-10-24"
-                  />
+                  reviewerName="Engr. Talha Tariq"
+                  licenseNumber="PEC-CIVIL-37815"
+                  lastUpdated="2025-10-24"
+                />
               </div>
               <p className="mt-3 ml-2 text-sm sm:text-base lg:text-lg text-slate-400 leading-relaxed font-poppins">
                 Easily estimate the concrete volume needed for rectangular, square, or circular columns. Enter your dimensions,
@@ -210,7 +210,7 @@ export default function ColumnConcreteCalculatorPage() {
               </p>
             </div>
 
-            
+
             {/* Calculator */}
             <ColumnConcreteCalc />
 

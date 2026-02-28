@@ -9,16 +9,16 @@ import RelatedCalculators from "@/components/app/RelatedCalculators";
 import EEATBlock from "@/components/app/EEATBlock";
 
 export const metadata: Metadata = {
-    title: "Concrete Slab Weight Calculator | Professional Weight Estimator",
+    title: "Concrete Slab Weight Calculator",
     description:
         "Calculate the weight of concrete slabs accurately. Includes support for standard, reinforced, and lightweight concrete densities. Get results in pounds and tons.",
     alternates: {
         canonical:
-            "https://concretecalculatormax.com/calculators/concrete-slab-weight-calculator",
+            "https://www.concretecalculatormax.com/calculators/concrete-slab-weight-calculator",
     },
     openGraph: {
         type: "article",
-        url: "https://concretecalculatormax.com/calculators/concrete-slab-weight-calculator",
+        url: "https://www.concretecalculatormax.com/calculators/concrete-slab-weight-calculator",
         title: "Concrete Slab Weight Calculator",
         description:
             "Accurate weight estimation for concrete slabs. Factor in dimensions and mix density for structural planning.",
@@ -47,9 +47,9 @@ export default function ConcreteSlabWeightCalculatorPage() {
         "@graph": [
             {
                 "@type": "WebApplication",
-                "@id": "https://concretecalculatormax.com/calculators/concrete-slab-weight-calculator#app",
+                "@id": "https://www.concretecalculatormax.com/calculators/concrete-slab-weight-calculator#app",
                 name: "Concrete Slab Weight Calculator",
-                url: "https://concretecalculatormax.com/calculators/concrete-slab-weight-calculator",
+                url: "https://www.concretecalculatormax.com/calculators/concrete-slab-weight-calculator",
                 applicationCategory: "UtilityApplication",
                 operatingSystem: "Web",
                 description:
@@ -60,7 +60,7 @@ export default function ConcreteSlabWeightCalculatorPage() {
                     "name": "Concrete Calculator Max",
                     "logo": {
                         "@type": "ImageObject",
-                        "url": "https://concretecalculatormax.com/og/logo.png",
+                        "url": "https://www.concretecalculatormax.com/og/logo.png",
                     },
                 },
                 potentialAction: { "@type": "Action", name: "Calculate Slab Weight" },
@@ -72,19 +72,19 @@ export default function ConcreteSlabWeightCalculatorPage() {
                         "@type": "ListItem",
                         position: 1,
                         name: "Home",
-                        item: "https://concretecalculatormax.com",
+                        item: "https://www.concretecalculatormax.com",
                     },
                     {
                         "@type": "ListItem",
                         position: 2,
                         name: "Calculators",
-                        item: "https://concretecalculatormax.com/calculators",
+                        item: "https://www.concretecalculatormax.com/calculators",
                     },
                     {
                         "@type": "ListItem",
                         position: 3,
                         name: "Concrete Slab Weight Calculator",
-                        item: "https://concretecalculatormax.com/calculators/concrete-slab-weight-calculator",
+                        item: "https://www.concretecalculatormax.com/calculators/concrete-slab-weight-calculator",
                     },
                 ],
             },
