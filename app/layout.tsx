@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/app/theme-provider";
 import { JetBrains_Mono, Poppins } from "next/font/google";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import AdsenseCodeSnippet from "@/components/advertisements/google-adsense/AdsenseCodeSnippet";
 
 // Load both fonts with CSS variable bindings
 const jetbrains = JetBrains_Mono({
@@ -118,6 +119,7 @@ export default function RootLayout({
 
         {/* Bing / MS validation */}
         <meta name="msvalidate.01" content="1CD2FCEA3D1A7CE25462E9DDC3234B05" />
+        <AdsenseCodeSnippet />
       </head>
       <body>
         <ThemeProvider
