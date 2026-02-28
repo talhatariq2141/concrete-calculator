@@ -82,7 +82,7 @@ export const CALCULATORS: CalcCard[] = [
     icon: Boxes,
   },
   {
-    id: "calculators/tank-or-trench-concrete-calculator",
+    id: "calculators/tank-trench-concrete-calculator",
     title: "Tank or Trench Concrete Calc",
     desc: "Calculate concrete volume for tanks or trench structures easily.",
     category: "Tank/Trench",

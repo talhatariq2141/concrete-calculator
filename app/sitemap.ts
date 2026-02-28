@@ -25,7 +25,7 @@ const routes: string[] = [
   "/calculators/pier-caisson-concrete-calculator",
   "/calculators/slab-concrete-calculator",
   "/calculators/staircase-concrete-calculator",
-  "/calculators/tank-or-trench-concrete-calculator",
+  "/calculators/tank-trench-concrete-calculator",
   "/calculators/wall-concrete-calculator",
   "/calculators/concrete-bag-calculator",
   "/calculators/concrete-slab-cost-calculator",
