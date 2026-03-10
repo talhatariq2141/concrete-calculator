@@ -32,6 +32,7 @@ const routes: string[] = [
   "/calculators/concrete-slab-weight-calculator",
   "/calculators/concrete-slab-load-capacity-calculator",
   "/calculators/concrete-driveway-cost-calculator",
+  "/calculators/concrete-block-calculator",
 
 ];
 

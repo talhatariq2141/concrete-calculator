@@ -23,11 +23,11 @@ export const metadata: Metadata = {
     "Compute concrete volume for rectangular and circular tanks and foundation trenches. Enter internal dimensions and thickness, add waste allowance, and get results in m³/yd³/ft³.",
   "alternates": {
     "canonical":
-      "https://www.concretecalculatormax.com/calculators/tank-or-trench-concrete-calculator"
+      "https://www.concretecalculatormax.com/calculators/tank-trench-concrete-calculator"
   },
   "openGraph": {
     "type": "article",
-    "url": "https://www.concretecalculatormax.com/calculators/tank-or-trench-concrete-calculator",
+    "url": "https://www.concretecalculatormax.com/calculators/tank-trench-concrete-calculator",
     "title": "Tank / Trench Concrete Calculator",
     "description":
       "Instant concrete volumes for tanks (rectangular/circular) and trenches with waste and unit switching.",

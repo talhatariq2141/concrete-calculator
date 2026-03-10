@@ -9,6 +9,7 @@ import FaqJsonLd from "@/components/seo/FaqJsonLd";
 import { homepageFaqs } from "@/lib/faqs";
 import Hero2 from "@/components/app/Hero-2";
 import FeaturedCalcSection from "@/components/app/FeaturedCalcSection";
+import HomeCategoryList from "@/components/app/HomeCategoryList";
 import WhyChooseSection from "@/components/app/WhyChooseSection";
 
 
@@ -19,9 +20,10 @@ import WhyChooseSection from "@/components/app/WhyChooseSection";
 export default function Page() {
   return (
     <main>
-      
-      <Hero2 />            
+
+      <Hero2 />
       <FeaturedCalcSection />
+      <HomeCategoryList />
       <WhyChooseSection />
       <HomepageArticle />
       <HomepageFAQs items={homepageFaqs} />

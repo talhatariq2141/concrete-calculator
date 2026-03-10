@@ -14,7 +14,7 @@ import {
   Briefcase,
 } from "lucide-react";
 
-export type Category = "All" | "Beam" | "Column" | "Concrete Yards" | "Cost" | "Footing" | "Concrete Mix" | "Pier/Caisson" | "Slab" | "Staircase" | "Tank/Trench" | "Wall" | "Concrete Bags";
+export type Category = "All" | "Beam" | "Column" | "Concrete Block" | "Concrete Yards" | "Cost" | "Footing" | "Concrete Mix" | "Pier/Caisson" | "Slab" | "Staircase" | "Tank/Trench" | "Wall" | "Concrete Bags";
 
 export type CalcCard = {
   id: string;
@@ -129,10 +129,17 @@ export const CALCULATORS: CalcCard[] = [
     desc: "Estimate cost of concrete for driveways.",
     category: "Cost",
     icon: Container,
-  }
+  },
+  {
+    id: "calculators/concrete-block-calculator",
+    title: "Concrete Block Estimator Calculator",
+    desc: "Estimate concrete blocks, mortar, grout, reinforcement, and cost for CMU block walls.",
+    category: "Concrete Block",
+    icon: BrickWall,
+  },
 
 ];
 
-export const CATEGORIES: Category[] = ["All", "Beam", "Column", "Concrete Yards", "Cost", "Footing", "Concrete Mix", "Pier/Caisson", "Slab", "Staircase", "Tank/Trench", "Wall", "Concrete Bags"];
+export const CATEGORIES: Category[] = ["All", "Beam", "Column", "Concrete Block", "Concrete Yards", "Cost", "Footing", "Concrete Mix", "Pier/Caisson", "Slab", "Staircase", "Tank/Trench", "Wall", "Concrete Bags"];
 
 export const FALLBACK_ICON: ElementType = Calculator;

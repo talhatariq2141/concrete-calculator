@@ -57,7 +57,7 @@ export default function CalculatorsIndexClient({
         normalizedQuery.length === 0
           ? true
           : c.title.toLowerCase().includes(normalizedQuery) ||
-            c.desc.toLowerCase().includes(normalizedQuery);
+          c.desc.toLowerCase().includes(normalizedQuery);
       return matchesCategory && matchesQuery;
     });
   }, [category, normalizedQuery]);
@@ -96,7 +96,7 @@ export default function CalculatorsIndexClient({
 
       {/* Search + Filter Row */}
       <div className="mb-4 flex flex-col gap-4 justify-between md:flex-row md:items-start">
-        <div className="w-full text-left md:w-1/2">
+        <div className="w-full text-left md:w-3/4">
           <h1 className="text-2xl font-bold text-slate-200">
             <span>Free Concrete Calculators for</span>
             <motion.span
