@@ -83,6 +83,11 @@ const CATEGORY_SEO: Record<
         description:
             "Find out how many bags of concrete you need for slabs, footings, posts, and sonotubes.",
     },
+    "Misc. Concrete": {
+        heading: "Miscellaneous Concrete Calculators",
+        description:
+            "A collection of specialized calculators for fence posts, gate posts, deck posts, and other general concrete needs.",
+    },
 };
 
 const INITIAL_VISIBLE = 4;

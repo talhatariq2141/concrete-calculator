@@ -12,9 +12,10 @@ import {
   Boxes,
   Calculator,
   Briefcase,
+  CircleDot,
 } from "lucide-react";
 
-export type Category = "All" | "Beam" | "Column" | "Concrete Block" | "Concrete Yards" | "Cost" | "Footing" | "Concrete Mix" | "Pier/Caisson" | "Slab" | "Staircase" | "Tank/Trench" | "Wall" | "Concrete Bags";
+export type Category = "All" | "Beam" | "Column" | "Concrete Block" | "Concrete Yards" | "Cost" | "Footing" | "Concrete Mix" | "Misc. Concrete" | "Pier/Caisson" | "Slab" | "Staircase" | "Tank/Trench" | "Wall" | "Concrete Bags";
 
 export type CalcCard = {
   id: string;
@@ -137,9 +138,23 @@ export const CALCULATORS: CalcCard[] = [
     category: "Concrete Block",
     icon: BrickWall,
   },
+  {
+    id: "calculators/cinder-block-calculator",
+    title: "Cinder Block Calculator",
+    desc: "Calculate cinder block quantity, mortar bags, and total wall cost including openings deduction and waste allowance.",
+    category: "Concrete Block",
+    icon: BrickWall,
+  },
+  {
+    id: "calculators/post-hole-concrete-calculator",
+    title: "Post Hole Concrete Calculator",
+    desc: "Estimate concrete, gravel, and bag counts for fence posts, gate posts, deck posts, and more.",
+    category: "Misc. Concrete",
+    icon: CircleDot,
+  },
 
 ];
 
-export const CATEGORIES: Category[] = ["All", "Beam", "Column", "Concrete Block", "Concrete Yards", "Cost", "Footing", "Concrete Mix", "Pier/Caisson", "Slab", "Staircase", "Tank/Trench", "Wall", "Concrete Bags"];
+export const CATEGORIES: Category[] = ["All", "Beam", "Column", "Concrete Block", "Concrete Yards", "Cost", "Footing", "Concrete Mix", "Misc. Concrete", "Pier/Caisson", "Slab", "Staircase", "Tank/Trench", "Wall", "Concrete Bags"];
 
 export const FALLBACK_ICON: ElementType = Calculator;
