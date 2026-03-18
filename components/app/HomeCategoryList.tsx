@@ -88,6 +88,11 @@ const CATEGORY_SEO: Record<
         description:
             "A collection of specialized calculators for fence posts, gate posts, deck posts, and other general concrete needs.",
     },
+    Gravel: {
+        heading: "Gravel Calculators",
+        description:
+            "Calculate volume, weight (tons & lbs), and cost for gravel driveways, landscaping, pea gravel, aquarium substrate, and material conversions.",
+    },
 };
 
 const INITIAL_VISIBLE = 4;

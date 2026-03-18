@@ -13,9 +13,10 @@ import {
   Calculator,
   Briefcase,
   CircleDot,
+  Layers,
 } from "lucide-react";
 
-export type Category = "All" | "Beam" | "Column" | "Concrete Block" | "Concrete Yards" | "Cost" | "Footing" | "Concrete Mix" | "Misc. Concrete" | "Pier/Caisson" | "Slab" | "Staircase" | "Tank/Trench" | "Wall" | "Concrete Bags";
+export type Category = "All" | "Beam" | "Column" | "Concrete Block" | "Concrete Yards" | "Cost" | "Footing" | "Concrete Mix" | "Misc. Concrete" | "Pier/Caisson" | "Slab" | "Staircase" | "Tank/Trench" | "Wall" | "Concrete Bags" | "Gravel";
 
 export type CalcCard = {
   id: string;
@@ -152,9 +153,51 @@ export const CALCULATORS: CalcCard[] = [
     category: "Misc. Concrete",
     icon: CircleDot,
   },
+  {
+    id: "calculators/gravel-calculators/gravel-calculator",
+    title: "Gravel Calculator",
+    desc: "Calculate gravel volume, tons, cubic yards, and estimated cost.",
+    category: "Gravel",
+    icon: Layers,
+  },
+  {
+    id: "calculators/gravel-calculators/gravel-driveway-calculator",
+    title: "Gravel Driveway Calculator",
+    desc: "Estimate driveway gravel in tons, yards, and total cost.",
+    category: "Gravel",
+    icon: Layers,
+  },
+  {
+    id: "calculators/gravel-calculators/pea-gravel-calculator",
+    title: "Pea Gravel Calculator",
+    desc: "Estimate pea gravel needed for landscaping.",
+    category: "Gravel",
+    icon: Layers,
+  },
+  {
+    id: "calculators/gravel-calculators/gravel-tons-to-yards-calculator",
+    title: "Gravel Tons to Yards Calculator",
+    desc: "Convert between gravel tons and cubic yards.",
+    category: "Gravel",
+    icon: Layers,
+  },
+  {
+    id: "calculators/gravel-calculators/gravel-cost-calculator",
+    title: "Gravel Cost Calculator",
+    desc: "Estimate total project cost including delivery for gravel projects.",
+    category: "Cost",
+    icon: Layers,
+  },
+  {
+    id: "calculators/gravel-calculators/aquarium-gravel-calculator",
+    title: "Aquarium Gravel Calculator",
+    desc: "Calculate pounds and bags of gravel for your aquarium.",
+    category: "Gravel",
+    icon: Layers,
+  },
 
 ];
 
-export const CATEGORIES: Category[] = ["All", "Beam", "Column", "Concrete Block", "Concrete Yards", "Cost", "Footing", "Concrete Mix", "Misc. Concrete", "Pier/Caisson", "Slab", "Staircase", "Tank/Trench", "Wall", "Concrete Bags"];
+export const CATEGORIES: Category[] = ["All", "Beam", "Column", "Concrete Block", "Concrete Yards", "Cost", "Footing", "Concrete Mix", "Misc. Concrete", "Pier/Caisson", "Slab", "Staircase", "Tank/Trench", "Wall", "Concrete Bags", "Gravel"];
 
 export const FALLBACK_ICON: ElementType = Calculator;

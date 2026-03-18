@@ -35,6 +35,12 @@ const routes: string[] = [
   "/calculators/concrete-block-calculator",
   "/calculators/cinder-block-calculator",
   "/calculators/post-hole-concrete-calculator",
+  "/calculators/gravel-calculators",
+  "/calculators/gravel-calculators/gravel-calculator",
+  "/calculators/gravel-calculators/pea-gravel-calculator",
+  "/calculators/gravel-calculators/gravel-tons-to-yards-calculator",
+  "/calculators/gravel-calculators/gravel-driveway-calculator",
+  "/calculators/gravel-calculators/aquarium-gravel-calculator",
 
 ];
 
