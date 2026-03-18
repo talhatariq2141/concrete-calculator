@@ -3,7 +3,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   CheckCircle2,
-  Calculator as CalcIcon,
   Layers,
   ArrowRightLeft,
   Settings,
@@ -107,10 +106,10 @@ export default function GravelTonsToYardsCalculatorArticle() {
         </h3>
         <div className="rounded-lg border border-slate-800 p-5 space-y-6">
           <ol className="list-decimal list-inside space-y-2 text-slate-300">
-            <li>Select the <span className="text-white">Conversion Mode</span> by clicking the swap arrow button. Decide whether you are starting with "Tons" or "Yards".</li>
+            <li>Select the <span className="text-white">Conversion Mode</span> by clicking the swap arrow button. Decide whether you are starting with &quot;Tons&quot; or &quot;Yards&quot;.</li>
             <li>Input the <span className="text-white">Quantity</span> you need to convert.</li>
             <li>Select the <span className="text-white">Gravel Type</span>. This adjusts the density (weight-per-volume) that drives the conversion formula.</li>
-            <li>(Optional) If you know the exact weight of your gravel, select "Custom Density" and enter its weight in <span className="text-white">lb/ft³</span>.</li>
+            <li>(Optional) If you know the exact weight of your gravel, select &quot;Custom Density&quot; and enter its weight in <span className="text-white">lb/ft³</span>.</li>
             <li>Click <span className="text-white">Convert</span> to seamlessly translate the measurement.</li>
           </ol>
         </div>

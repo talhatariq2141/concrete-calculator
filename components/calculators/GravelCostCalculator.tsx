@@ -287,7 +287,7 @@ export default function GravelCostCalculator() {
       </CardHeader>
       
       <CardContent className="p-6 pt-0">
-        <Tabs value={tab} onValueChange={(v) => { setTab(v as any); setSubmitted(false); }} className="w-full mt-4">
+        <Tabs value={tab} onValueChange={(v) => { setTab(v as "dimensions" | "known"); setSubmitted(false); }} className="w-full mt-4">
           <TabsList className="grid w-full grid-cols-2 bg-slate-800">
             <TabsTrigger value="dimensions" className="data-[state=active]:bg-teal-500 data-[state=active]:text-slate-900">
               Calculate from Dimensions

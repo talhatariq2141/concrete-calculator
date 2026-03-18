@@ -5,7 +5,6 @@ import {
   CheckCircle2,
   Calculator as CalcIcon,
   Layers,
-  ClipboardList,
   DollarSign,
   Truck,
   Map
@@ -111,8 +110,8 @@ export default function GravelCostCalculatorArticle() {
             <li>Choose your input method using the tabs: <span className="text-white">Calculate from Dimensions</span> OR <span className="text-white">Enter Known Quantity</span>.</li>
             <li>If using Dimensions, enter your <span className="text-white">Length, Width, Depth</span>, and an optional Waste Factor.</li>
             <li>If using Known Quantity, enter the number of <span className="text-white">Tons or Yards</span> you plan to buy.</li>
-            <li>In the Pricing section, enter your supplier's <span className="text-white">Price</span> and select whether they charge per Ton or per Yard.</li>
-            <li>Select the correct <span className="text-white">Gravel Density Type</span> (this is mandatory if the input metric and pricing metric don't match, to allow for weight-to-volume math).</li>
+            <li>In the Pricing section, enter your supplier&apos;s <span className="text-white">Price</span> and select whether they charge per Ton or per Yard.</li>
+            <li>Select the correct <span className="text-white">Gravel Density Type</span> (this is mandatory if the input metric and pricing metric don&apos;t match, to allow for weight-to-volume math).</li>
             <li>Click <span className="text-white">Calculate Free Estimate</span>.</li>
           </ol>
         </div>
@@ -143,7 +142,7 @@ export default function GravelCostCalculatorArticle() {
   );
 }
 
-function Calculator(props: any) { return <CalcIcon {...props} />; }
+function Calculator(props: React.SVGProps<SVGSVGElement>) { return <CalcIcon {...props} />; }
 
 function FeatureCard({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string; }) {
   return (

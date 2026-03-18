@@ -1,7 +1,7 @@
 import React from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { CALCULATORS, Category } from "@/app/(site)/calculators/data";
+import { CALCULATORS } from "@/app/(site)/calculators/data";
 import { ChevronRight, Layers } from "lucide-react";
 
 export const metadata: Metadata = {
@@ -70,7 +70,7 @@ export default function GravelCalculatorsHubPage() {
           </h1>
         </div>
         <p className="text-lg text-slate-400">
-          Whether you're building a structural driveway base, laying decorative pea gravel in your garden, or filling an aquarium, our suite of free gravel calculators helps you precisely estimate volume, weight, and costs depending on the exact material density.
+          Whether you&apos;re building a structural driveway base, laying decorative pea gravel in your garden, or filling an aquarium, our suite of free gravel calculators helps you precisely estimate volume, weight, and costs depending on the exact material density.
         </p>
       </div>
 
@@ -110,7 +110,7 @@ export default function GravelCalculatorsHubPage() {
         </h2>
         <div className="prose prose-invert max-w-none prose-p:text-slate-400">
           <p>
-            The trickiest part of ordering materials for a landscaping or construction project is that volume and weight aren't directly interchangeable without knowing the material's density. Bulk landscape yards typically load material by the cubic yard (volume), while commercial stone quarries weigh trucks to sell material by the ton (weight).
+            The trickiest part of ordering materials for a landscaping or construction project is that volume and weight aren&apos;t directly interchangeable without knowing the material&apos;s density. Bulk landscape yards typically load material by the cubic yard (volume), while commercial stone quarries weigh trucks to sell material by the ton (weight).
           </p>
           <p>
             When utilizing our gravel calculators, always be mindful of your material type:

@@ -8,7 +8,6 @@ import {
   Circle,
   Layers,
   ClipboardList,
-  Printer,
   Shovel,
   DollarSign,
 } from "lucide-react";
@@ -181,7 +180,7 @@ export default function GravelCalculatorArticle() {
             <li><strong>Crushed Stone:</strong> ~105 lb/ft³</li>
           </ul>
           <p className="text-sm text-slate-400 mt-2">
-            * Note: Actual density varies by stone type, moisture, and compaction. If you know the exact density from your supplier, select "Custom Density" to input it directly.
+            * Note: Actual density varies by stone type, moisture, and compaction. If you know the exact density from your supplier, select &quot;Custom Density&quot; to input it directly.
           </p>
         </div>
 

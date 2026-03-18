@@ -3,7 +3,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   CheckCircle2,
-  Calculator as CalcIcon,
   Layers,
   Droplets,
   Package,
@@ -125,7 +124,7 @@ export default function AquariumGravelCalculatorArticle() {
             However, that estimate breaks down for unusually shaped aquariums (like very tall cylinders or shallow frag tanks).
           </p>
           <p>
-            A much more accurate method is calculating the <strong>square area of the tank's footprint</strong> and multiplying it by your desired <strong>substrate depth</strong> to find the volume, then converting that volume to weight based on gravel density.
+            A much more accurate method is calculating the <strong>square area of the tank&apos;s footprint</strong> and multiplying it by your desired <strong>substrate depth</strong> to find the volume, then converting that volume to weight based on gravel density.
           </p>
           <FormulaBlock
             title="The Mathematical Formula"
