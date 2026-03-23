@@ -147,6 +147,13 @@ export const CALCULATORS: CalcCard[] = [
     icon: BrickWall,
   },
   {
+    id: "calculators/cmu-block-calculator",
+    title: "CMU Block Calculator",
+    desc: "Estimate CMU block quantity, deduct openings, add waste, and calculate full installed wall cost.",
+    category: "Concrete Block",
+    icon: BrickWall,
+  },
+  {
     id: "calculators/post-hole-concrete-calculator",
     title: "Post Hole Concrete Calculator",
     desc: "Estimate concrete, gravel, and bag counts for fence posts, gate posts, deck posts, and more.",

@@ -34,6 +34,7 @@ const routes: string[] = [
   "/calculators/concrete-driveway-cost-calculator",
   "/calculators/concrete-block-calculator",
   "/calculators/cinder-block-calculator",
+  "/calculators/cmu-block-calculator",
   "/calculators/post-hole-concrete-calculator",
   "/calculators/gravel-calculators",
   "/calculators/gravel-calculators/gravel-calculator",
