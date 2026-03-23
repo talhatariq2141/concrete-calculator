@@ -36,6 +36,7 @@ const routes: string[] = [
   "/calculators/cinder-block-calculator",
   "/calculators/cmu-block-calculator",
   "/calculators/post-hole-concrete-calculator",
+  "/calculators/crushed-concrete-calculator",
   "/calculators/gravel-calculators",
   "/calculators/gravel-calculators/gravel-calculator",
   "/calculators/gravel-calculators/pea-gravel-calculator",
