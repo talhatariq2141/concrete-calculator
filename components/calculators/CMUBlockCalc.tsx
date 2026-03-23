@@ -162,7 +162,6 @@ export default function CMUBlockCalc() {
   const [blockSizeIdx, setBlockSizeIdx] = useState("2"); // 8x8x16 default
   const [customBlockH, setCustomBlockH] = useState("8");
   const [customBlockL, setCustomBlockL] = useState("16");
-  const [customBlockW, setCustomBlockW] = useState("8");
 
   /* --- Mortar --- */
   const [mortarJoint, setMortarJoint] = useState("0.375"); // 3/8 in
@@ -303,7 +302,7 @@ export default function CMUBlockCalc() {
 
   const reset = () => {
     setWallLength("20"); setWallHeight("8"); setWallQty("1");
-    setBlockSizeIdx("2"); setCustomBlockH("8"); setCustomBlockL("16"); setCustomBlockW("8");
+    setBlockSizeIdx("2"); setCustomBlockH("8"); setCustomBlockL("16");
     setMortarJoint("0.375");
     setWastePct("10"); setOpenings([]);
     setCostPerBlock(""); setLaborCostPerSqFt("");
@@ -535,7 +534,7 @@ export default function CMUBlockCalc() {
             </div>
             {!isCustomBlock && (
               <p className="mt-2 text-xs text-white/60">
-                Note: Standard 4", 6", 8", 10", and 12" width CMU blocks have the same 8x16 nominal face size, so the coverage logic remains the same.
+                Note: Standard 4&quot;, 6&quot;, 8&quot;, 10&quot;, and 12&quot; width CMU blocks have the same 8x16 nominal face size, so the coverage logic remains the same.
               </p>
             )}
           </section>
