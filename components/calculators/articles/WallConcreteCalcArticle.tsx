@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
+import { CheckCircle2, HelpCircle } from "lucide-react";
 
 export default function WallConcreteCalcArticle() {
   return (
@@ -30,7 +30,7 @@ export default function WallConcreteCalcArticle() {
             },
             {
               title: "Net Volume with Openings",
-              desc: "Subtract doors, windows, and vents automatically using width × height × thickness × count for each opening."
+              desc: "Subtract doors, windows, and vents automatically using width &times; height &times; thickness &times; count for each opening."
             },
             {
               title: "Nominal Mix & Materials",
@@ -132,14 +132,14 @@ export default function WallConcreteCalcArticle() {
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">Can I mix units when entering dimensions?</h3>
             <p className="text-slate-400">
-              Use meters or feet for length and height, and meters/centimeters/inches for thickness. The tool converts internally—just keep each field's unit consistent with its selector.
+              Use meters or feet for length and height, and meters/centimeters/inches for thickness. The tool converts internally—just keep each field&apos;s unit consistent with its selector.
             </p>
           </div>
           
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">How are openings handled?</h3>
             <p className="text-slate-400">
-              Each opening's volume width × height × wall thickness × count. The calculator subtracts the total of all openings from the gross wall volume.
+              Each opening&apos;s volume width &times; height &times; wall thickness &times; count. The calculator subtracts the total of all openings from the gross wall volume.
             </p>
           </div>
 

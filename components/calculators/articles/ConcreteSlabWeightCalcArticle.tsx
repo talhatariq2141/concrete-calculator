@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
+import { CheckCircle2, HelpCircle } from "lucide-react";
 
 export default function ConcreteSlabWeightCalcArticle() {
   return (
@@ -131,7 +131,7 @@ export default function ConcreteSlabWeightCalcArticle() {
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">What is the difference between wet and dry concrete weight?</h3>
             <p className="text-slate-400">
-              Wet concrete is slightly heavier than dry concrete due to its water content. As concrete cures (hydrates), it retains much of that weight as chemically bound water, although some evaporation occurs. Structural calculations usually design for the 'dead load' of cured concrete.
+              Wet concrete is slightly heavier than dry concrete due to its water content. As concrete cures (hydrates), it retains much of that weight as chemically bound water, although some evaporation occurs. Structural calculations usually design for the &apos;dead load&apos; of cured concrete.
             </p>
           </div>
 

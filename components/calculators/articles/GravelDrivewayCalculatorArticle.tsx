@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
+import { CheckCircle2, HelpCircle } from "lucide-react";
 
 export default function GravelDrivewayCalculatorArticle() {
   return (
@@ -120,7 +120,7 @@ export default function GravelDrivewayCalculatorArticle() {
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">How much gravel do I need for my driveway?</h3>
             <p className="text-slate-400">
-              It depends on the length and width of your driveway, and the depth of the gravel layers. Simply measure your driveway's footprint and enter the desired depth into our calculator to get an accurate estimate in tons and cubic yards.
+              It depends on the length and width of your driveway, and the depth of the gravel layers. Simply measure your driveway&apos;s footprint and enter the desired depth into our calculator to get an accurate estimate in tons and cubic yards.
             </p>
           </div>
           

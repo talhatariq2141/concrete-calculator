@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
+import { CheckCircle2, HelpCircle } from "lucide-react";
 
 export default function StaircaseConcreteCalcArticle() {
   return (
@@ -132,7 +132,7 @@ export default function StaircaseConcreteCalcArticle() {
         
         <div className="space-y-6">
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
-            <h3 className="font-semibold text-lg text-slate-200 mb-2">What's the difference between Waist-Slab and Solid stairs?</h3>
+            <h3 className="font-semibold text-lg text-slate-200 mb-2">What&apos;s the difference between Waist-Slab and Solid stairs?</h3>
             <p className="text-slate-400">
               Waist-Slab models an inclined slab plus triangular step wedges, typically yielding a lower volume. Solid stairs approximate stacked rectangular steps and are more conservative.
             </p>

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
+import { CheckCircle2, HelpCircle } from "lucide-react";
 
 export default function ConcreteSlabLoadCapacityCalcArticle() {
   return (
@@ -65,7 +65,7 @@ export default function ConcreteSlabLoadCapacityCalcArticle() {
         <h2 className="text-2xl font-bold text-slate-200 mb-4">The Science of Slab Capacity</h2>
         <ul className="list-disc pl-5 space-y-3 ms-2 text-slate-400">
           <li><strong className="text-white">Flexural Strength:</strong> The ability of the tension reinforcement (rebar) to resist bending moments under downward loads.</li>
-          <li><strong className="text-white">Shear Resistance:</strong> The capacity of the concrete section itself to resist being 'cut' near the supports.</li>
+          <li><strong className="text-white">Shear Resistance:</strong> The capacity of the concrete section itself to resist being &apos;cut&apos; near the supports.</li>
           <li><strong className="text-white">Dead vs Live Load:</strong> Dead load remains constant (slab weight, finishes), while Live Load (occupants, furniture) is the variable capacity we seek to determine.</li>
           <li><strong className="text-white">Effective Depth (d):</strong> The distance from the top of the concrete to the center of the rebar; this factor is critical for mechanical advantage in bending.</li>
         </ul>
@@ -77,14 +77,14 @@ export default function ConcreteSlabLoadCapacityCalcArticle() {
         <ul className="space-y-4 text-slate-400">
           <li>
             <strong className="text-white block">1) Flexural Capacity Equations</strong>
-            a = (As × fy) / (0.85 × f'c × b)<br/>
+            a = (As × fy) / (0.85 × f&apos;c × b)<br/>
             Mn = As × fy × (d - a/2)<br/>
             wu_max = (8 × φMn) / L²<br/>
             <em>Note: ACI 318 Strength Design for Flexure</em>
           </li>
           <li>
             <strong className="text-white block">2) One-Way Shear Check</strong>
-            φVc = 0.75 × 2 × sqrt(f'c) × b × d<br/>
+            φVc = 0.75 × 2 × sqrt(f&apos;c) × b × d<br/>
             wu_shear = (2 × φVc) / L<br/>
             <em>Note: Assume normal-weight concrete (λ=1.0)</em>
           </li>
@@ -118,12 +118,12 @@ export default function ConcreteSlabLoadCapacityCalcArticle() {
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">How does increasing rebar size affect capacity?</h3>
             <p className="text-slate-400">
-              Generally, more steel (As) increases flexural capacity until the slab becomes "over-reinforced." However, shear capacity is independent of rebar and depends almost entirely on slab thickness and concrete strength.
+              Generally, more steel (As) increases flexural capacity until the slab becomes &quot;over-reinforced.&quot; However, shear capacity is independent of rebar and depends almost entirely on slab thickness and concrete strength.
             </p>
           </div>
 
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
-            <h3 className="font-semibold text-lg text-slate-200 mb-2">Why is the result in "psf" instead of total pounds?</h3>
+            <h3 className="font-semibold text-lg text-slate-200 mb-2">Why is the result in &quot;psf&quot; instead of total pounds?</h3>
             <p className="text-slate-400">
               Structural loads for floors are standardized in Pounds per Square Foot (psf) to allow engineers to apply load regardless of the total floor area. The internal math uses a 1-foot strip to derive this unit.
             </p>
@@ -139,7 +139,7 @@ export default function ConcreteSlabLoadCapacityCalcArticle() {
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">What if my span is continuous?</h3>
             <p className="text-slate-400">
-              Simply supported spans derive the highest moments and are the most 'conservative' estimate. Continuous spans often have higher capacity but require specific ACI moment coefficients which are not currently integrated into this basic analysis tool.
+              Simply supported spans derive the highest moments and are the most &apos;conservative&apos; estimate. Continuous spans often have higher capacity but require specific ACI moment coefficients which are not currently integrated into this basic analysis tool.
             </p>
           </div>
         </div>

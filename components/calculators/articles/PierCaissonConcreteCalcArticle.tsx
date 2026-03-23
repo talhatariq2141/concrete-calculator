@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import { CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
+import React from "react";
+import { CheckCircle2, HelpCircle } from "lucide-react";
 
 export default function PierCaissonConcreteCalcArticle() {
   return (
@@ -136,21 +136,21 @@ export default function PierCaissonConcreteCalcArticle() {
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">How much waste should I add?</h3>
             <p className="text-slate-400">
-              A 5–10% allowance is common for placement losses, uneven excavation, and pump line waste. Follow your project's specification.
+              A 5–10% allowance is common for placement losses, uneven excavation, and pump line waste. Follow your project&apos;s specification.
             </p>
           </div>
 
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">Does the calculator show per-pier and total volumes?</h3>
             <p className="text-slate-400">
-              Yes. You'll see net and with-waste values per pier and for the total number of piers.
+              Yes. You&apos;ll see net and with-waste values per pier and for the total number of piers.
             </p>
           </div>
           
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">How do I use the yd³ (+5% / +10%) helpers?</h3>
             <p className="text-slate-400">
-              After calculating, the yd³ helper block shows 'with waste' yardage and quick +5% and +10% additions for rounding truck orders.
+              After calculating, the yd³ helper block shows &apos;with waste&apos; yardage and quick +5% and +10% additions for rounding truck orders.
             </p>
           </div>
           

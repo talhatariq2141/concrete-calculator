@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
+import { CheckCircle2, HelpCircle } from "lucide-react";
 
 export default function NominalMixConcreteCalcArticle() {
   return (
@@ -143,7 +143,7 @@ export default function NominalMixConcreteCalcArticle() {
         
         <div className="space-y-6">
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
-            <h3 className="font-semibold text-lg text-slate-200 mb-2">What's the difference between nominal and design mix?</h3>
+            <h3 className="font-semibold text-lg text-slate-200 mb-2">What&apos;s the difference between nominal and design mix?</h3>
             <p className="text-slate-400">
               Nominal mix uses standard ratios (M5–M25) for routine work; design mix is laboratory-designed to meet a target strength and workability.
             </p>
@@ -159,7 +159,7 @@ export default function NominalMixConcreteCalcArticle() {
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">Can I change the water–cement ratio?</h3>
             <p className="text-slate-400">
-              Yes. Leave the field blank to use the grade's typical default, or override w/c to match your specification.
+              Yes. Leave the field blank to use the grade&apos;s typical default, or override w/c to match your specification.
             </p>
           </div>
 
@@ -173,7 +173,7 @@ export default function NominalMixConcreteCalcArticle() {
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">Are these quantities suitable for structural members?</h3>
             <p className="text-slate-400">
-              They're planning estimates for nominal mixes. For structural elements with strength requirements, use a design mix per your code.
+              They&apos;re planning estimates for nominal mixes. For structural elements with strength requirements, use a design mix per your code.
             </p>
           </div>
         </div>

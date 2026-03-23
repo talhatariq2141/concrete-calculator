@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
+import { CheckCircle2, HelpCircle } from "lucide-react";
 
 export default function GravelTonsToYardsCalculatorArticle() {
   return (
@@ -13,7 +13,7 @@ export default function GravelTonsToYardsCalculatorArticle() {
           Converting Between Tons and Yards
         </h2>
         <p className="mb-4 leading-relaxed">
-          The landscaping industry frequently switches between selling bulk material by volume (cubic yards) and by weight (tons). To convert between the two, you must know the material's density. This conversion tool bridges that gap seamlessly with built-in material densities.
+          The landscaping industry frequently switches between selling bulk material by volume (cubic yards) and by weight (tons). To convert between the two, you must know the material&apos;s density. This conversion tool bridges that gap seamlessly with built-in material densities.
         </p>
       </section>
 
@@ -38,7 +38,7 @@ export default function GravelTonsToYardsCalculatorArticle() {
             },
             {
               title: "Custom Density Control",
-              desc: "Input your own material's exact density if provided by your local supplier."
+              desc: "Input your own material&apos;s exact density if provided by your local supplier."
             }
           ].map((feature, i) => (
             <div key={i} className="flex items-start gap-3 bg-slate-800/50 p-4 rounded-lg border border-slate-700">
@@ -59,10 +59,10 @@ export default function GravelTonsToYardsCalculatorArticle() {
         </h2>
         <ol className="space-y-4">
           {[
-            "Select the Conversion Mode by clicking the swap arrow button. Decide whether you are starting with \"Tons\" or \"Yards\".",
+            "Select the Conversion Mode by clicking the swap arrow button. Decide whether you are starting with &quot;Tons&quot; or &quot;Yards&quot;.",
             "Input the Quantity you need to convert.",
             "Select the Gravel Type. This adjusts the density (weight-per-volume) that drives the conversion formula.",
-            "(Optional) If you know the exact weight of your gravel, select \"Custom Density\" and enter its weight in lb/ft³.",
+            "(Optional) If you know the exact weight of your gravel, select &quot;Custom Density&quot; and enter its weight in lb/ft³.",
             "Click Convert to seamlessly translate the measurement."
           ].map((step, idx) => (
             <li key={idx} className="flex items-start gap-3">
@@ -124,7 +124,7 @@ export default function GravelTonsToYardsCalculatorArticle() {
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">Why does gravel type matter for conversion?</h3>
             <p className="text-slate-400">
-              Since a ton is a measure of weight and a yard is a measure of space, you must know how 'heavy' the gravel is to convert them. Dense, solid crushed stone will yield fewer yards out of one ton than lighter volcanic rock or mulch.
+              Since a ton is a measure of weight and a yard is a measure of space, you must know how &apos;heavy&apos; the gravel is to convert them. Dense, solid crushed stone will yield fewer yards out of one ton than lighter volcanic rock or mulch.
             </p>
           </div>
           

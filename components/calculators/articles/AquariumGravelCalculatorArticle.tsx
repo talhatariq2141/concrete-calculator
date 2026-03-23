@@ -16,7 +16,7 @@ export default function AquariumGravelCalculatorArticle() {
           Traditional calculator math for aquariums suggests about <strong>1 to 1.5 pounds of gravel per gallon of water</strong>. However, that estimate breaks down for unusually shaped aquariums (like very tall cylinders or shallow frag tanks).
         </p>
         <p className="leading-relaxed">
-          A much more accurate method is calculating the <strong>square area of the tank's footprint</strong> and multiplying it by your desired <strong>substrate depth</strong> to find the volume, then converting that volume to weight based on gravel density.
+          A much more accurate method is calculating the <strong>square area of the tank&apos;s footprint</strong> and multiplying it by your desired <strong>substrate depth</strong> to find the volume, then converting that volume to weight based on gravel density.
         </p>
       </section>
 
@@ -107,7 +107,7 @@ export default function AquariumGravelCalculatorArticle() {
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">How many pounds of gravel do I need for a 10 gallon tank?</h3>
             <p className="text-slate-400">
-              A standard 10-gallon tank (20" × 10") needs about 15 to 20 pounds of gravel to achieve a ~1.5 to 2 inch depth.
+              A standard 10-gallon tank (20&quot; × 10&quot;) needs about 15 to 20 pounds of gravel to achieve a ~1.5 to 2 inch depth.
             </p>
           </div>
           

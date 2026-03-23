@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
+import { CheckCircle2, HelpCircle } from "lucide-react";
 
 export default function ConcreteSlabCostCalcArticle() {
   return (
@@ -92,7 +92,7 @@ export default function ConcreteSlabCostCalcArticle() {
         <h2 className="text-2xl font-bold text-slate-200 mb-4">Why Use Our Concrete Slab Cost Calculator?</h2>
         <ul className="list-disc pl-5 space-y-3 ms-2 text-slate-400">
           <li>Accurate financial planning for patios, driveways, garage floors, and shed bases.</li>
-          <li>Avoid "sticker shock" by understanding the breakdown between material and labor costs upfront.</li>
+          <li>Avoid &quot;sticker shock&quot; by understanding the breakdown between material and labor costs upfront.</li>
           <li>Compare supply methods to see if DIY bagging is truly cheaper than a professional truck delivery.</li>
           <li>SEO and construction-ready precise calculations that help you negotiate better with local suppliers.</li>
         </ul>

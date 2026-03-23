@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
+import { CheckCircle2, HelpCircle } from "lucide-react";
 
 export default function SlabConcreteCalcArticle() {
   return (
@@ -42,7 +42,7 @@ export default function SlabConcreteCalcArticle() {
             },
             {
               title: "Mix Guidance (Informational)",
-              desc: "Displays typical mix guidance for slabs (e.g., 3000–4000 PSI / 20–28 MPa)—use your engineer's spec when available."
+              desc: "Displays typical mix guidance for slabs (e.g., 3000–4000 PSI / 20–28 MPa)—use your engineer&apos;s spec when available."
             },
             {
               title: "Clear Result Summary",
@@ -89,7 +89,7 @@ export default function SlabConcreteCalcArticle() {
         <ul className="list-disc pl-5 space-y-3 ms-2 text-slate-400">
           <li>Completely free to use — no sign-up, subscriptions, or limits.</li>
           <li>Construction-grade precision with consistent unit conversions and decimal handling.</li>
-          <li>Real-time results with optional waste margin so orders don't come up short.</li>
+          <li>Real-time results with optional waste margin so orders don&apos;t come up short.</li>
           <li>Clear, share-friendly outputs in both cubic yards and cubic meters for suppliers and crews.</li>
         </ul>
       </section>

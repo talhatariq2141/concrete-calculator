@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
+import { CheckCircle2, HelpCircle } from "lucide-react";
 
 export default function ConcreteDrivewayCostCalcArticle() {
   return (
@@ -146,14 +146,14 @@ export default function ConcreteDrivewayCostCalcArticle() {
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">What is a short-load fee?</h3>
             <p className="text-slate-400">
-              A short-load fee is an extra charge applied when you order less concrete than the supplier's minimum threshold (often 3–5 yd³). This covers the cost of sending a partially loaded truck.
+              A short-load fee is an extra charge applied when you order less concrete than the supplier&apos;s minimum threshold (often 3–5 yd³). This covers the cost of sending a partially loaded truck.
             </p>
           </div>
 
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">Is ready-mix or bagged concrete better for a driveway?</h3>
             <p className="text-slate-400">
-              Ready-mix is almost always better. A typical 2-car driveway needs 5–7 cubic yards — that's over 200 bags of 80lb concrete to mix by hand.
+              Ready-mix is almost always better. A typical 2-car driveway needs 5–7 cubic yards — that&apos;s over 200 bags of 80lb concrete to mix by hand.
             </p>
           </div>
         </div>

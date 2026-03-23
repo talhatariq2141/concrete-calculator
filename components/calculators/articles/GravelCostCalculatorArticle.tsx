@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
+import { CheckCircle2, HelpCircle } from "lucide-react";
 
 export default function GravelCostCalculatorArticle() {
   return (
@@ -13,7 +13,7 @@ export default function GravelCostCalculatorArticle() {
           Guide to Estimating Gravel Costs
         </h2>
         <p className="mb-4 leading-relaxed">
-          Determining the cost of gravel for your project doesn't have to be a guessing game. Whether you are laying a driveway or filling a landscape bed, our Gravel Cost Estimator helps you calculate exactly how much volume you need and what the final invoice might look like—including delivery fees.
+          Determining the cost of gravel for your project doesn&apos;t have to be a guessing game. Whether you are laying a driveway or filling a landscape bed, our Gravel Cost Estimator helps you calculate exactly how much volume you need and what the final invoice might look like—including delivery fees.
         </p>
       </section>
 
@@ -114,7 +114,7 @@ export default function GravelCostCalculatorArticle() {
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">Is it cheaper to buy gravel by the ton or by the yard?</h3>
             <p className="text-slate-400">
-              Neither is inherently 'cheaper'—they are just different measurement systems. Commercial quarries generally sell by the ton because they weigh trucks on scales. Local landscape yards often sell by the yard (volume) utilizing a front-end loader scoop. This calculator helps you compare quotes across both methods seamlessly.
+              Neither is inherently &apos;cheaper&apos;—they are just different measurement systems. Commercial quarries generally sell by the ton because they weigh trucks on scales. Local landscape yards often sell by the yard (volume) utilizing a front-end loader scoop. This calculator helps you compare quotes across both methods seamlessly.
             </p>
           </div>
 

@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
+import { CheckCircle2, HelpCircle } from "lucide-react";
 
 export default function CMUBlockCalcArticle() {
   return (
@@ -45,7 +45,7 @@ export default function CMUBlockCalcArticle() {
             },
             {
               title: "Standard USA CMU Sizes",
-              desc: "Supports common U.S. block sizes including 4\", 6\", 8\", 10\", and 12\" CMU widths."
+              desc: "Supports common U.S. block sizes including 4&quot;, 6&quot;, 8&quot;, 10&quot;, and 12&quot; CMU widths."
             },
             {
               title: "Custom Block Size Support",
@@ -83,11 +83,11 @@ export default function CMUBlockCalcArticle() {
           </li>
           <li className="flex items-start gap-3">
              <div className="mt-1 flex-shrink-0 w-2 h-2 rounded-full bg-teal-400"></div>
-             <div><strong className="text-white">Actual Size:</strong> The actual manufactured dimensions are approximately 3/8 inch less. So, an 8×8×16 nominal block actually measures about 7-5/8" × 7-5/8" × 15-5/8".</div>
+             <div><strong className="text-white">Actual Size:</strong> The actual manufactured dimensions are approximately 3/8 inch less. So, an 8×8×16 nominal block actually measures about 7-5/8&quot; × 7-5/8&quot; × 15-5/8&quot;.</div>
           </li>
           <li className="flex items-start gap-3">
              <div className="mt-1 flex-shrink-0 w-2 h-2 rounded-full bg-teal-400"></div>
-             <div><strong className="text-white">Block Thickness vs Face Area:</strong> For standard 4", 6", 8", 10", and 12" width CMU blocks, the face size (height and length) stays the same (8" × 16"). Therefore, the face coverage per block remains identical.</div>
+             <div><strong className="text-white">Block Thickness vs Face Area:</strong> For standard 4&quot;, 6&quot;, 8&quot;, 10&quot;, and 12&quot; width CMU blocks, the face size (height and length) stays the same (8&quot; × 16&quot;). Therefore, the face coverage per block remains identical.</div>
           </li>
         </ul>
       </section>
@@ -154,7 +154,7 @@ export default function CMUBlockCalcArticle() {
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">Does block thickness affect wall face coverage?</h3>
             <p className="text-slate-400">
-              No. Whether you use a 4", 6", 8", 10", or 12" thick CMU block, the front face (height and length) is almost always nominally 8" x 16". The coverage rate of 1.125 blocks per square foot remains exactly the same.
+              No. Whether you use a 4&quot;, 6&quot;, 8&quot;, 10&quot;, or 12&quot; thick CMU block, the front face (height and length) is almost always nominally 8&quot; x 16&quot;. The coverage rate of 1.125 blocks per square foot remains exactly the same.
             </p>
           </div>
         </div>

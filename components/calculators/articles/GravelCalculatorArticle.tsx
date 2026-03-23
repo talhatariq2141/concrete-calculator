@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
+import { CheckCircle2, HelpCircle } from "lucide-react";
 
 export default function GravelCalculatorArticle() {
   return (
@@ -127,7 +127,7 @@ export default function GravelCalculatorArticle() {
             <li><strong>Crushed Stone:</strong> ~105 lb/ft³</li>
         </ul>
         <p className="mt-4 text-sm text-slate-400 italic">
-            * Note: Actual density varies by stone type, moisture, and compaction. If you know the exact density from your supplier, select "Custom Density" to input it directly.
+            * Note: Actual density varies by stone type, moisture, and compaction. If you know the exact density from your supplier, select &quot;Custom Density&quot; to input it directly.
         </p>
       </section>
 
@@ -156,7 +156,7 @@ export default function GravelCalculatorArticle() {
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">How many tons of gravel do I need?</h3>
             <p className="text-slate-400">
-              A cubic yard of typical gravel weighs about 1.4 to 1.5 tons (2,800 to 3,000 lbs). You calculate the tons needed by taking your cubic foot volume, multiplying it by the material's density (e.g., 105 lbs/ft³), and dividing by 2000.
+              A cubic yard of typical gravel weighs about 1.4 to 1.5 tons (2,800 to 3,000 lbs). You calculate the tons needed by taking your cubic foot volume, multiplying it by the material&apos;s density (e.g., 105 lbs/ft³), and dividing by 2000.
             </p>
           </div>
           

@@ -160,7 +160,7 @@ export default function CrushedConcreteCalcArticle() {
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">Is crushed concrete sold by ton or by yard?</h3>
             <p className="text-slate-400">
-              Crushed concrete may be sold by either ton or cubic yard depending on the supplier and region. A good calculator should estimate both so you're prepared.
+              Crushed concrete may be sold by either ton or cubic yard depending on the supplier and region. A good calculator should estimate both so you&apos;re prepared.
             </p>
           </div>
         </div>

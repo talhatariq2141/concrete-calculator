@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
+import { CheckCircle2, HelpCircle } from "lucide-react";
 
 export default function PostHoleConcreteCalcArticle() {
   return (
@@ -127,7 +127,7 @@ export default function PostHoleConcreteCalcArticle() {
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">How many bags of concrete do I need per fence post?</h3>
             <p className="text-slate-400">
-              The number of bags depends on the size of the hole and the yield of the selected concrete mix. For a typical 4×4 fence post in a 10-inch diameter hole 36 inches deep, you'll need about 2–3 bags of 80 lb concrete.
+              The number of bags depends on the size of the hole and the yield of the selected concrete mix. For a typical 4×4 fence post in a 10-inch diameter hole 36 inches deep, you&apos;ll need about 2–3 bags of 80 lb concrete.
             </p>
           </div>
           

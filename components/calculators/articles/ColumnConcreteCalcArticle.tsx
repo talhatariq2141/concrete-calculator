@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
+import { CheckCircle2, HelpCircle } from "lucide-react";
 
 export default function ColumnConcreteCalcArticle() {
   return (
@@ -152,7 +152,7 @@ export default function ColumnConcreteCalcArticle() {
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">How much waste should I add?</h3>
             <p className="text-slate-400">
-              Many projects use 5–10% to cover spillage, pumping losses, and subgrade variation. Always follow your project's specification.
+              Many projects use 5–10% to cover spillage, pumping losses, and subgrade variation. Always follow your project&apos;s specification.
             </p>
           </div>
           

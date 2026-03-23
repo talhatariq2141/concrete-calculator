@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
+import { CheckCircle2, HelpCircle } from "lucide-react";
 
 export default function BeamConcreteCalcArticle() {
   return (
@@ -148,14 +148,14 @@ export default function BeamConcreteCalcArticle() {
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">What waste percentage should I use for beams?</h3>
             <p className="text-slate-400">
-              A 5–10% allowance is common, but congested reinforcement, pump line losses, or difficult placement may warrant more. Follow your project's practice.
+              A 5–10% allowance is common, but congested reinforcement, pump line losses, or difficult placement may warrant more. Follow your project&apos;s practice.
             </p>
           </div>
           
           <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
             <h3 className="font-semibold text-lg text-slate-200 mb-2">What is the dry volume factor?</h3>
             <p className="text-slate-400">
-              An optional multiplier (often ~1.50–1.54) used for material proportioning beyond wet concrete volume. Enable it if you're estimating material quantities.
+              An optional multiplier (often ~1.50–1.54) used for material proportioning beyond wet concrete volume. Enable it if you&apos;re estimating material quantities.
             </p>
           </div>
           
