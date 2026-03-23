@@ -161,6 +161,13 @@ export const CALCULATORS: CalcCard[] = [
     icon: CircleDot,
   },
   {
+    id: "calculators/crushed-concrete-calculator",
+    title: "Crushed Concrete Estimator Calculator",
+    desc: "Calculate crushed concrete volume, tons, coverage, and total cost with compaction adjustments.",
+    category: "Misc. Concrete",
+    icon: CircleDot,
+  },
+  {
     id: "calculators/gravel-calculators/gravel-calculator",
     title: "Gravel Calculator",
     desc: "Calculate gravel volume, tons, cubic yards, and estimated cost.",

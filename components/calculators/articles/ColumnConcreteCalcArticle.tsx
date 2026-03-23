@@ -1,299 +1,184 @@
-// components/calculators/articles/ColumnConcreteCalcArticle.tsx
-
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import {
-  CheckCircle2,
-  Calculator as CalcIcon,
-  Ruler,
-  Layers,
-  Square,
-  Circle,
-  ClipboardList,
-  Printer,
-} from "lucide-react";
+import React from "react";
+import { CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
 
-/** ColumnConcreteCalcArticle.tsx
- *  Identical UI/UX shell to your finalized Slab/Beam articles.
- *  Content tailored to ColumnConcreteCalc.tsx features.
- */
 export default function ColumnConcreteCalcArticle() {
-  // --- collapse/expand (same mechanism you approved) ---
-  const [open, setOpen] = useState(false);
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const [height, setHeight] = useState<number>(0);
-
-  useEffect(() => {
-    const el = wrapperRef.current;
-    if (!el) return;
-
-    const measure = () => {
-      if (open) {
-        el.style.height = "auto";
-        const full = el.scrollHeight;
-        setHeight(full);
-        requestAnimationFrame(() => {
-          el.style.height = `${full}px`;
-        });
-      } else {
-        setHeight(0);
-        el.style.height = `0px`;
-      }
-    };
-
-    measure();
-
-    const onResize = () => {
-      if (!open) return;
-      el.style.height = "auto";
-      const full = el.scrollHeight;
-      setHeight(full);
-      el.style.height = `${full}px`;
-    };
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, [open]);
-
-  useEffect(() => {
-    const el = wrapperRef.current;
-    if (!el) return;
-    const onEnd = (e: TransitionEvent) => {
-      if (e.propertyName !== "height") return;
-      if (open) el.style.height = "auto";
-    };
-    el.addEventListener("transitionend", onEnd);
-    return () => el.removeEventListener("transitionend", onEnd);
-  }, [open]);
-
   return (
-    <section className="mt-10 w-full mx-auto max-w-8xl text-slate-200 font-poppins">
-      {/* Top-right toggle button */}
-      <div className="flex justify-end mb-3">
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-controls="column-article-collapse"
-          className="text-xs md:text-sm px-3 py-1.5 rounded-sm border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-teal-400 transition-colors"
-        >
-          {open ? "Hide Guide" : "Learn more"}
-        </button>
-      </div>
+    <div className="mt-12 max-w-4xl mx-auto space-y-12 font-poppins text-slate-300">
+      
+      {/* Introduction */}
+      <section>
+        <h2 className="text-2xl sm:text-3xl font-bold text-teal-400 mb-4 tracking-tight">
+          How to Estimate Concrete for Columns
+        </h2>
+        <p className="mb-4 leading-relaxed">
+          Accurate volume estimation for concrete columns is essential for strong structural supports and saving money on material. Using this calculator, you can quickly find volume for cylindrical or rectangular columns to prevent costly over-ordering or mid-pour shortages.
+        </p>
+      </section>
 
-      {/* Collapsible wrapper */}
-      <div
-        id="column-article-collapse"
-        ref={wrapperRef}
-        className="overflow-hidden transition-[height,opacity] duration-300 ease-out"
-        style={{ height: open ? height : 0, opacity: open ? 1 : 0 }}
-      >
-        {/* ----------------- ARTICLE CONTENT ----------------- */}
-
-        {/* H2 */}
-        <h2 className="text-2xl font-semibold text-white mb-4">
+      {/* Features Cards */}
+      <section>
+        <h2 className="text-2xl font-bold text-slate-200 mb-6 border-b border-slate-700 pb-2">
           Key Features of Our Free Column Concrete Calculator
         </h2>
-
-        {/* Features grid (same card UI) */}
-        <div className="grid gap-4 md:grid-cols-2">
-          <FeatureCard
-            icon={<Square className="h-5 w-5" />}
-            title="Rectangular / Square Columns"
-            desc="Compute volume using L × W × H with automatic unit handling."
-          />
-          <FeatureCard
-            icon={<Circle className="h-5 w-5" />}
-            title="Circular Columns"
-            desc="Calculate π × r² × H from diameter and height—with conversions built-in."
-          />
-          <FeatureCard
-            icon={<Ruler className="h-5 w-5" />}
-            title="Multi-Unit Inputs"
-            desc="Enter dimensions in meters, centimeters, feet, or inches; results stay consistent."
-          />
-          <FeatureCard
-            icon={<Layers className="h-5 w-5" />}
-            title="Quantity & Waste Allowance"
-            desc="Multiply per-column volume by count and add a waste % (commonly 5–10%)."
-          />
-          <FeatureCard
-            icon={<CalcIcon className="h-5 w-5" />}
-            title="Display Units Toggle"
-            desc="Show totals in m³, yd³, or ft³ without re-entering your inputs."
-          />
-          <FeatureCard
-            icon={<ClipboardList className="h-5 w-5" />}
-            title="Clear, Gated Results"
-            desc="Results appear after Calculate to avoid accidental reads and keep focus on inputs."
-          />
-          <FeatureCard
-            icon={<Printer className="h-5 w-5" />}
-            title="Print / Save"
-            desc="Export a tidy summary of inputs and results; includes yd³ helpers (+5% / +10%)."
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[
+            {
+              title: "Rectangular / Square Columns",
+              desc: "Compute volume using L × W × H with automatic unit handling."
+            },
+            {
+              title: "Circular Columns",
+              desc: "Calculate π × r² × H from diameter and height—with conversions built-in."
+            },
+            {
+              title: "Multi-Unit Inputs",
+              desc: "Enter dimensions in meters, centimeters, feet, or inches; results stay consistent."
+            },
+            {
+              title: "Quantity & Waste Allowance",
+              desc: "Multiply per-column volume by count and add a waste % (commonly 5–10%)."
+            },
+            {
+              title: "Display Units Toggle",
+              desc: "Show totals in m³, yd³, or ft³ without re-entering your inputs."
+            },
+            {
+              title: "Clear, Gated Results",
+              desc: "Results appear after Calculate to avoid accidental reads and keep focus on inputs."
+            },
+            {
+              title: "Print / Save",
+              desc: "Export a tidy summary of inputs and results; includes yd³ helpers (+5% / +10%)."
+            }
+          ].map((feature, i) => (
+            <div key={i} className="flex items-start gap-3 bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+              <CheckCircle2 className="w-5 h-5 text-teal-500 shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-semibold text-slate-200">{feature.title}</h3>
+                <p className="text-sm text-slate-400 mt-1">{feature.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
+      </section>
 
-        {/* Why Choose */}
-        <h2 className="text-xl font-semibold text-white mt-12 mb-4">
-          Why Choose Our Free Column Calculator?
-        </h2>
-        <div className="rounded-lg bg-slate-900/60 border border-slate-800 p-5">
-          <ul className="space-y-4 text-slate-300">
-            <WhyItem>Supports both rectangular/square and circular columns in one tool.</WhyItem>
-            <WhyItem>Accurate unit conversions and numeric input guards reduce entry errors.</WhyItem>
-            <WhyItem>Quantity and waste % built in—perfect for multi-column projects.</WhyItem>
-            <WhyItem>One-click display switch between m³, yd³, and ft³ for ordering.</WhyItem>
-            <WhyItem>Printable summary helps communicate quantities to suppliers and crews.</WhyItem>
-          </ul>
-        </div>
-
-        {/* How-to (H4) */}
-        <h2 className="text-lg font-semibold text-white mt-12 mb-3">
+      {/* How to use */}
+      <section className="bg-slate-900 border border-slate-700 rounded-xl p-6 sm:p-8">
+        <h2 className="text-2xl font-bold text-teal-400 mb-5">
           How to Use the Column Concrete Calculator
         </h2>
-        <div className="rounded-lg bg-slate-900/60 border border-slate-800 p-5">
-        <ol className="list-decimal list-inside space-y-2 text-slate-300">
-          <li>Select the <span className="text-white">Rectangular / Square</span> or <span className="text-white">Circular</span> tab.</li>
-          <li>Choose your <span className="text-white">unit</span> (m, cm, ft, or in) and enter dimensions.</li>
-          <li>Enter the <span className="text-white">Quantity (No. of Columns)</span> and a <span className="text-white">Waste %</span> (e.g., 5–10%).</li>
-          <li>Press <span className="text-white">Calculate</span> to reveal results.</li>
-          <li>Use <span className="text-white">Show in</span> to toggle m³, yd³, or ft³ as needed for ordering.</li>
-          <li>Optionally hit <span className="text-white">Print / Save Calculations</span> to export a clean summary.</li>
+        <ol className="space-y-4">
+          {[
+            "Select the Rectangular / Square or Circular tab.",
+            "Choose your unit (m, cm, ft, or in) and enter dimensions.",
+            "Enter the Quantity (No. of Columns) and a Waste % (e.g., 5–10%).",
+            "Press Calculate to reveal results.",
+            "Use Show in to toggle m³, yd³, or ft³ as needed for ordering.",
+            "Optionally hit Print / Save Calculations to export a clean summary."
+          ].map((step, idx) => (
+            <li key={idx} className="flex items-start gap-3">
+              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-teal-500/20 text-teal-400 font-bold text-sm shrink-0 border border-teal-500/30">
+                {idx + 1}
+              </div>
+              <span className="text-slate-300 pt-0.5">{step}</span>
+            </li>
+          ))}
         </ol>
+      </section>
+
+      {/* Why Choose  */}
+      <section>
+        <h2 className="text-2xl font-bold text-slate-200 mb-4">Why Choose Our Free Column Calculator?</h2>
+        <ul className="list-disc pl-5 space-y-3 ms-2 text-slate-400">
+          <li>Supports both rectangular/square and circular columns in one tool.</li>
+          <li>Accurate unit conversions and numeric input guards reduce entry errors.</li>
+          <li>Quantity and waste % built in—perfect for multi-column projects.</li>
+          <li>One-click display switch between m³, yd³, and ft³ for ordering.</li>
+          <li>Printable summary helps communicate quantities to suppliers and crews.</li>
+        </ul>
+      </section>
+      
+      {/* Formulas Used */}
+      <section>
+        <h2 className="text-2xl font-bold text-slate-200 mb-4">Formulas Used in the Calculator</h2>
+        <ul className="space-y-4 text-slate-400">
+          <li>
+            <strong className="text-white block">1) Rectangular / Square Column</strong>
+            Gross Volume per Column = L × W × H<br/>
+            (Inputs are converted to a common base before multiplication to avoid unit mismatch.)
+          </li>
+          <li>
+            <strong className="text-white block">2) Circular Column</strong>
+            Gross Volume per Column = π × r² × H<br/>
+            r = Diameter ÷ 2
+          </li>
+          <li>
+            <strong className="text-white block">3) Quantity & Waste</strong>
+            Net Total = Per-Column Volume × Quantity<br/>
+            With Waste = Net Total × (1 + Waste%)
+          </li>
+          <li>
+            <strong className="text-white block">4) Display Conversions</strong>
+            1 m³ = 35.3147 ft³<br/>
+            1 m³ = 1.30795 yd³
+          </li>
+        </ul>
+      </section>
+
+      {/* FAQ Section */}
+      <section>
+        <div className="flex items-center gap-3 mb-6">
+          <HelpCircle className="w-6 h-6 text-teal-400" />
+          <h2 className="text-2xl font-bold text-slate-200">Frequently Asked Questions</h2>
         </div>
+        
+        <div className="space-y-6">
+          <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
+            <h3 className="font-semibold text-lg text-slate-200 mb-2">Does the calculator handle both rectangular and circular columns?</h3>
+            <p className="text-slate-400">
+              Yes. Use the tabs to switch between Rectangular/Square and Circular modes; each uses the appropriate geometric formula.
+            </p>
+          </div>
+          
+          <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
+            <h3 className="font-semibold text-lg text-slate-200 mb-2">Which input units are supported?</h3>
+            <p className="text-slate-400">
+              Meters, centimeters, feet, and inches for dimensions. You can display results in cubic meters, cubic yards, or cubic feet.
+            </p>
+          </div>
 
-        {/* Formulas */}
-        <h2 className="text-xl font-semibold text-white mt-12 mb-4">
-          Formulas Used in the Calculator
-        </h2>
-        <div className="rounded-lg bg-slate-900/60 border border-slate-800 p-5 space-y-4 text-slate-300">
-          <FormulaBlock
-            title="1) Rectangular / Square Column"
-            lines={["Gross Volume per Column = L × W × H"]}
-            note="Inputs are converted to a common base before multiplication to avoid unit mismatch."
-          />
-          <FormulaBlock
-            title="2) Circular Column"
-            lines={["Gross Volume per Column = π × r² × H", "r = Diameter ÷ 2"]}
-          />
-          <FormulaBlock
-            title="3) Quantity & Waste"
-            lines={[
-              "Net Total = Per-Column Volume × Quantity",
-              "With Waste = Net Total × (1 + Waste%)",
-            ]}
-          />
-          <FormulaBlock
-            title="4) Display Conversions"
-            lines={[
-              "1 m³ = 35.3147 ft³",
-              "1 m³ = 1.30795 yd³",
-            ]}
-          />
+          <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
+            <h3 className="font-semibold text-lg text-slate-200 mb-2">How much waste should I add?</h3>
+            <p className="text-slate-400">
+              Many projects use 5–10% to cover spillage, pumping losses, and subgrade variation. Always follow your project's specification.
+            </p>
+          </div>
+          
+          <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
+            <h3 className="font-semibold text-lg text-slate-200 mb-2">Can I enter multiple columns at once?</h3>
+            <p className="text-slate-400">
+              Yes. Enter the quantity of columns; the tool multiplies per-column volume to produce net totals and totals with waste.
+            </p>
+          </div>
+          
+          <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
+            <h3 className="font-semibold text-lg text-slate-200 mb-2">How do I get cubic yards for ordering?</h3>
+            <p className="text-slate-400">
+              After calculating, set the display to yd³, or use the built-in yardage helper that also shows +5% and +10% options.
+            </p>
+          </div>
+
+          <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
+            <h3 className="font-semibold text-lg text-slate-200 mb-2">Does this include reinforcement or mix design?</h3>
+            <p className="text-slate-400">
+              No. The tool focuses on volume. Reinforcement, cover, and mix grade must follow your structural drawings and local codes.
+            </p>
+          </div>
         </div>
-
-        {/* FAQs */}
-        <h2 className="text-xl font-semibold text-white mt-12 mb-4">
-          Frequently Asked Questions
-        </h2>
-        <div className="rounded-lg border border-slate-800 p-5 space-y-6">
-          <FAQ
-            q="Does the calculator handle both rectangular and circular columns?"
-            a="Yes. Use the tabs to switch between Rectangular/Square and Circular modes; each uses the appropriate geometric formula."
-          />
-          <FAQ
-            q="Which input units are supported?"
-            a="Meters, centimeters, feet, and inches for dimensions. You can display results in cubic meters, cubic yards, or cubic feet."
-          />
-          <FAQ
-            q="How much waste should I add?"
-            a="Many projects use 5–10% to cover spillage, pumping losses, and subgrade variation. Always follow your project’s specification."
-          />
-          <FAQ
-            q="Can I enter multiple columns at once?"
-            a="Yes. Enter the quantity of columns; the tool multiplies per-column volume to produce net totals and totals with waste."
-          />
-          <FAQ
-            q="How do I get cubic yards for ordering?"
-            a="After calculating, set the display to yd³, or use the built-in yardage helper that also shows +5% and +10% options."
-          />
-          <FAQ
-            q="Does this include reinforcement or mix design?"
-            a="No. The tool focuses on volume. Reinforcement, cover, and mix grade must follow your structural drawings and local codes."
-          />
-          <FAQ
-            q="Can I print or save the results?"
-            a="Yes. Use the Print / Save button in the calculator to export a clean, paper-friendly summary."
-          />
-        </div>
-        {/* ----------------- END CONTENT ----------------- */}
-      </div>
-    </section>
-  );
-}
-
-/* ---------- Reusable UI atoms (same as your other articles) ---------- */
-
-function FeatureCard({
-  icon,
-  title,
-  desc,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  desc: string;
-}) {
-  return (
-    <div className="rounded-lg bg-slate-900/60 border border-slate-700 p-5">
-      <div className="flex items-center gap-2 text-teal-400 mb-2">
-        {icon}
-        <span className="font-semibold text-slate-300 text-base">{title}</span>
-      </div>
-      <p className="text-sm text-slate-300">{desc}</p>
-    </div>
-  );
-}
-
-function WhyItem({ children }: { children: React.ReactNode }) {
-  return (
-    <li className="flex items-start gap-3">
-      <span className="mt-1 inline-flex h-2 w-2 rounded-full bg-teal-400" />
-      <span>{children}</span>
-    </li>
-  );
-}
-
-function FormulaBlock({
-  title,
-  lines,
-  note,
-}: {
-  title: string;
-  lines: string[];
-  note?: string;
-}) {
-  return (
-    <div>
-      <div className="flex items-center gap-2 text-white font-medium mb-2">
-        <CheckCircle2 className="h-4 w-4 text-teal-400" />
-        <span>{title}</span>
-      </div>
-      <ul className="list-disc list-inside text-slate-300">
-        {lines.map((l, i) => (
-          <li key={i}>{l}</li>
-        ))}
-      </ul>
-      {note ? <p className="text-xs text-slate-400 mt-2">{note}</p> : null}
-    </div>
-  );
-}
-
-function FAQ({ q, a }: { q: string; a: string }) {
-  return (
-    <div className="border-b border-slate-800 pb-4 last:border-0">
-      <p className="font-medium text-white">{q}</p>
-      <p className="text-slate-300 mt-1">{a}</p>
+      </section>
+      
     </div>
   );
 }

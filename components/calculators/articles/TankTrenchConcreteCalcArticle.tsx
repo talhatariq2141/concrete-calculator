@@ -1,313 +1,175 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import {
-  CheckCircle2,
-  Calculator as CalcIcon,
-  Ruler,
-  Square,
-  Layers,
-  Beaker,
-  ClipboardList,
-  Printer,
-} from "lucide-react";
+import React from "react";
+import { CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
 
 export default function TankTrenchConcreteCalcArticle() {
-  // --- collapse/expand (same mechanism as your approved articles) ---
-  const [open, setOpen] = useState(false);
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const [height, setHeight] = useState<number>(0);
-
-  useEffect(() => {
-    const el = wrapperRef.current;
-    if (!el) return;
-
-    const measure = () => {
-      if (open) {
-        el.style.height = "auto";
-        const full = el.scrollHeight;
-        setHeight(full);
-        requestAnimationFrame(() => {
-          el.style.height = `${full}px`;
-        });
-      } else {
-        setHeight(0);
-        el.style.height = `0px`;
-      }
-    };
-
-    measure();
-    const onResize = () => {
-      if (!open) return;
-      el.style.height = "auto";
-      const full = el.scrollHeight;
-      setHeight(full);
-      el.style.height = `${full}px`;
-    };
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, [open]);
-
-  useEffect(() => {
-    const el = wrapperRef.current;
-    if (!el) return;
-    const onEnd = (e: TransitionEvent) => {
-      if (e.propertyName !== "height") return;
-      if (open) el.style.height = "auto";
-    };
-    el.addEventListener("transitionend", onEnd);
-    return () => el.removeEventListener("transitionend", onEnd);
-  }, [open]);
-
   return (
-    <section className="mt-8 w-full mx-auto max-w-8xl text-slate-200 font-poppins">
-      {/* Top-right toggle button */}
-      <div className="flex justify-end mb-3">
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-controls="tanktrench-article-collapse"
-          className="text-xs md:text-sm px-3 py-1.5 rounded-sm border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-teal-400 transition-colors"
-        >
-          {open ? "Hide Guide" : "Learn more"}
-        </button>
-      </div>
-
-      {/* Collapsible wrapper */}
-      <div
-        id="tanktrench-article-collapse"
-        ref={wrapperRef}
-        className="overflow-hidden transition-[height,opacity] duration-300 ease-out"
-        style={{ height: open ? height : 0, opacity: open ? 1 : 0 }}
-      >
-        {/* ----------------- ARTICLE CONTENT ----------------- */}
-
-        {/* H2 */}
-        <h2 className="text-2xl font-semibold text-white mb-4">
-          Key Features of Our Free Tank / Trench Concrete Calculator
+    <div className="mt-12 max-w-4xl mx-auto space-y-12 font-poppins text-slate-300">
+      
+      {/* Introduction */}
+      <section>
+        <h2 className="text-2xl sm:text-3xl font-bold text-teal-400 mb-4 tracking-tight">
+          Tank & Trench Concrete Estimator Guide
         </h2>
+        <p className="mb-4 leading-relaxed">
+          From civil utility trenches to residential water containment tanks, estimating concrete for hollow structures requires precise subtraction math. Our combined Tank/Trench estimator gives you the speed of dedicated presets alongside robust unit inter-conversions.
+        </p>
+      </section>
 
-        {/* Features grid */}
-        <div className="grid gap-4 md:grid-cols-2">
-          <FeatureCard
-            icon={<Layers className="h-5 w-5" />}
-            title="Three Purpose-Built Modes"
-            desc="Trench, Rectangular Tank, and Circular Tank — switch by tabs to match your scope."
-          />
-          <FeatureCard
-            icon={<Ruler className="h-5 w-5" />}
-            title="Global Unit Selector"
-            desc="Enter all dimensions in meters, centimeters, feet, or inches; conversions are handled for you."
-          />
-          <FeatureCard
-            icon={<Square className="h-5 w-5" />}
-            title="Trench: Rectangular or Trapezoidal"
-            desc="Use Width for rectangular trenches or Top/Bottom Widths for trapezoidal sections."
-          />
-          <FeatureCard
-            icon={<Beaker className="h-5 w-5" />}
-            title="Tank Wall & Slab Thickness"
-            desc="Rectangular & circular tanks include wall, base, and optional cover slab thicknesses."
-          />
-          <FeatureCard
-            icon={<CalcIcon className="h-5 w-5" />}
-            title="Results After Calculate"
-            desc="Clean, gated results in m³, with quick conversions to yd³ and ft³. Yardage helpers included."
-          />
-          <FeatureCard
-            icon={<ClipboardList className="h-5 w-5" />}
-            title="Breakdown for Tanks"
-            desc="See base slab, walls, and cover slab volumes separately when using tank modes."
-          />
-          <FeatureCard
-            icon={<Printer className="h-5 w-5" />}
-            title="Print / Save & Reset"
-            desc="Export an A4-friendly summary for records and reset inputs with one click."
-          />
+      {/* Features Cards */}
+      <section>
+        <h2 className="text-2xl font-bold text-slate-200 mb-6 border-b border-slate-700 pb-2">
+          Key Features of Our Tank / Trench Calculator
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[
+            {
+              title: "Three Purpose-Built Modes",
+              desc: "Trench, Rectangular Tank, and Circular Tank — switch by tabs to match your scope."
+            },
+            {
+              title: "Global Unit Selector",
+              desc: "Enter all dimensions in meters, centimeters, feet, or inches; conversions are handled for you."
+            },
+            {
+              title: "Trench: Rectangular or Trapezoidal",
+              desc: "Use Width for rectangular trenches or Top/Bottom Widths for trapezoidal sections."
+            },
+            {
+              title: "Tank Wall & Slab Thickness",
+              desc: "Rectangular & circular tanks include wall, base, and optional cover slab thicknesses."
+            },
+            {
+              title: "Breakdown for Tanks",
+              desc: "See base slab, walls, and cover slab volumes separately when using tank modes."
+            },
+            {
+              title: "Print / Save & Reset",
+              desc: "Export an A4-friendly summary for records and reset inputs with one click."
+            }
+          ].map((feature, i) => (
+            <div key={i} className="flex items-start gap-3 bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+              <CheckCircle2 className="w-5 h-5 text-teal-500 shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-semibold text-slate-200">{feature.title}</h3>
+                <p className="text-sm text-slate-400 mt-1">{feature.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
+      </section>
 
-        {/* Why Choose */}
-        <h3 className="text-xl font-semibold text-white mt-12 mb-4">
-          Why Choose Our Tank / Trench Calculator?
-        </h3>
-        <div className="rounded-lg bg-slate-900/60 border border-slate-800 p-5">
-          <ul className="space-y-4 text-slate-300">
-            <WhyItem>Accurate geometry for trenches and tanks with proper unit handling throughout.</WhyItem>
-            <WhyItem>Built-in waste allowance helps avoid shortages during pours.</WhyItem>
-            <WhyItem>Per-mode inputs reduce confusion and keep your workflow fast.</WhyItem>
-            <WhyItem>Tank breakdown (base, walls, cover) supports estimating and approvals.</WhyItem>
-            <WhyItem>Yardage helper (+5% / +10%) mirrors supplier rounding practices.</WhyItem>
-          </ul>
-        </div>
-
-        {/* How-to (H4) */}
-        <h4 className="text-lg font-semibold text-white mt-12 mb-3">
-          How to Use the Tank / Trench Concrete Calculator
-        </h4>
-        <div className="rounded-lg border border-slate-800 p-5 space-y-6">
-        <ol className="list-decimal list-inside space-y-2 text-slate-300">
-          <li>Select a <span className="text-white">Mode</span>: <em>Trench</em>, <em>Rectangular Tank</em>, or <em>Circular Tank</em>.</li>
-          <li>Choose one <span className="text-white">Unit</span> (m, cm, ft, or in). Enter all fields using that unit.</li>
-          <li>Provide dimensions:
-            <ul className="list-disc list-inside ml-5">
-              <li><span className="text-white">Trench</span>: Length, Depth, and either Width (Rectangular) or Top/Bottom Widths (Trapezoidal).</li>
-              <li><span className="text-white">Rectangular Tank</span>: Inner L×W×H plus Wall, Base, and optional Cover thickness.</li>
-              <li><span className="text-white">Circular Tank</span>: Inner Diameter & Height plus Wall, Base, and optional Cover thickness.</li>
-            </ul>
-          </li>
-          <li>Enter a <span className="text-white">Waste / Overage %</span> (commonly 5–10%).</li>
-          <li>Click <span className="text-white">Calculate</span> to reveal <strong>Net</strong> and <strong>With Waste</strong> volumes in m³, yd³, and ft³.</li>
-          <li>Use the <span className="text-white">Cubic Yards</span> helper (+5% / +10%) and <span className="text-white">Print / Save Calculations</span> for ordering.</li>
+      {/* How to use */}
+      <section className="bg-slate-900 border border-slate-700 rounded-xl p-6 sm:p-8">
+        <h2 className="text-2xl font-bold text-teal-400 mb-5">
+          How to Use the Tank / Trench Calculator
+        </h2>
+        <ol className="space-y-4">
+          {[
+            "Select a Mode: Trench, Rectangular Tank, or Circular Tank.",
+            "Choose one Unit (m, cm, ft, or in). Enter all fields using that unit.",
+            "Provide dimensions: Trench (Length, Depth, Widths) or Tank (Inner dims + Wall/Base/Cover thicknesses).",
+            "Enter a Waste / Overage % (commonly 5–10%).",
+            "Click Calculate to reveal Net and With Waste volumes in m³, yd³, and ft³.",
+            "Use the Cubic Yards helper (+5% / +10%) and Print / Save Calculations for ordering."
+          ].map((step, idx) => (
+            <li key={idx} className="flex items-start gap-3">
+              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-teal-500/20 text-teal-400 font-bold text-sm shrink-0 border border-teal-500/30">
+                {idx + 1}
+              </div>
+              <span className="text-slate-300 pt-0.5">{step}</span>
+            </li>
+          ))}
         </ol>
+      </section>
+
+      {/* Why Choose  */}
+      <section>
+        <h2 className="text-2xl font-bold text-slate-200 mb-4">Why Choose This Calculator?</h2>
+        <ul className="list-disc pl-5 space-y-3 ms-2 text-slate-400">
+          <li>Accurate geometry for trenches and tanks with proper unit handling throughout.</li>
+          <li>Built-in waste allowance helps avoid shortages during pours.</li>
+          <li>Per-mode inputs reduce confusion and keep your workflow fast.</li>
+          <li>Tank breakdown (base, walls, cover) supports estimating and approvals.</li>
+          <li>Yardage helper (+5% / +10%) mirrors supplier rounding practices.</li>
+        </ul>
+      </section>
+      
+      {/* Formulas Used */}
+      <section>
+        <h2 className="text-2xl font-bold text-slate-200 mb-4">Formulas Used in the Calculator</h2>
+        <ul className="space-y-4 text-slate-400">
+          <li>
+            <strong className="text-white block">1) Trench (Rectangular & Trapezoidal)</strong>
+            Rect: Volume = Length × Width × Depth<br/>
+            Trap: Section Area = Depth × (Top Width + Bottom Width) ÷ 2<br/>
+            Volume = Length × Section Area
+          </li>
+          <li>
+            <strong className="text-white block">2) Rectangular Tank (Outer − Inner)</strong>
+            Outer: (L + 2t_w) × (W + 2t_w) × (H + t_base + t_top)<br/>
+            Inner: L × W × H<br/>
+            Net Concrete = Outer − Inner
+          </li>
+          <li>
+            <strong className="text-white block">3) Circular Tank (Outer − Inner)</strong>
+            Outer: π × (D_out/2)² × (H + t_base + t_top), where D_out = D_in + 2t_w<br/>
+            Inner: π × (D_in/2)² × H<br/>
+            Net Concrete = Outer − Inner
+          </li>
+          <li>
+            <strong className="text-white block">4) Waste Allowance</strong>
+            With Waste = Net × (1 + Waste%)
+          </li>
+        </ul>
+      </section>
+
+      {/* FAQ Section */}
+      <section>
+        <div className="flex items-center gap-3 mb-6">
+          <HelpCircle className="w-6 h-6 text-teal-400" />
+          <h2 className="text-2xl font-bold text-slate-200">Frequently Asked Questions</h2>
         </div>
+        
+        <div className="space-y-6">
+          <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
+            <h3 className="font-semibold text-lg text-slate-200 mb-2">Can I calculate both rectangular and trapezoidal trenches?</h3>
+            <p className="text-slate-400">
+              Yes. Choose Rectangular to use a single width, or Trapezoidal to enter top and bottom widths; the calculator uses the correct area formula.
+            </p>
+          </div>
+          
+          <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
+            <h3 className="font-semibold text-lg text-slate-200 mb-2">How are tank volumes computed?</h3>
+            <p className="text-slate-400">
+              Both tank modes compute an outer concrete shell minus the inner water volume. We also show a breakdown for base slab, walls, and cover slab.
+            </p>
+          </div>
 
-        {/* Formulas */}
-        <h3 className="text-xl font-semibold text-white mt-12 mb-4">
-          Formulas Used in the Calculator
-        </h3>
-        <div className="rounded-lg bg-slate-900/60 border border-slate-800 p-5 space-y-4 text-slate-300">
-          <FormulaBlock
-            title="1) Trench (Rectangular)"
-            lines={["Volume = Length × Width × Depth"]}
-            note="All dimensions are converted to a single base before multiplication."
-          />
-          <FormulaBlock
-            title="2) Trench (Trapezoidal Section)"
-            lines={[
-              "Section Area = Depth × (Top Width + Bottom Width) ÷ 2",
-              "Volume = Length × Section Area",
-            ]}
-          />
-          <FormulaBlock
-            title="3) Rectangular Tank (Outer − Inner)"
-            lines={[
-              "Outer: (L + 2t_w) × (W + 2t_w) × (H + t_base + t_top)",
-              "Inner: L × W × H",
-              "Net Concrete = Outer − Inner",
-              "Breakdown: Base = Outer Footprint × t_base; Cover = Outer Footprint × t_top; Walls = Net − Base − Cover",
-            ]}
-          />
-          <FormulaBlock
-            title="4) Circular Tank (Outer − Inner)"
-            lines={[
-              "Outer: π × (D_out/2)² × (H + t_base + t_top), where D_out = D_in + 2t_w",
-              "Inner: π × (D_in/2)² × H",
-              "Net Concrete = Outer − Inner",
-              "Breakdown: Base = π × (D_out/2)² × t_base; Cover = π × (D_out/2)² × t_top; Walls = Net − Base − Cover",
-            ]}
-          />
-          <FormulaBlock
-            title="5) Waste Allowance & Conversions"
-            lines={[
-              "With Waste = Net × (1 + Waste%)",
-              "yd³ = m³ × 1.30795",
-              "ft³ = m³ × 35.3147",
-            ]}
-          />
+          <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
+            <h3 className="font-semibold text-lg text-slate-200 mb-2">What waste percentage should I add?</h3>
+            <p className="text-slate-400">
+              5–10% is common for over-excavation and placement losses. Use higher allowances if site access or formwork is challenging.
+            </p>
+          </div>
+          
+          <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
+            <h3 className="font-semibold text-lg text-slate-200 mb-2">How do I get cubic yards for ordering?</h3>
+            <p className="text-slate-400">
+              After calculating, yardage is shown along with +5% and +10% helpers to round orders to supplier increments.
+            </p>
+          </div>
+          
+          <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
+            <h3 className="font-semibold text-lg text-slate-200 mb-2">Does the calculator handle reinforcement or water-tightness checks?</h3>
+            <p className="text-slate-400">
+              No. It focuses on concrete volume. Reinforcement, crack control, and waterproofing must follow your design and local codes.
+            </p>
+          </div>
         </div>
-
-        {/* FAQs */}
-        <h3 className="text-xl font-semibold text-white mt-12 mb-4">
-          Frequently Asked Questions
-        </h3>
-        <div className="rounded-lg border border-slate-800 p-5 space-y-6">
-          <FAQ
-            q="Can I calculate both rectangular and trapezoidal trenches?"
-            a="Yes. Choose Rectangular to use a single width, or Trapezoidal to enter top and bottom widths; the calculator uses the correct area formula."
-          />
-          <FAQ
-            q="How are tank volumes computed?"
-            a="Both tank modes compute an outer concrete shell minus the inner water volume. We also show a breakdown for base slab, walls, and cover slab."
-          />
-          <FAQ
-            q="Which units can I use?"
-            a="Meters, centimeters, feet, or inches. Pick one unit and enter all dimensions consistently; the tool converts internally."
-          />
-          <FAQ
-            q="What waste percentage should I add?"
-            a="5–10% is common for over-excavation and placement losses. Use higher allowances if site access or formwork is challenging."
-          />
-          <FAQ
-            q="How do I get cubic yards for ordering?"
-            a="After calculating, yardage is shown along with +5% and +10% helpers to round orders to supplier increments."
-          />
-          <FAQ
-            q="Can I print or save the results?"
-            a="Yes. Use the Print / Save function to export an A4-friendly summary with inputs, volumes, breakdown, and yardage."
-          />
-          <FAQ
-            q="Does the calculator handle reinforcement or water-tightness checks?"
-            a="No. It focuses on concrete volume. Reinforcement, crack control, and waterproofing must follow your design and local codes."
-          />
-        </div>
-        {/* ----------------- END CONTENT ----------------- */}
-      </div>
-    </section>
-  );
-}
-
-/* ---------- Reusable UI atoms (same as your other articles) ---------- */
-
-function FeatureCard({
-  icon,
-  title,
-  desc,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  desc: string;
-}) {
-  return (
-    <div className="rounded-lg bg-slate-900/60 border border-slate-700 p-5">
-      <div className="flex items-center gap-2 text-teal-400 mb-2">
-        {icon}
-        <span className="font-semibold text-slate-300 text-base">{title}</span>
-      </div>
-      <p className="text-sm text-slate-300">{desc}</p>
-    </div>
-  );
-}
-
-function WhyItem({ children }: { children: React.ReactNode }) {
-  return (
-    <li className="flex items-start gap-3">
-      <span className="mt-1 inline-flex h-2 w-2 rounded-full bg-teal-400" />
-      <span>{children}</span>
-    </li>
-  );
-}
-
-function FormulaBlock({
-  title,
-  lines,
-  note,
-}: {
-  title: string;
-  lines: string[];
-  note?: string;
-}) {
-  return (
-    <div>
-      <div className="flex items-center gap-2 text-white font-medium mb-2">
-        <CheckCircle2 className="h-4 w-4 text-teal-400" />
-        <span>{title}</span>
-      </div>
-      <ul className="list-disc list-inside text-slate-300">
-        {lines.map((l, i) => (
-          <li key={i}>{l}</li>
-        ))}
-      </ul>
-      {note ? <p className="text-xs text-slate-400 mt-2">{note}</p> : null}
-    </div>
-  );
-}
-
-function FAQ({ q, a }: { q: string; a: string }) {
-  return (
-    <div className="border-b border-slate-800 pb-4 last:border-0">
-      <p className="font-medium text-white">{q}</p>
-      <p className="text-slate-300 mt-1">{a}</p>
+      </section>
+      
     </div>
   );
 }

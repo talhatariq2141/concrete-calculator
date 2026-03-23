@@ -1,225 +1,159 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import {
-  CheckCircle2,
-  Calculator as CalcIcon,
-  Layers,
-  ClipboardList,
-  Shovel,
-  DollarSign,
-  Truck,
-  Map
-} from "lucide-react";
+import React from "react";
+import { CheckCircle2, ChevronRight, HelpCircle } from "lucide-react";
 
 export default function GravelDrivewayCalculatorArticle() {
-  const [open, setOpen] = useState(false);
-  const wrapperRef = useRef<HTMLDivElement | null>(null);
-  const [height, setHeight] = useState<number>(0);
-
-  useEffect(() => {
-    const el = wrapperRef.current;
-    if (!el) return;
-
-    const measure = () => {
-      if (open) {
-        el.style.height = "auto";
-        const full = el.scrollHeight;
-        setHeight(full);
-        requestAnimationFrame(() => {
-          el.style.height = `${full}px`;
-        });
-      } else {
-        setHeight(0);
-        el.style.height = `0px`;
-      }
-    };
-
-    measure();
-    const onResize = () => {
-      if (!open) return;
-      el.style.height = "auto";
-      const full = el.scrollHeight;
-      setHeight(full);
-      el.style.height = `${full}px`;
-    };
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, [open]);
-
-  useEffect(() => {
-    const el = wrapperRef.current;
-    if (!el) return;
-    const onEnd = (e: TransitionEvent) => {
-      if (e.propertyName !== "height") return;
-      if (open) el.style.height = "auto";
-    };
-    el.addEventListener("transitionend", onEnd);
-    return () => el.removeEventListener("transitionend", onEnd);
-  }, [open]);
-
   return (
-    <section className="mt-8 w-full mx-auto max-w-8xl text-slate-200 font-poppins">
-      <div className="flex justify-end mb-3">
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-controls="gravel-driveway-article-collapse"
-          className="text-xs md:text-sm px-3 py-1.5 rounded-sm border border-slate-700 bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-teal-400 transition-colors"
-        >
-          {open ? "Hide Guide" : "Learn more"}
-        </button>
-      </div>
+    <div className="mt-12 max-w-4xl mx-auto space-y-12 font-poppins text-slate-300">
+      
+      {/* Introduction */}
+      <section>
+        <h2 className="text-2xl sm:text-3xl font-bold text-teal-400 mb-4 tracking-tight">
+          How to Calculate Driveway Gravel Quantities
+        </h2>
+        <p className="mb-4 leading-relaxed">
+          Building or resurfacing a gravel driveway requires accurate material estimates to ensure a stable, long-lasting surface. This calculator takes the guesswork out of ordering the right amount of base rock and top gravel.
+        </p>
+      </section>
 
-      <div
-        id="gravel-driveway-article-collapse"
-        ref={wrapperRef}
-        className="overflow-hidden transition-[height,opacity] duration-300 ease-out"
-        style={{ height: open ? height : 0, opacity: open ? 1 : 0 }}
-      >
-        <h2 className="text-2xl font-semibold text-white mb-4">
+      {/* Features Cards */}
+      <section>
+        <h2 className="text-2xl font-bold text-slate-200 mb-6 border-b border-slate-700 pb-2">
           Features of the Driveway Gravel Calculator
         </h2>
-        <div className="grid gap-4 md:grid-cols-2">
-          <FeatureCard
-            icon={<Map className="h-5 w-5" />}
-            title="Driveway Material Estimation"
-            desc="Calculates gravel needed for driveway base or top layers."
-          />
-          <FeatureCard
-            icon={<Layers className="h-5 w-5" />}
-            title="Tons and Yards Output"
-            desc="Shows results in the most commonly used purchasing units."
-          />
-          <FeatureCard
-            icon={<DollarSign className="h-5 w-5" />}
-            title="Cost Planning"
-            desc="Estimates material budget for driveway gravel projects."
-          />
-          <FeatureCard
-            icon={<ClipboardList className="h-5 w-5" />}
-            title="Waste Adjustment"
-            desc="Helps account for settling, compaction, and extra coverage."
-          />
-          <FeatureCard
-            icon={<Truck className="h-5 w-5" />}
-            title="Delivery Fee Support"
-            desc="Easily include your supplier's delivery fee into your total estimate."
-          />
-          <FeatureCard
-            icon={<Shovel className="h-5 w-5" />}
-            title="Material Density Presets"
-            desc="Choose between general gravel, pea gravel, crushed stone, or use custom density."
-          />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[
+            {
+              title: "Driveway Material Estimation",
+              desc: "Calculates gravel needed for driveway base or top layers."
+            },
+            {
+              title: "Tons and Yards Output",
+              desc: "Shows results in the most commonly used purchasing units."
+            },
+            {
+              title: "Cost Planning",
+              desc: "Estimates material budget for driveway gravel projects."
+            },
+            {
+              title: "Waste Adjustment",
+              desc: "Helps account for settling, compaction, and extra coverage."
+            },
+            {
+              title: "Delivery Fee Support",
+              desc: "Easily include your supplier's delivery fee into your total estimate."
+            },
+            {
+              title: "Material Density Presets",
+              desc: "Choose between general gravel, pea gravel, crushed stone, or use custom density."
+            }
+          ].map((feature, i) => (
+            <div key={i} className="flex items-start gap-3 bg-slate-800/50 p-4 rounded-lg border border-slate-700">
+              <CheckCircle2 className="w-5 h-5 text-teal-500 shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-semibold text-slate-200">{feature.title}</h3>
+                <p className="text-sm text-slate-400 mt-1">{feature.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
+      </section>
 
-        <h3 className="text-xl font-semibold text-white mt-12 mb-4">
+      {/* How to use */}
+      <section className="bg-slate-900 border border-slate-700 rounded-xl p-6 sm:p-8">
+        <h2 className="text-2xl font-bold text-teal-400 mb-5">
           How to Use the Calculator
-        </h3>
-        <div className="rounded-lg border border-slate-800 p-5 space-y-6">
-          <ol className="list-decimal list-inside space-y-2 text-slate-300">
-            <li>Select the <span className="text-white">Unit</span> for your measurements (feet, inches, meters).</li>
-            <li>Enter the <span className="text-white">Driveway Length</span> and <span className="text-white">Width</span>.</li>
-            <li>Input the <span className="text-white">Gravel Layer Depth</span> based on which layer you are calculating (e.g., base layer vs top layer).</li>
-            <li>Select the <span className="text-white">Gravel Type</span> or input a Custom Density for weight estimation.</li>
-            <li>Add a <span className="text-white">Waste Factor</span> (10% is standard) to account for gravel compacting and settling into the soil.</li>
-            <li>(Optional) Input the <span className="text-white">Material Price</span> and a <span className="text-white">Delivery Fee</span> for total cost estimation.</li>
-            <li>Click <span className="text-white">Calculate</span>.</li>
-          </ol>
+        </h2>
+        <ol className="space-y-4">
+          {[
+            "Select the Unit for your measurements (feet, inches, meters).",
+            "Enter the Driveway Length and Width.",
+            "Input the Gravel Layer Depth based on which layer you are calculating (e.g., base layer vs top layer).",
+            "Select the Gravel Type or input a Custom Density for weight estimation.",
+            "Add a Waste Factor (10% is standard) to account for gravel compacting and settling into the soil.",
+            "(Optional) Input the Material Price and a Delivery Fee for total cost estimation.",
+            "Click Calculate."
+          ].map((step, idx) => (
+            <li key={idx} className="flex items-start gap-3">
+              <div className="flex items-center justify-center w-6 h-6 rounded-full bg-teal-500/20 text-teal-400 font-bold text-sm shrink-0 border border-teal-500/30">
+                {idx + 1}
+              </div>
+              <span className="text-slate-300 pt-0.5">{step}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      {/* Formulas Used */}
+      <section>
+        <h2 className="text-2xl font-bold text-slate-200 mb-4">Calculation Formulas</h2>
+        <ul className="space-y-4 text-slate-400">
+          <li>
+            <strong className="text-white block">1) Volume Requirements</strong>
+            Area = Length × Width<br/>
+            Volume = Area × Depth<br/>
+            Volume in Cubic Yards = Volume in Cubic Feet ÷ 27
+          </li>
+          <li>
+            <strong className="text-white block">2) Tonnage Calculation</strong>
+            Weight = Volume (Cubic Feet) × Material Density (lb/ft³)<br/>
+            Tons = Weight (lbs) ÷ 2000
+          </li>
+          <li>
+            <strong className="text-white block">3) Total Project Cost</strong>
+            Material Cost = Estimated Tons × Price per Ton<br/>
+            Total Cost = Material Cost + Delivery Fee<br/>
+            <em>Note: If you buy by the cubic yard, substitute Estimated Tons with Estimated Cubic Yards.</em>
+          </li>
+        </ul>
+      </section>
+
+      {/* FAQ Section */}
+      <section>
+        <div className="flex items-center gap-3 mb-6">
+          <HelpCircle className="w-6 h-6 text-teal-400" />
+          <h2 className="text-2xl font-bold text-slate-200">Frequently Asked Questions</h2>
         </div>
+        
+        <div className="space-y-6">
+          <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
+            <h3 className="font-semibold text-lg text-slate-200 mb-2">How much gravel do I need for my driveway?</h3>
+            <p className="text-slate-400">
+              It depends on the length and width of your driveway, and the depth of the gravel layers. Simply measure your driveway's footprint and enter the desired depth into our calculator to get an accurate estimate in tons and cubic yards.
+            </p>
+          </div>
+          
+          <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
+            <h3 className="font-semibold text-lg text-slate-200 mb-2">How deep should gravel be for a driveway?</h3>
+            <p className="text-slate-400">
+              A typical gravel driveway consists of two main layers: a base layer of larger crushed stone (about 4 to 6 inches deep) and a top layer of smaller surface gravel (about 2 to 3 inches deep). You should calculate the material for each layer separately.
+            </p>
+          </div>
 
-        <h3 className="text-xl font-semibold text-white mt-12 mb-4">
-          Formulas
-        </h3>
-        <div className="rounded-lg bg-slate-900/60 border border-slate-800 p-5 space-y-4 text-slate-300">
-          <FormulaBlock
-            title="1) Volume Requirements"
-            lines={[
-              "Area = Length × Width",
-              "Volume = Area × Depth",
-              "Volume in Cubic Yards = Volume in Cubic Feet ÷ 27"
-            ]}
-          />
-          <FormulaBlock
-            title="2) Tonnage Calculation"
-            lines={[
-              "Weight = Volume (Cubic Feet) × Material Density (lb/ft³)",
-              "Tons = Weight (lbs) ÷ 2000"
-            ]}
-          />
-          <FormulaBlock
-            title="3) Total Project Cost"
-            lines={[
-              "Material Cost = Estimated Tons × Price per Ton",
-              "Total Cost = Material Cost + Delivery Fee"
-            ]}
-            note="If you buy by the cubic yard, substitute Estimated Tons with Estimated Cubic Yards."
-          />
+          <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
+            <h3 className="font-semibold text-lg text-slate-200 mb-2">How many tons of driveway gravel do I need?</h3>
+            <p className="text-slate-400">
+              Tonnage relies on the total volume in cubic feet and the density of your gravel. On average, a cubic yard of crushed stone driveway gravel weighs about 1.4 to 1.5 tons. Use our calculator to automate the math.
+            </p>
+          </div>
+          
+          <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
+            <h3 className="font-semibold text-lg text-slate-200 mb-2">How much does driveway gravel cost?</h3>
+            <p className="text-slate-400">
+              Depending on your region and the type of crushed stone or gravel, costs typically range from $25 to $65 per ton or $35 to $75 per cubic yard. Expect to pay extra for delivery.
+            </p>
+          </div>
+          
+          <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
+            <h3 className="font-semibold text-lg text-slate-200 mb-2">What is the best gravel depth for a driveway base?</h3>
+            <p className="text-slate-400">
+              A strong driveway base usually requires 4 to 6 inches of larger crushed stone (like #3 or #4 stone) to provide a stable, well-draining foundation for the smaller top surface layer.
+            </p>
+          </div>
         </div>
-
-        <h3 className="text-xl font-semibold text-white mt-12 mb-4">
-          FAQs
-        </h3>
-        <div className="rounded-lg border border-slate-800 p-5 space-y-6">
-          <FAQ
-            q="How much gravel do I need for my driveway?"
-            a="It depends on the length and width of your driveway, and the depth of the gravel layers. Simply measure your driveway's footprint and enter the desired depth into our calculator to get an accurate estimate in tons and cubic yards."
-          />
-          <FAQ
-            q="How deep should gravel be for a driveway?"
-            a="A typical gravel driveway consists of two main layers: a base layer of larger crushed stone (about 4 to 6 inches deep) and a top layer of smaller surface gravel (about 2 to 3 inches deep). You should calculate the material for each layer separately."
-          />
-          <FAQ
-            q="How many tons of driveway gravel do I need?"
-            a="Tonnage relies on the total volume in cubic feet and the density of your gravel. On average, a cubic yard of crushed stone driveway gravel weighs about 1.4 to 1.5 tons. Use our calculator to automate the math."
-          />
-          <FAQ
-            q="How much does driveway gravel cost?"
-            a="Depending on your region and the type of crushed stone or gravel, costs typically range from $25 to $65 per ton or $35 to $75 per cubic yard. Expect to pay extra for delivery."
-          />
-          <FAQ
-            q="What is the best gravel depth for a driveway base?"
-            a="A strong driveway base usually requires 4 to 6 inches of larger crushed stone (like #3 or #4 stone) to provide a stable, well-draining foundation for the smaller top surface layer."
-          />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function FeatureCard({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string; }) {
-  return (
-    <div className="rounded-lg bg-slate-900/60 border border-slate-700 p-5">
-      <div className="flex items-center gap-2 text-teal-400 mb-2">
-        {icon}
-        <span className="font-semibold text-slate-300 text-base">{title}</span>
-      </div>
-      <p className="text-sm text-slate-300">{desc}</p>
-    </div>
-  );
-}
-
-function FormulaBlock({ title, lines, note }: { title: string; lines: string[]; note?: string; }) {
-  return (
-    <div>
-      <div className="flex items-center gap-2 text-white font-medium mb-2">
-        <CheckCircle2 className="h-4 w-4 text-teal-400" />
-        <span>{title}</span>
-      </div>
-      <ul className="list-disc list-inside text-slate-300">
-        {lines.map((l, i) => <li key={i}>{l}</li>)}
-      </ul>
-      {note && <p className="text-xs text-slate-400 mt-2">{note}</p>}
-    </div>
-  );
-}
-
-function FAQ({ q, a }: { q: string; a: string }) {
-  return (
-    <div className="border-b border-slate-800 pb-4 last:border-0">
-      <p className="font-medium text-white">{q}</p>
-      <p className="text-slate-300 mt-1">{a}</p>
+      </section>
+      
     </div>
   );
 }
