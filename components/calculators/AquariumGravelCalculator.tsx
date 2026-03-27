@@ -24,10 +24,10 @@ type LinearUnit = "in" | "cm";
 // Aquarium gravel is roughly 100-105 lb/ft³
 // In pounds per cubic inch: 100 / 1728 ≈ 0.05787 lb/in³
 const AQUARIUM_GRAVEL_DENSITY_LB_PER_IN3 = 100 / 1728; 
-const AQUARIUM_GRAVEL_DENSITY_KG_PER_CM3 = 1600 / 1000000; // ~1.6 g/cm3 -> 0.0016 kg/cm3
+// const AQUARIUM_GRAVEL_DENSITY_KG_PER_CM3 = 1600 / 1000000; // ~1.6 g/cm3 -> 0.0016 kg/cm3
 
 const toInches = (v: number, u: LinearUnit): number => (u === "in" ? v : v / 2.54);
-const toCm = (v: number, u: LinearUnit): number => (u === "cm" ? v : v * 2.54);
+// const toCm = (v: number, u: LinearUnit): number => (u === "cm" ? v : v * 2.54);
 
 const fmt = (n: number, d = 2) =>
   Number.isFinite(n) ? n.toLocaleString(undefined, { maximumFractionDigits: d }) : "—";

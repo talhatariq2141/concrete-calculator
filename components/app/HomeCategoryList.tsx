@@ -93,6 +93,11 @@ const CATEGORY_SEO: Record<
         description:
             "Calculate volume, weight (tons & lbs), and cost for gravel driveways, landscaping, pea gravel, aquarium substrate, and material conversions.",
     },
+    "Reinforcement and Structural": {
+        heading: "Reinforcement & Structural Calculators",
+        description:
+            "Estimate rebar, mesh, and other structural reinforcements needed for your concrete projects.",
+    },
 };
 
 const INITIAL_VISIBLE = 4;

@@ -1,0 +1,36 @@
+
+> concrete-calculator@0.1.0 lint
+> eslint
+
+
+C:\Users\YC\Documents\Projects\concalv2-from-11-01-2026\concrete-calculator\components\calculators\ConcreteBlockCalc.tsx
+  124:5  warning  'min' is defined but never used   @typescript-eslint/no-unused-vars
+  125:5  warning  'max' is defined but never used   @typescript-eslint/no-unused-vars
+  126:5  warning  'step' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\YC\Documents\Projects\concalv2-from-11-01-2026\concrete-calculator\components\calculators\GravelCostCalculator.tsx
+  18:10  warning  'Info' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\YC\Documents\Projects\concalv2-from-11-01-2026\concrete-calculator\components\calculators\PostHoleConcreteCalc.tsx
+   27:6  warning  'ConcreteProduct' is defined but never used                                                                @typescript-eslint/no-unused-vars
+  230:6  warning  React Hook useMemo has a missing dependency: 'getYield'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\YC\Documents\Projects\concalv2-from-11-01-2026\concrete-calculator\components\calculators\WireMeshCalc.tsx
+  687:102  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  687:129  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  688:100  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  963:93   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  963:111  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  964:90   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+C:\Users\YC\Documents\Projects\concalv2-from-11-01-2026\concrete-calculator\components\calculators\articles\RebarCalcArticle.tsx
+  158:61   error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  159:129  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  159:264  error  `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+C:\Users\YC\Documents\Projects\concalv2-from-11-01-2026\concrete-calculator\generate-logic-docs.js
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+✖ 17 problems (11 errors, 6 warnings)
+

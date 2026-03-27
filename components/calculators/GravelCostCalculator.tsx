@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import { Info, Printer } from "lucide-react";
+import { Printer } from "lucide-react";
 
 /* ===================== Types ===================== */
 type LinearUnit = "in" | "ft" | "cm" | "m";

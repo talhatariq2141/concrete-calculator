@@ -24,7 +24,6 @@ type CalcMode = "quick" | "advanced" | "recommendation";
 type HoleShape = "round" | "square";
 type PostShape = "round" | "square";
 type PostTypePreset = "fence-line" | "fence-corner" | "gate" | "mailbox" | "deck" | "pole" | "custom";
-type ConcreteProduct = "fast-setting" | "standard" | "high-strength" | "custom";
 type BagSize = "40" | "50" | "60" | "80" | "custom";
 
 /* ===================== Constants ===================== */
@@ -207,10 +206,10 @@ export default function PostHoleConcreteCalc() {
   const [submitted, setSubmitted] = useState(false);
   const [results, setResults] = useState<Results | null>(null);
 
-  const getYield = (): number => {
+  const getYield = React.useCallback((): number => {
     if (bagSize === "custom") return parseFloat(customYield) || 0;
     return BAG_YIELDS[bagSize] || 0.6;
-  };
+  }, [bagSize, customYield]);
 
   /* ===================== canCalculate ===================== */
   const canCalculate = useMemo(() => {
@@ -227,7 +226,7 @@ export default function PostHoleConcreteCalc() {
     }
     if (getYield() <= 0) return false;
     return true;
-  }, [numHoles, holeDepth, holeShape, holeDia, holeWidth, holeLength, bagSize, customYield]);
+  }, [numHoles, holeDepth, holeShape, holeDia, holeWidth, holeLength, getYield]);
 
   /* ===================== Calculate ===================== */
   const onCalculate = (e?: React.FormEvent) => {
@@ -476,7 +475,7 @@ export default function PostHoleConcreteCalc() {
   };
 
   const isAdvOrRec = mode === "advanced" || mode === "recommendation";
-  const selectedBags = results ? (bagSize === "custom" ? results.bags["custom"] || 0 : results.bags[bagSize] || 0) : 0;
+  // const selectedBags = results ? (bagSize === "custom" ? results.bags["custom"] || 0 : results.bags[bagSize] || 0) : 0;
 
   return (
     <Card className="font-poppins mx-auto w-full max-w-6xl rounded-sm border border-slate-700 bg-slate-900 shadow-md overflow-hidden">

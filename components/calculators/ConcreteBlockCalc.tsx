@@ -121,9 +121,6 @@ function NumberInput({
     placeholder,
     badge,
     ariaLabel,
-    min,
-    max,
-    step,
 }: {
     id?: string;
     value: string;
@@ -131,9 +128,6 @@ function NumberInput({
     placeholder?: string;
     badge?: string;
     ariaLabel?: string;
-    min?: number;
-    max?: number;
-    step?: string;
 }) {
     return (
         <div className="relative">
