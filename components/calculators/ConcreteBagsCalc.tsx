@@ -15,6 +15,8 @@ import {
   Tabs, TabsList, TabsTrigger,
 } from "@/components/ui/tabs";
 import { Info, Printer } from "lucide-react";
+import { toMeters as toMetersEngine } from "@/lib/calc-engine";
+import { CONCRETE_BAG_COVERAGE } from "@/lib/material-data";
 
 /* =========================
    Types, constants, helpers
@@ -35,25 +37,18 @@ const M3_TO_FT3 = 1 / FT3_TO_M3; // 35.3146667
 const M3_TO_YD3 = 1.30795062;
 const YD3_TO_M3 = 1 / M3_TO_YD3;
 
-// Typical yields (approx.) per bag
-// (Source common industry approximations; normalized to m³ for internal calc)
+// Bag yields from CONCRETE_BAG_COVERAGE (material-data.ts), normalized to m³
+// 20kg is not in the shared table so it remains hardcoded here.
 const bagYieldM3: Record<BagSize, number> = {
-  "40lb": 0.30 * FT3_TO_M3, // ≈ 0.0085 m³
-  "50lb": 0.37 * FT3_TO_M3, // ≈ 0.0105 m³
-  "60lb": 0.45 * FT3_TO_M3, // ≈ 0.0127 m³
-  "80lb": 0.60 * FT3_TO_M3, // ≈ 0.0170 m³
-  "20kg": 0.014,            // ≈ 0.014 m³ (manufacturer rounded)
+  "40lb": CONCRETE_BAG_COVERAGE[40].cubicFeet * FT3_TO_M3, // ≈ 0.0085 m³
+  "50lb": CONCRETE_BAG_COVERAGE[50].cubicFeet * FT3_TO_M3, // ≈ 0.0105 m³
+  "60lb": CONCRETE_BAG_COVERAGE[60].cubicFeet * FT3_TO_M3, // ≈ 0.0127 m³
+  "80lb": CONCRETE_BAG_COVERAGE[80].cubicFeet * FT3_TO_M3, // ≈ 0.0170 m³
+  "20kg": 0.014,            // ≈ 0.014 m³ (manufacturer rounded, not in shared table)
 };
 
 function toMeters(value: number, unit: LinearUnit): number {
-  const map: Record<LinearUnit, number> = {
-    m: 1,
-    cm: 0.01,
-    mm: 0.001,
-    ft: 0.3048,
-    in: 0.0254,
-  };
-  return value * map[unit];
+  return toMetersEngine(value, unit);
 }
 
 function safeNum(v: string): number {

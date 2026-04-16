@@ -13,18 +13,23 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Info, Printer, Weight } from "lucide-react";
+import { toMeters as toMetersEngine } from "@/lib/calc-engine";
+import { CONCRETE_DENSITIES } from "@/lib/material-data";
 
 /* -------------------- Types -------------------- */
 type LinearUnit = "meters" | "yards" | "feet" | "inches" | "centimeter";
 
-/* ----------------- Unit helpers ---------------- */
-const toMetersFactor: Record<LinearUnit, number> = {
-    meters: 1,
-    yards: 0.9144,
-    feet: 0.3048,
-    inches: 0.0254,
-    centimeter: 0.01,
+/* ----------------- Unit helpers (delegated to calc-engine) ---------------- */
+const toLinearUnit: Record<LinearUnit, import("@/lib/calc-engine").LengthUnit> = {
+    meters: "m",
+    yards: "yd",
+    feet: "ft",
+    inches: "in",
+    centimeter: "cm",
 };
+function toMetersFactor(value: number, unit: LinearUnit): number {
+    return toMetersEngine(value, toLinearUnit[unit]);
+}
 
 const linearUnitOptions: { value: LinearUnit; label: string }[] = [
     { value: "feet", label: "feet" },
@@ -98,10 +103,12 @@ function KV({ k, v, highlight = false }: { k: string; v: string; highlight?: boo
     );
 }
 
+// Density presets — sourced from CONCRETE_DENSITIES (material-data.ts)
+// Adapted to {value, label, desc} shape used by the JSX select below.
 const densities = [
-    { label: "Standard Concrete", value: 150, desc: "~150 lb/ft³" },
-    { label: "Reinforced Concrete", value: 156, desc: "~156 lb/ft³" },
-    { label: "Lightweight Concrete", value: 110, desc: "~70–120 lb/ft³" },
+    { label: CONCRETE_DENSITIES.standard.label,    value: CONCRETE_DENSITIES.standard.lbPerFt3,    desc: CONCRETE_DENSITIES.standard.desc    },
+    { label: CONCRETE_DENSITIES.reinforced.label,  value: CONCRETE_DENSITIES.reinforced.lbPerFt3,  desc: CONCRETE_DENSITIES.reinforced.desc  },
+    { label: CONCRETE_DENSITIES.lightweight.label, value: CONCRETE_DENSITIES.lightweight.lbPerFt3, desc: CONCRETE_DENSITIES.lightweight.desc },
 ];
 
 /* ------------------ Component ------------------ */
@@ -132,9 +139,9 @@ export default function ConcreteSlabWeightCalc() {
         if ([L, W, T].some((v) => Number.isNaN(v) || v < 0)) return null;
 
         // 1. Core Dimensions in Meters (internal base)
-        const Lm = L * toMetersFactor[lengthUnit];
-        const Wm = W * toMetersFactor[widthUnit];
-        const Tm = T * toMetersFactor[thicknessUnit];
+        const Lm = toMetersFactor(L, lengthUnit);
+        const Wm = toMetersFactor(W, widthUnit);
+        const Tm = toMetersFactor(T, thicknessUnit);
 
         const area_m2 = Lm * Wm * Q;
         const volume_m3 = area_m2 * Tm;

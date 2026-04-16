@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { Printer } from "lucide-react"; // <-- for Print/Save icon
+import { toMeters as toMetersEngine } from "@/lib/calc-engine";
+import { MIX_PARTS, WALL_PHYSICS } from "@/lib/material-data";
 
 /* =====================================================================================
    Types & Constants
@@ -33,22 +35,16 @@ type Opening = {
 
 type Mix = "1:1.5:3" | "1:2:4" | "1:3:6";
 
-const MIX_PARTS: Record<Mix, { c: number; s: number; a: number; total: number }> =
-{
-  "1:1.5:3": { c: 1, s: 1.5, a: 3, total: 5.5 },
-  "1:2:4": { c: 1, s: 2, a: 4, total: 7 },
-  "1:3:6": { c: 1, s: 3, a: 6, total: 10 },
-};
+// MIX_PARTS — sourced from MIX_PARTS (material-data.ts). Identical values.
+// Re-typed locally to preserve the component's existing Mix type alias.
+// (material-data MIX_PARTS has the same c/s/a/total values.)
 
-// Physics / industry constants
-const BULK_DENSITY_CEMENT_KG_M3 = 1440;
-const CEMENT_BAG_KG = 50;
-const DRY_LOSS_FACTOR = 1.54;
+// Physics / industry constants — sourced from WALL_PHYSICS (material-data.ts)
+const BULK_DENSITY_CEMENT_KG_M3 = WALL_PHYSICS.BULK_DENSITY_CEMENT_KG_M3; // 1440
+const CEMENT_BAG_KG             = WALL_PHYSICS.CEMENT_BAG_KG;              // 50
+const DRY_LOSS_FACTOR           = WALL_PHYSICS.DRY_LOSS_FACTOR;            // 1.54
 const M3_TO_FT3 = 35.3146667;
 const M3_TO_YD3 = 1.30795062;
-const IN_TO_M = 0.0254;
-const FT_TO_M = 0.3048;
-const CM_TO_M = 0.01;
 
 // (Optional) logo path for print header (hidden if not found)
 const LOGO_URL = "/logo.svg";
@@ -57,12 +53,10 @@ const LOGO_URL = "/logo.svg";
    Helpers
 ===================================================================================== */
 
+// WallConcreteCalc uses "m"/"ft"/"cm"/"in" which already match LengthUnit
+// abbreviations — so toMeters() can forward directly to calc-engine.
 function toMeters(value: number, unit: LinearUnit | ThickUnit): number {
-  if (unit === "m") return value;
-  if (unit === "ft") return value * FT_TO_M;
-  if (unit === "cm") return value * CM_TO_M;
-  if (unit === "in") return value * IN_TO_M;
-  return value;
+  return toMetersEngine(value, unit as import("@/lib/calc-engine").LengthUnit);
 }
 
 function format(num: number, digits = 3): string {

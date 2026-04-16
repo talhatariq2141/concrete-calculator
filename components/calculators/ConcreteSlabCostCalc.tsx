@@ -13,18 +13,22 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Info, Printer, Calculator } from "lucide-react";
+import { toMeters as toMetersEngine } from "@/lib/calc-engine";
 
 /* -------------------- Types -------------------- */
 type LinearUnit = "meters" | "yards" | "feet" | "inches" | "centimeter";
 
-/* ----------------- Unit helpers ---------------- */
-const toMetersFactor: Record<LinearUnit, number> = {
-    meters: 1,
-    yards: 0.9144,
-    feet: 0.3048,
-    inches: 0.0254,
-    centimeter: 0.01,
+/* ----------------- Unit helpers (delegated to calc-engine) ---------------- */
+const toLinearUnit: Record<LinearUnit, import("@/lib/calc-engine").LengthUnit> = {
+    meters: "m",
+    yards: "yd",
+    feet: "ft",
+    inches: "in",
+    centimeter: "cm",
 };
+function toMetersFactor(value: number, unit: LinearUnit): number {
+    return toMetersEngine(value, toLinearUnit[unit]);
+}
 
 
 
@@ -137,9 +141,9 @@ export default function ConcreteSlabCostCalc() {
         if ([L, W, T].some((v) => Number.isNaN(v) || v < 0)) return null;
 
         // 1. Core Dimensions in Meters (internal base)
-        const Lm = L * toMetersFactor[lengthUnit];
-        const Wm = W * toMetersFactor[widthUnit];
-        const Tm = T * toMetersFactor[thicknessUnit];
+        const Lm = toMetersFactor(L, lengthUnit);
+        const Wm = toMetersFactor(W, widthUnit);
+        const Tm = toMetersFactor(T, thicknessUnit);
 
         const area_m2 = Lm * Wm;
         const volume_m3 = area_m2 * Tm;

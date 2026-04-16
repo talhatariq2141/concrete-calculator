@@ -27,9 +27,10 @@ import {
 } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Info, Printer } from "lucide-react";
+import { toMeters as toMetersEngine, cubicM3ToYd, cubicM3ToFt3 } from "@/lib/calc-engine";
 
 /* -----------------------------------------------------------------------------
-   Types & helpers (calculation logic preserved; now parsing from string inputs)
+   Types & helpers
 ----------------------------------------------------------------------------- */
 type LinearUnit = "meters" | "centimeters" | "feet" | "inches";
 
@@ -39,17 +40,18 @@ type VolumeResult = {
   breakdown?: Record<string, number>; // optional parts in m³
 };
 
-const UNIT_TO_M: Record<LinearUnit, number> = {
-  meters: 1,
-  centimeters: 0.01,
-  feet: 0.3048,
-  inches: 0.0254,
+// Map verbose unit names to calc-engine LengthUnit abbreviations
+const toEngineUnit: Record<LinearUnit, import("@/lib/calc-engine").LengthUnit> = {
+  meters:      "m",
+  centimeters: "cm",
+  feet:        "ft",
+  inches:      "in",
 };
 
 const clamp = (n: number, min = 0) => (isFinite(n) && n >= min ? n : min);
-const toMeters = (v: number, u: LinearUnit) => clamp(v) * UNIT_TO_M[u];
-const m3ToYd3 = (m3: number) => m3 * 1.30795062;
-const m3ToFt3 = (m3: number) => m3 * 35.3146667;
+const toMeters = (v: number, u: LinearUnit) => toMetersEngine(clamp(v), toEngineUnit[u]);
+const m3ToYd3 = cubicM3ToYd;
+const m3ToFt3 = cubicM3ToFt3;
 const fmt = (n: number, d = 3) =>
   Number(n).toLocaleString(undefined, { maximumFractionDigits: d });
 

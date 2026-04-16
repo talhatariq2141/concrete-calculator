@@ -15,6 +15,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { Info, Printer } from "lucide-react";
+import { toMeters as toMetersEngine } from "@/lib/calc-engine";
 
 /* ---------------------------------------------
    Types & Units (unchanged logic)
@@ -28,17 +29,18 @@ type LinearUnit =
   | "feet"
   | "inches";
 
-const linearUnitToMeters: Record<LinearUnit, number> = {
-  meters: 1,
-  centimeter: 0.01,
-  millimeter: 0.001,
-  yards: 0.9144,
-  feet: 0.3048,
-  inches: 0.0254,
+// Map verbose unit names to calc-engine LengthUnit abbreviations
+const toEngineUnit: Record<LinearUnit, import("@/lib/calc-engine").LengthUnit> = {
+  meters:     "m",
+  centimeter: "cm",
+  millimeter: "mm",
+  yards:      "yd",
+  feet:       "ft",
+  inches:     "in",
 };
 
 function toMeters(value: number, unit: LinearUnit) {
-  return value * linearUnitToMeters[unit];
+  return toMetersEngine(value, toEngineUnit[unit]);
 }
 
 function clamp(n: number, min: number, max: number) {

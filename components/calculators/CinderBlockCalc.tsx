@@ -17,6 +17,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { Info, Printer, Plus, Trash2 } from "lucide-react";
+import { BLOCK_SIZES } from "@/lib/material-data";
 
 /* ===================== Types ===================== */
 type UnitSystem = "imperial" | "metric";
@@ -63,15 +64,8 @@ interface Results {
 }
 
 /* ===================== Block Size Presets ===================== */
-const BLOCK_SIZES: BlockSize[] = [
-  { label: '4 × 8 × 16 in (nominal)', nomH_in: 8, nomL_in: 16 },
-  { label: '6 × 8 × 16 in (nominal)', nomH_in: 8, nomL_in: 16 },
-  { label: '8 × 8 × 16 in (nominal) — Standard', nomH_in: 8, nomL_in: 16 },
-  { label: '10 × 8 × 16 in (nominal)', nomH_in: 8, nomL_in: 16 },
-  { label: '12 × 8 × 16 in (nominal)', nomH_in: 8, nomL_in: 16 },
-  { label: '8 × 8 × 8 in (half block)', nomH_in: 8, nomL_in: 8 },
-  { label: 'Custom size', nomH_in: 0, nomL_in: 0 },
-];
+// Standard sizes sourced from BLOCK_SIZES in material-data.ts (same values)
+// BLOCK_SIZES is imported: { label, nomH_in, nomL_in, nomW_in }[]
 
 /* ===================== Constants ===================== */
 const MORTAR_BLOCKS_80LB = 13; // 1 bag 80 lb covers ~13 standard blocks

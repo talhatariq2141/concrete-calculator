@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { Info, Printer } from "lucide-react";
+import { toFeet, cubicFtToYd, cubicFtToM3 } from "@/lib/calc-engine";
+import { GRAVEL_DENSITIES } from "@/lib/material-data";
 
 /* ===================== Types ===================== */
 type LinearUnit = "in" | "ft" | "yd" | "cm" | "m";
@@ -23,33 +25,26 @@ type DensityType = "standard" | "compact" | "light" | "custom";
 type PriceMode = "ton" | "yard";
 
 /* ===================== Constants ===================== */
+// Density values sourced from GRAVEL_DENSITIES in material-data.ts
+// "custom" key remains inline (not in shared data)
 const DENSITIES: Record<DensityType, number> = {
-  "standard": 105, // lb/ft3
-  "compact": 115,
-  "light": 95,
-  "custom": 105,
+  "standard": GRAVEL_DENSITIES.standard.lbPerFt3, // 105
+  "compact":  GRAVEL_DENSITIES.compact.lbPerFt3,  // 115
+  "light":    GRAVEL_DENSITIES.light.lbPerFt3,    // 95
+  "custom":   105, // placeholder; actual density comes from user input
 };
 
 const DENSITY_LABELS: Record<DensityType, string> = {
-  "standard": "Standard Crushed Concrete (105 lb/ft³)",
-  "compact": "Compact Recycled Concrete (115 lb/ft³)",
-  "light": "Light Recycled Aggregate (95 lb/ft³)",
-  "custom": "Custom Density",
+  "standard": GRAVEL_DENSITIES.standard.label,
+  "compact":  GRAVEL_DENSITIES.compact.label,
+  "light":    GRAVEL_DENSITIES.light.label,
+  "custom":   "Custom Density",
 };
 
-/* ===================== Unit conversion ===================== */
-const toFeet = (v: number, u: LinearUnit): number => {
-  switch (u) {
-    case "ft": return v;
-    case "yd": return v * 3;
-    case "in": return v / 12;
-    case "cm": return v / 30.48;
-    case "m":  return v * 3.28084;
-  }
-};
-
-const ft3ToYd3 = (v: number) => v / 27;
-const ft3ToM3 = (v: number) => v * 0.0283168;
+/* ===================== Unit conversion (delegated to calc-engine) ===================== */
+// toFeet imported from calc-engine
+const ft3ToYd3 = cubicFtToYd;
+const ft3ToM3  = cubicFtToM3;
 
 const fmt = (n: number, d = 2) =>
   Number.isFinite(n) ? n.toLocaleString(undefined, { maximumFractionDigits: d }) : "—";

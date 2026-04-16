@@ -17,6 +17,14 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { cn } from "@/lib/utils";
 import { Info, Printer } from "lucide-react";
+import {
+  toFeet,
+  cubicFtToYd,
+  cubicFtToM3,
+  cubicFtToLiters,
+  postDisplacement,
+} from "@/lib/calc-engine";
+import { CONCRETE_BAG_COVERAGE } from "@/lib/material-data";
 
 /* ===================== Types ===================== */
 type LinearUnit = "in" | "ft" | "cm" | "m";
@@ -26,13 +34,12 @@ type PostShape = "round" | "square";
 type PostTypePreset = "fence-line" | "fence-corner" | "gate" | "mailbox" | "deck" | "pole" | "custom";
 type BagSize = "40" | "50" | "60" | "80" | "custom";
 
-/* ===================== Constants ===================== */
-/** Yield per bag in cubic feet */
+/** Yield per bag in cubic feet — sourced from CONCRETE_BAG_COVERAGE in material-data */
 const BAG_YIELDS: Record<string, number> = {
-  "40": 0.30,
-  "50": 0.375,
-  "60": 0.45,
-  "80": 0.60,
+  "40": CONCRETE_BAG_COVERAGE[40].cubicFeet,
+  "50": CONCRETE_BAG_COVERAGE[50].cubicFeet,
+  "60": CONCRETE_BAG_COVERAGE[60].cubicFeet,
+  "80": CONCRETE_BAG_COVERAGE[80].cubicFeet,
 };
 
 const POST_TYPE_LABELS: Record<PostTypePreset, string> = {
@@ -56,20 +63,11 @@ const POST_PRESETS: Record<PostTypePreset, { shape: PostShape; width: string; le
   "custom": { shape: "square", width: "", length: "", wasteDefault: "10", holeDiaMultiplier: 3, deeperEmbed: false },
 };
 
-/* ===================== Unit conversion ===================== */
-/** Convert to feet (internal unit) */
-const toFeet = (v: number, u: LinearUnit): number => {
-  switch (u) {
-    case "ft": return v;
-    case "in": return v / 12;
-    case "cm": return v / 30.48;
-    case "m":  return v * 3.28084;
-  }
-};
-
-const ft3ToYd3 = (v: number) => v / 27;
-const ft3ToM3 = (v: number) => v * 0.0283168;
-const ft3ToLiters = (v: number) => v * 28.3168;
+/* ===================== Unit conversion (delegated to calc-engine) ===================== */
+// toFeet, cubicFtToYd, cubicFtToM3 imported from calc-engine
+const ft3ToYd3    = cubicFtToYd;
+const ft3ToM3     = cubicFtToM3;
+const ft3ToLiters = cubicFtToLiters;
 
 const fmt = (n: number, d = 2) =>
   Number.isFinite(n) ? n.toLocaleString(undefined, { maximumFractionDigits: d }) : "—";
@@ -244,6 +242,9 @@ export default function PostHoleConcreteCalc() {
     const concreteFillDepth = Math.max(0, hDepth_ft - gDepth_ft);
 
     // Hole volume per hole
+    // We can't use cylinderVolume() directly here because the effective depth
+    // is concreteFillDepth (hole minus gravel layer), which is already in feet.
+    // toFeet() is used for all dimension conversions; geometry is straightforward.
     let holeVol_ft3 = 0;
     if (holeShape === "round") {
       const r = toFeet(parseFloat(holeDia), unit) / 2;
@@ -254,25 +255,22 @@ export default function PostHoleConcreteCalc() {
       holeVol_ft3 = w * l * concreteFillDepth;
     }
 
-    // Post displacement
+    // Post displacement & net concrete — via calc-engine postDisplacement()
+    // postDisplacement(holeVolFt3, shape, postDimFt, postLengthFt, embedDepthFt)
+    // returns holeVol - displacement (i.e. the *net* concrete volume)
+    let netPerHole = holeVol_ft3;
     let postDisp_ft3 = 0;
     if ((mode === "advanced" || mode === "recommendation") && subtractPost) {
-      const embedDepth = Math.min(
-        toFeet(Math.max(0, parseFloat(embeddedPostDepth || "0")), unit),
-        concreteFillDepth
-      );
-      if (postShape === "round") {
-        const pr = toFeet(Math.max(0, parseFloat(postDia || "0")), unit) / 2;
-        postDisp_ft3 = Math.PI * pr * pr * embedDepth;
-      } else {
-        const pw = toFeet(Math.max(0, parseFloat(postWidth || "0")), unit);
-        const pl = toFeet(Math.max(0, parseFloat(postLength || "0")), unit);
-        postDisp_ft3 = pw * pl * embedDepth;
-      }
+      const rawEmbed = toFeet(Math.max(0, parseFloat(embeddedPostDepth || "0")), unit);
+      const embedDepth = Math.min(rawEmbed, concreteFillDepth);
+      const postDimFt = postShape === "round"
+        ? toFeet(Math.max(0, parseFloat(postDia || "0")), unit)
+        : toFeet(Math.max(0, parseFloat(postWidth || "0")), unit);
+      const postLenFt = toFeet(Math.max(0, parseFloat(postLength || "0")), unit);
+      // postDisplacement returns net (hole - post), so derive displacement separately
+      netPerHole = postDisplacement(holeVol_ft3, postShape, postDimFt, postLenFt, embedDepth);
+      postDisp_ft3 = Math.max(0, holeVol_ft3 - netPerHole);
     }
-
-    // Net concrete per hole
-    const netPerHole = Math.max(0, holeVol_ft3 - postDisp_ft3);
 
     // Total + waste
     const totalConcrete = netPerHole * n;
@@ -288,7 +286,7 @@ export default function PostHoleConcreteCalc() {
       bags["custom"] = Math.ceil(adjustedConcrete / yieldPerBag);
     }
 
-    // Gravel
+    // Gravel volume per hole
     let gravelPerHole_ft3 = 0;
     if (includeGravel && gDepth_ft > 0) {
       if (holeShape === "round") {

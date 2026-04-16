@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Info, Printer } from "lucide-react"; // ⬅️ NEW: Printer icon for Print/Save
+import { NOMINAL_MIX_RATIOS, VOL_TO_M3 } from "@/lib/material-data";
 
 /* --------------------------------------------------------------------------------
    TYPES / CONSTANTS / HELPERS
@@ -25,20 +26,10 @@ type UnitVol = "m3" | "ft3" | "yd3";
 type GradeKey = "M5" | "M7.5" | "M10" | "M15" | "M20" | "M25";
 type Mix = { c: number; s: number; a: number; wc: number };
 
-const MIX_MAP: Record<GradeKey, Mix> = {
-  M5: { c: 1, s: 5, a: 10, wc: 0.65 },
-  "M7.5": { c: 1, s: 4, a: 8, wc: 0.62 },
-  M10: { c: 1, s: 3, a: 6, wc: 0.6 },
-  M15: { c: 1, s: 2, a: 4, wc: 0.55 },
-  M20: { c: 1, s: 1.5, a: 3, wc: 0.5 },
-  M25: { c: 1, s: 1, a: 2, wc: 0.45 },
-};
+// MIX_MAP — sourced from NOMINAL_MIX_RATIOS (material-data.ts). Same c/s/a/wc values.
+const MIX_MAP: Record<GradeKey, Mix> = NOMINAL_MIX_RATIOS;
 
-const VOL_TO_M3: Record<UnitVol, number> = {
-  m3: 1,
-  ft3: 0.0283168,
-  yd3: 0.764555,
-};
+// VOL_TO_M3 — sourced from material-data.ts (identical values).
 
 const fieldInputClass =
   "h-11 mt-2 mb-2 w-full rounded-sm border border-slate-700 bg-slate-700 text-white caret-white placeholder-slate-300 pr-12 focus-visible:ring-0 focus:border-teal-400";

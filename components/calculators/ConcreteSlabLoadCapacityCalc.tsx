@@ -13,22 +13,11 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Info, Printer, Calculator, ShieldCheck, AlertTriangle } from "lucide-react";
+import { REBAR_TABLE_SLAB } from "@/lib/material-data";
 
 /* -------------------- Types -------------------- */
-interface Rebar {
-    label: string;
-    diameter: number; // in
-    area: number;     // in2
-}
-
-const REBAR_TABLE: Rebar[] = [
-    { label: "#3", diameter: 0.375, area: 0.11 },
-    { label: "#4", diameter: 0.500, area: 0.20 },
-    { label: "#5", diameter: 0.625, area: 0.31 },
-    { label: "#6", diameter: 0.750, area: 0.44 },
-    { label: "#7", diameter: 0.875, area: 0.60 },
-    { label: "#8", diameter: 1.000, area: 0.79 },
-];
+// REBAR_TABLE_SLAB imported from @/lib/material-data replaces the local table below.
+// Each entry has { label, diameter, area } — same shape as the old Rebar interface.
 
 /* ---------------- UI shared classes ---------------- */
 const fieldInputClass =
@@ -142,7 +131,7 @@ export default function ConcreteSlabLoadCapacityCalc() {
 
         if ([h, L, fcp, fyp, gC, s, cov].some((v) => Number.isNaN(v) || v <= 0)) return null;
 
-        const bar = REBAR_TABLE.find((b) => b.label === barSize);
+        const bar = REBAR_TABLE_SLAB.find((b) => b.label === barSize);
         if (!bar) return null;
 
         // 1. Effective depth
@@ -368,7 +357,7 @@ export default function ConcreteSlabLoadCapacityCalc() {
                                         <SelectValue />
                                     </SelectTrigger>
                                     <SelectContent className={selectContentClass}>
-                                        {REBAR_TABLE.map(r => (
+                                        {REBAR_TABLE_SLAB.map(r => (
                                             <SelectItem key={r.label} value={r.label}>{r.label} (Area: {r.area} in²)</SelectItem>
                                         ))}
                                     </SelectContent>

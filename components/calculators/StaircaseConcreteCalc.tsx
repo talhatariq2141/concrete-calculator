@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Info, Printer } from "lucide-react";
+import { toMeters, staircaseVolume } from "@/lib/calc-engine";
 
 /* =========================
    Types, constants, helpers
@@ -35,16 +36,8 @@ type Mode = "waist" | "solid";
 
 const DENSITY_CONCRETE_KG_M3 = 2400; // normal-weight concrete
 
-function toMeters(value: number, unit: LinearUnit): number {
-  const map: Record<LinearUnit, number> = {
-    m: 1,
-    cm: 0.01,
-    mm: 0.001,
-    ft: 0.3048,
-    in: 0.0254,
-  };
-  return value * map[unit];
-}
+// toMeters imported from calc-engine
+// LinearUnit "m"|"cm"|"mm"|"ft"|"in" matches calc-engine LengthUnit exactly
 
 function toFixedSmart(n: number, d = 3): string {
   if (!isFinite(n)) return "0";
@@ -228,24 +221,25 @@ export default function StaircaseConcreteCalc() {
     let totalM3 = 0;
 
     if (errs.length === 0) {
-      const totalRun_m = nSteps * tread_m;
-      const totalRise_m = nSteps * riser_m;
+      // Step volume via calc-engine staircaseVolume()
+      // Handles both "waist" (waist-slab + wedges) and "solid" (mass stairs) modes.
+      // Landings are NOT included in the engine function — added inline below.
+      // TODO: if calc-engine ever adds a landings parameter, remove bl_m3/tl_m3 math here.
+      const stairResult = staircaseVolume(
+        nSteps,
+        safeNum(tread),
+        safeNum(riser),
+        safeNum(width),
+        mode === "waist" ? safeNum(waistThk) : 0,
+        unit,
+        mode
+      );
+      Object.assign(breakdown, stairResult.breakdown);
+      totalM3 = stairResult.totalM3;
 
-      if (mode === "solid") {
-        const stepsVol = nSteps * tread_m * riser_m * width_m;
-        totalM3 = stepsVol + bl_m3 + tl_m3;
-        breakdown["Steps (solid)"] = stepsVol;
-      } else {
-        const Ls = slopedLength(totalRun_m, totalRise_m);
-        const waistVol = waist_m * width_m * Ls;
-        const wedgeVol = 0.5 * nSteps * tread_m * riser_m * width_m;
-        totalM3 = waistVol + wedgeVol + bl_m3 + tl_m3;
-        breakdown["Waist slab"] = waistVol;
-        breakdown["Step wedges"] = wedgeVol;
-      }
-
-      if (bl_m3 > 0) breakdown["Bottom landing"] = bl_m3;
-      if (tl_m3 > 0) breakdown["Top landing"] = tl_m3;
+      // Landing volumes remain inline (rectangular slabs)
+      if (bl_m3 > 0) { breakdown["Bottom landing"] = bl_m3; totalM3 += bl_m3; }
+      if (tl_m3 > 0) { breakdown["Top landing"] = tl_m3; totalM3 += tl_m3; }
     }
 
     const totals = {

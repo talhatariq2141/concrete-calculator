@@ -16,6 +16,11 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Info, Printer } from "lucide-react";
+import {
+  pierVolume,
+  cubicM3ToYd,
+  cubicM3ToFt3,
+} from "@/lib/calc-engine";
 
 /* ---------------------------------------------
    Types / Units (logic unchanged)
@@ -41,40 +46,9 @@ type Results = {
   totalWaste: { m3: number; yd3: number; ft3: number };
 } | null;
 
-/* ---------------------------------------------
-   Helpers (math unchanged)
---------------------------------------------- */
-const toMeters = (v: number, u: LinearUnit) => {
-  switch (u) {
-    case "m":
-      return v;
-    case "cm":
-      return v / 100;
-    case "mm":
-      return v / 1000;
-    case "ft":
-      return v * 0.3048;
-    case "in":
-      return v * 0.0254;
-  }
-};
-
-const cylVolume = (diameter_m: number, height_m: number) => {
-  const r = diameter_m / 2;
-  return Math.PI * r * r * height_m;
-};
-
-const frustumVolume = (topDia_m: number, bottomDia_m: number, height_m: number) => {
-  const R1 = topDia_m / 2;
-  const R2 = bottomDia_m / 2;
-  return (Math.PI * height_m * (R1 * R1 + R1 * R2 + R2 * R2)) / 3;
-};
-
-const toYd3 = (m3: number) => m3 * 1.30795062;
-const toFt3 = (m3: number) => m3 * 35.3146667;
-
 const fmt = (n: number, d = 4) =>
   Number.isFinite(n) ? n.toLocaleString(undefined, { maximumFractionDigits: d }) : "—";
+
 
 /* ---------------------------------------------
    UI tokens (styles only)
@@ -241,31 +215,30 @@ export default function PierCaissonConcreteCalc() {
     const n = parseFloat(inputs.qty);
     const w = Math.max(0, parseFloat(inputs.wastePct || "0"));
 
-    const d_m = toMeters(d, inputs.unit);
-    const h_m = toMeters(h, inputs.unit);
+    // Use calc-engine pierVolume() which handles shaft + optional bell frustum
+    const pv = pierVolume(
+      d,
+      h,
+      n,
+      inputs.unit, // LinearUnit "m"|"cm"|"mm"|"ft"|"in" matches LengthUnit
+      inputs.hasBell
+        ? {
+            topDiameter:    parseFloat(inputs.bellTopDia),
+            bottomDiameter: parseFloat(inputs.bellBottomDia),
+            height:         parseFloat(inputs.bellHeight),
+          }
+        : undefined
+    );
 
-    let perPier_m3 = cylVolume(d_m, h_m);
-
-    if (inputs.hasBell) {
-      const bt = parseFloat(inputs.bellTopDia);
-      const bb = parseFloat(inputs.bellBottomDia);
-      const bh = parseFloat(inputs.bellHeight);
-      const bt_m = toMeters(bt, inputs.unit);
-      const bb_m = toMeters(bb, inputs.unit);
-      const bh_m = toMeters(bh, inputs.unit);
-      perPier_m3 += frustumVolume(bt_m, bb_m, bh_m);
-    }
-
-    const total_m3 = perPier_m3 * n;
-
-    const perPier_w = perPier_m3 * (1 + w / 100);
-    const total_w = total_m3 * (1 + w / 100);
+    const { perPierM3, totalM3 } = pv;
+    const perPier_w = perPierM3 * (1 + w / 100);
+    const total_w   = totalM3   * (1 + w / 100);
 
     const r: Results = {
-      perPier: { m3: perPier_m3, yd3: toYd3(perPier_m3), ft3: toFt3(perPier_m3) },
-      perPierWaste: { m3: perPier_w, yd3: toYd3(perPier_w), ft3: toFt3(perPier_w) },
-      total: { m3: total_m3, yd3: toYd3(total_m3), ft3: toFt3(total_m3) },
-      totalWaste: { m3: total_w, yd3: toYd3(total_w), ft3: toFt3(total_w) },
+      perPier:      { m3: perPierM3, yd3: cubicM3ToYd(perPierM3), ft3: cubicM3ToFt3(perPierM3) },
+      perPierWaste: { m3: perPier_w, yd3: cubicM3ToYd(perPier_w), ft3: cubicM3ToFt3(perPier_w) },
+      total:        { m3: totalM3,   yd3: cubicM3ToYd(totalM3),   ft3: cubicM3ToFt3(totalM3)   },
+      totalWaste:   { m3: total_w,   yd3: cubicM3ToYd(total_w),   ft3: cubicM3ToFt3(total_w)   },
     };
 
     setResults(r);

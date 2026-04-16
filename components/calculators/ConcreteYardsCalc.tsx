@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Info, Printer } from "lucide-react"; // ⬅️ NEW: Printer icon
+import { toFeet, cubicFtToYd, cubicFtToM3 } from "@/lib/calc-engine";
 
 /* -------------------------------------------------------------
    ConcreteYardsCalc.tsx — now with Print/Save (backend-less)
@@ -53,33 +54,24 @@ export default function ConcreteYardsCalc() {
 
   const [error, setError] = React.useState<string>("");
 
-  // -------- Conversion helpers (unchanged math) --------
+  // -------- Conversion helpers — delegated to calc-engine --------
+  // Map the component's verbose unit names to calc-engine's LengthUnit abbreviations
+  const unitMap: Record<LinearUnit, import("@/lib/calc-engine").LengthUnit> = {
+    feet: "ft",
+    inches: "in",
+    yards: "yd",
+    meters: "m",
+    centimeters: "cm",
+    millimeters: "mm",
+  };
   function linToFeet(v: number, u: LinearUnit): number {
-    switch (u) {
-      case "feet":
-        return v;
-      case "inches":
-        return v / 12;
-      case "yards":
-        return v * 3;
-      case "meters":
-        return v * 3.280839895;
-      case "centimeters":
-        return (v / 100) * 3.280839895;
-      case "millimeters":
-        return (v / 1000) * 3.280839895;
-      default:
-        return v;
-    }
+    return toFeet(v, unitMap[u]);
   }
-
   function feet3ToYards3(ft3: number): number {
-    return ft3 / 27;
+    return cubicFtToYd(ft3);
   }
-
   function feet3ToMeters3(ft3: number): number {
-    // 1 ft³ = 0.028316846592 m³
-    return ft3 * 0.028316846592;
+    return cubicFtToM3(ft3);
   }
 
   // -------- Compute (unchanged formulas) --------

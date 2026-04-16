@@ -13,20 +13,27 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Info, Printer } from "lucide-react";
+import { toMeters as toMetersEngine } from "@/lib/calc-engine";
 
 /* -------------------- Types (unchanged) -------------------- */
 type LinearUnit = "meters" | "yards" | "feet" | "inches" | "centimeter";
 type AreaUnit = "m2" | "yd2" | "ft2" | "in2" | "cm2";
 type VolumeUnit = "m3" | "yd3" | "ft3" | "in3" | "cm3";
 
-/* ----------------- Unit helpers (unchanged) ---------------- */
-const toMetersFactor: Record<LinearUnit, number> = {
-  meters: 1,
-  yards: 0.9144,
-  feet: 0.3048,
-  inches: 0.0254,
-  centimeter: 0.01,
+/* ----------------- Unit helpers (delegated to calc-engine) ---------------- */
+// Map component's verbose unit names to calc-engine's LengthUnit abbreviations
+const toLinearUnit: Record<LinearUnit, import("@/lib/calc-engine").LengthUnit> = {
+  meters: "m",
+  yards: "yd",
+  feet: "ft",
+  inches: "in",
+  centimeter: "cm",
 };
+
+// Drop-in replacement for old toMetersFactor table: convert value in LinearUnit to meters
+function toMetersFactor(value: number, unit: LinearUnit): number {
+  return toMetersEngine(value, toLinearUnit[unit]);
+}
 
 const areaUnits: { key: AreaUnit; label: string; fromMeters2: (m2: number) => number }[] = [
   { key: "m2", label: "m² (square meters)", fromMeters2: (m2) => m2 },
@@ -139,9 +146,9 @@ export default function SlabConcreteCalc() {
     const T = parseFloat(thickness);
     if ([L, W, T].some((v) => Number.isNaN(v) || v < 0)) return null;
 
-    const Lm = L * toMetersFactor[lengthUnit];
-    const Wm = W * toMetersFactor[widthUnit];
-    const Tm = T * toMetersFactor[thicknessUnit];
+    const Lm = toMetersFactor(L, lengthUnit);
+    const Wm = toMetersFactor(W, widthUnit);
+    const Tm = toMetersFactor(T, thicknessUnit);
 
     const area_m2 = Lm * Wm;
     const vol_m3 = area_m2 * Tm;

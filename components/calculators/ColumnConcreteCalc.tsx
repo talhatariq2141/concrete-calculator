@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Info, Printer } from "lucide-react"; // ⬅️ NEW: Printer icon for the button
+import { toMeters as toMetersEngine, cubicM3ToFt3, cubicM3ToYd } from "@/lib/calc-engine";
 
 /* ---------------------------------------------------
    Types (unchanged)
@@ -45,30 +46,26 @@ type CircularInputs = {
 };
 
 /* ---------------------------------------------------
-   Helpers (unchanged math)
+   Helpers (delegated to calc-engine)
 --------------------------------------------------- */
 
-const toMeters = (value: number, unit: LinearUnit): number => {
-  switch (unit) {
-    case "meters":
-      return value;
-    case "centimeters":
-      return value / 100;
-    case "feet":
-      return value * 0.3048;
-    case "inches":
-      return value * 0.0254;
-  }
+// Map verbose names to calc-engine LengthUnit abbreviations
+const toLinearUnit: Record<LinearUnit, import("@/lib/calc-engine").LengthUnit> = {
+  meters:      "m",
+  centimeters: "cm",
+  feet:        "ft",
+  inches:      "in",
 };
 
+const toMeters = (value: number, unit: LinearUnit): number =>
+  toMetersEngine(value, toLinearUnit[unit]);
+
+// Volume output unit converter — delegates to calc-engine
 const m3To = (m3: number, unit: VolumeUnit): number => {
   switch (unit) {
-    case "m3":
-      return m3;
-    case "ft3":
-      return m3 * 35.3146667;
-    case "yd3":
-      return m3 * 1.30795062;
+    case "m3":  return m3;
+    case "ft3": return cubicM3ToFt3(m3);
+    case "yd3": return cubicM3ToYd(m3);
   }
 };
 

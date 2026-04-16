@@ -21,17 +21,20 @@ import {
     AlertTriangle,
     Truck,
 } from "lucide-react";
+import { CONCRETE_BAG_COVERAGE } from "@/lib/material-data";
 
 /* -------------------- Constants -------------------- */
 const INCHES_PER_FOOT = 12;
 const FT3_PER_YD3 = 27;
 
+// Bag yields in ft³ — sourced from CONCRETE_BAG_COVERAGE (material-data.ts)
+// 90lb is not in the shared table and remains hardcoded here.
 const BAG_YIELDS: Record<number, number> = {
-    40: 0.3,
-    50: 0.375,
-    60: 0.45,
-    80: 0.6,
-    90: 0.675,
+    40: CONCRETE_BAG_COVERAGE[40].cubicFeet,  // 0.30
+    50: CONCRETE_BAG_COVERAGE[50].cubicFeet,  // 0.375
+    60: CONCRETE_BAG_COVERAGE[60].cubicFeet,  // 0.45
+    80: CONCRETE_BAG_COVERAGE[80].cubicFeet,  // 0.60
+    90: 0.675,  // not in shared table
 };
 
 type PricingMode = "READY_MIX" | "BAGGED";
