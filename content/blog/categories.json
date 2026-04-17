@@ -1,9 +1,14 @@
 [
-  
   {
     "slug": "concrete-bags",
     "name": "Concrete Bags",
     "description": "Guides & tutorials that support the Concrete Bags Calculator.",
     "feature_calculator": "/calculators/concrete-bag-calculator"
+  },
+  {
+    "slug": "concrete-slab",
+    "name": "Concrete Slab",
+    "description": "Guides, formulas, and tutorials for calculating concrete slabs — volume, cost, thickness, rebar, weight, and more.",
+    "feature_calculator": "/calculators/slab/slab-concrete-calculator"
   }
 ]

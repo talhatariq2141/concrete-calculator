@@ -12,11 +12,11 @@ import ConcreteVolumeCalc5 from "@/components/calculators/homepage-calcs/Concret
 type TabKey = "slab" | "round" | "circular" | "curb" | "stairs";
 
 const TABS: { key: TabKey; label: string; render: () => React.ReactNode }[] = [
-  { key: "slab",     label: "Slabs, Square Footings, or Walls", render: () => <ConcreteVolumeCalc />  },
-  { key: "round",    label: "Hole, Column, or Round Footings",  render: () => <ConcreteVolumeCalc2 /> },
-  { key: "circular", label: "Circular Slab or Tube",            render: () => <ConcreteVolumeCalc3 /> },
-  { key: "curb",     label: "Curb and Gutter Barrier",          render: () => <ConcreteVolumeCalc4 /> },
-  { key: "stairs",   label: "Staircase",                        render: () => <ConcreteVolumeCalc5 /> },
+  { key: "slab", label: "Slabs, Square Footings, or Walls", render: () => <ConcreteVolumeCalc /> },
+  { key: "round", label: "Hole, Column, or Round Footings", render: () => <ConcreteVolumeCalc2 /> },
+  { key: "circular", label: "Circular Slab or Tube", render: () => <ConcreteVolumeCalc3 /> },
+  { key: "curb", label: "Curb and Gutter Barrier", render: () => <ConcreteVolumeCalc4 /> },
+  { key: "stairs", label: "Staircase", render: () => <ConcreteVolumeCalc5 /> },
 ];
 
 export default function HomepageCalcTab() {
@@ -35,11 +35,11 @@ export default function HomepageCalcTab() {
   return (
     <section className="mx-auto w-full max-w-7xl px-3 sm:px-4">
       <h1 className="mt-6 text-center text-3x sm:text-4xl font-semibold font-poppins text-white tracking-tight">
-          Concrete Calculator
+        Concrete Calculator
       </h1>
       <p className="text-lg text-slate-400 text-center mb-10 mt-10">
         Select below your desired tab to calculate concrete volume
-      </p> 
+      </p>
 
       {/* Tablist */}
       <div
