@@ -22,11 +22,7 @@ import { BLOCK_SIZES } from "@/lib/material-data";
 /* ===================== Types ===================== */
 type UnitSystem = "imperial" | "metric";
 
-interface BlockSize {
-  label: string;
-  nomH_in: number; // nominal height in inches
-  nomL_in: number; // nominal length in inches
-}
+
 
 interface Opening {
   id: number;

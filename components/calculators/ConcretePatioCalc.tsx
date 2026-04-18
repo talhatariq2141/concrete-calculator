@@ -6,13 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { Info, Printer, AlertTriangle } from "lucide-react";
 import {
@@ -63,9 +56,6 @@ const fieldInputClass =
 
 const selectTriggerClass =
     "h-11 rounded-sm border border-slate-700 bg-slate-700 text-white data-[placeholder]:text-slate-300 focus-visible:ring-0 focus:border-teal-400";
-
-const selectContentClass =
-    "rounded-sm border border-slate-700 bg-slate-900 text-white";
 
 const stepClass = "pt-6 mt-4 border-t border-slate-800";
 

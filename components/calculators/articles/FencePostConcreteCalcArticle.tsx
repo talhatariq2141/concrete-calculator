@@ -155,7 +155,7 @@ export default function FencePostCalcArticle() {
                         <strong className="text-white block mb-1">4) Post Displacement — Square / Rectangular Post</strong>
                         V<sub>post</sub> = width × length × embedDepth<br />
                         <span className="text-white/60 text-sm">
-                            For a 4×4 post (3.5" × 3.5" actual) embedded 24 inches (2 ft):
+                            For a 4×4 post (3.5&quot; × 3.5&quot; actual) embedded 24 inches (2 ft):
                             V<sub>post</sub> = (3.5/12) × (3.5/12) × 2 ≈ 0.0170 ft³ per post.
                         </span>
                     </li>
@@ -193,7 +193,7 @@ export default function FencePostCalcArticle() {
                 </h2>
                 <p className="text-slate-400 mb-4 text-sm">
                     Use this table to select the right hole diameter and embedment depth for your post type.
-                    Remember: nominal lumber sizes differ from actual dimensions — a "4×4" post measures 3.5" × 3.5".
+                    Remember: nominal lumber sizes differ from actual dimensions — a &quot;4×4&quot; post measures 3.5&quot; × 3.5&quot;.
                 </p>
                 <div className="overflow-x-auto rounded-lg border border-slate-700">
                     <table className="w-full text-sm">

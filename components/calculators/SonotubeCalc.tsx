@@ -193,8 +193,6 @@ export default function SonotubeCalc() {
 
     // Total volume for all tubes
     const totalNetFt3 = perTubeFt3 * countNum;
-    const totalNetYd3 = totalNetFt3 / 27;
-    const totalNetM3 = totalNetFt3 * 0.0283168;
 
     // With waste
     const totalGrossFt3 = totalNetFt3 * (1 + wastePct / 100);

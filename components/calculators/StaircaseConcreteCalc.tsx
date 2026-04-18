@@ -55,9 +55,7 @@ function clampMin(n: number, min = 0): number {
   return isFinite(n) ? Math.max(n, min) : 0;
 }
 
-function slopedLength(totalRun_m: number, totalRise_m: number): number {
-  return Math.hypot(totalRun_m, totalRise_m);
-}
+
 
 /* =========================
    UI tokens (styles only)

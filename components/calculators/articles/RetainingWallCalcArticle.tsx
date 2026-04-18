@@ -285,7 +285,7 @@ export default function RetainingWallCalcArticle() {
                     <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
                         <h3 className="font-semibold text-lg text-slate-200 mb-2">What is batter (setback) and why does it matter?</h3>
                         <p className="text-slate-400">
-                            Batter is the backward lean of the wall face. Most SRW systems build in a 1–2° setback per course, which shifts the wall's center of gravity toward the retained soil and improves stability. This calculator assumes standard manufacturer setback; follow your specific block system's instructions.
+                            Batter is the backward lean of the wall face. Most SRW systems build in a 1–2° setback per course, which shifts the wall&apos;s center of gravity toward the retained soil and improves stability. This calculator assumes standard manufacturer setback; follow your specific block system&apos;s instructions.
                         </p>
                     </div>
 
@@ -306,14 +306,14 @@ export default function RetainingWallCalcArticle() {
                     <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
                         <h3 className="font-semibold text-lg text-slate-200 mb-2">What waste percentage should I use?</h3>
                         <p className="text-slate-400">
-                            5% is the default for straight runs with minimal cutting. Use 7–10% for walls with curves, corners, step-downs, or when using split/cap blocks that require cutting. Waste accounts for damaged blocks during delivery and cuts that can't be reused.
+                            5% is the default for straight runs with minimal cutting. Use 7–10% for walls with curves, corners, step-downs, or when using split/cap blocks that require cutting. Waste accounts for damaged blocks during delivery and cuts that can&apos;t be reused.
                         </p>
                     </div>
 
                     <div className="bg-slate-800/30 p-5 rounded-lg border border-slate-700/50">
                         <h3 className="font-semibold text-lg text-slate-200 mb-2">Does this calculator account for capstones or corner blocks?</h3>
                         <p className="text-slate-400">
-                            The block count includes all courses in the wall face. It does not separately itemize capstones (usually 1 per linear foot of wall top) or specialty corner blocks. Add these to your order based on your specific block system's recommendations — we recommend 1 cap per ft of wall length plus 2–4 corner blocks per 90° corner.
+                            The block count includes all courses in the wall face. It does not separately itemize capstones (usually 1 per linear foot of wall top) or specialty corner blocks. Add these to your order based on your specific block system&apos;s recommendations — we recommend 1 cap per ft of wall length plus 2–4 corner blocks per 90° corner.
                         </p>
                     </div>
                 </div>
