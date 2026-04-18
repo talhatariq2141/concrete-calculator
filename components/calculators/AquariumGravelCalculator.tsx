@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatedNumber } from "./AnimatedNumber";
 import * as React from "react";
 import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -320,7 +321,7 @@ export default function AquariumGravelCalculator() {
 
                 <div className="bg-slate-900 rounded-md p-6 border border-teal-500/40 shadow-[0_0_15px_rgba(20,184,166,0.1)] flex flex-col justify-center text-center">
                   <div className="text-sm uppercase tracking-wider text-teal-400 mb-2">Shopping Cart</div>
-                  <div className="text-4xl font-bold text-teal-400">{results.bagsNeeded} <span className="text-2xl text-teal-500/70">bags</span></div>
+                  <div className="text-4xl font-bold text-teal-400"><AnimatedNumber value={results.bagsNeeded} decimals={0} /> <span className="text-2xl text-teal-500/70">bags</span></div>
                   <div className="text-sm text-slate-400 mt-2">(based on {results.bagSizeUsed} lb bags)</div>
                 </div>
               </div>

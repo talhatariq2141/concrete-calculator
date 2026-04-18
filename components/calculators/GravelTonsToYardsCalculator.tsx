@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatedNumber } from "./AnimatedNumber";
 import * as React from "react";
 import { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -290,7 +291,7 @@ export default function GravelTonsToYardsCalculator() {
                   <div className="text-sm uppercase tracking-wider text-teal-400 mb-2">
                     {results.mode === "tons_to_yards" ? "Converted Volume (Yards)" : "Volume (Input)"}
                   </div>
-                  <div className="text-4xl font-bold text-teal-400">{fmt(results.outputYards)}</div>
+                  <div className="text-4xl font-bold text-teal-400"><AnimatedNumber value={results.outputYards} decimals={2} /></div>
                   <div className="text-sm text-teal-500/70 mt-2">Cubic Yards (yd³)</div>
                 </div>
               </div>

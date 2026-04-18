@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatedNumber } from "./AnimatedNumber";
 import React, { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -470,7 +471,7 @@ export default function ConcreteSlabLoadCapacityCalc() {
                                                 <WeightIndicator val={calc.Lmax} />
                                             </div>
                                             <div className="text-[10px] uppercase text-teal-400 font-black tracking-[0.3em] mb-3">Live Load capacity</div>
-                                            <div className="text-6xl font-black text-white tracking-tighter">{fmt(calc.Lmax, 0)}</div>
+                                            <div className="text-6xl font-black text-white tracking-tighter"><AnimatedNumber value={calc.Lmax} decimals={0} /></div>
                                             <div className="text-xl font-bold text-teal-400 mt-2 lowercase italic opacity-80">pounds per sq ft</div>
 
                                             {!calc.isLmaxPositive && (

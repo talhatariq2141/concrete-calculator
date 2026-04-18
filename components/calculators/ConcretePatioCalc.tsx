@@ -1,6 +1,7 @@
 // components/calculators/ConcretePatioCalc.tsx
 "use client";
 
+import { AnimatedNumber } from "./AnimatedNumber";
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -634,7 +635,7 @@ export default function ConcretePatioCalc() {
                                 Concrete Needed
                             </span>
                             <span className="text-4xl font-extrabold text-teal-400">
-                                {nf(totalYd3, 2)}
+                                <AnimatedNumber value={totalYd3} decimals={2} />
                             </span>
                             <span className="text-xs text-slate-400 mt-1">
                                 cubic yards (includes {waste}% waste)

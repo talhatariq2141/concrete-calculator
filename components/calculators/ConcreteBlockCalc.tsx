@@ -1,6 +1,7 @@
 // components/calculators/ConcreteBlockCalc.tsx
 "use client";
 
+import { AnimatedNumber } from "./AnimatedNumber";
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -998,7 +999,7 @@ export default function ConcreteBlockCalc() {
                             {/* Big number hero */}
                             <div className="flex flex-col items-center justify-center py-4 mb-4 rounded-sm bg-slate-800 border border-slate-700">
                                 <span className="text-xs uppercase tracking-wider text-slate-400">Total Blocks Needed</span>
-                                <span className="text-4xl font-extrabold text-teal-400">{nf(finalBlocks, 0)}</span>
+                                <span className="text-4xl font-extrabold text-teal-400"><AnimatedNumber value={finalBlocks} decimals={0} /></span>
                                 <span className="text-xs text-slate-400 mt-1">
                                     (includes {waste}% waste)
                                 </span>

@@ -1,6 +1,7 @@
 // components/calculators/RetainingWallCalc.tsx
 "use client";
 
+import { AnimatedNumber } from "./AnimatedNumber";
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -744,7 +745,7 @@ export default function RetainingWallCalc() {
                             {/* Hero number */}
                             <div className="flex flex-col items-center justify-center py-4 mb-4 rounded-sm bg-slate-800 border border-slate-700">
                                 <span className="text-xs uppercase tracking-wider text-slate-400">Blocks Needed</span>
-                                <span className="text-4xl font-extrabold text-teal-400">{nf(blockResult.blocksNeeded, 0)}</span>
+                                <span className="text-4xl font-extrabold text-teal-400"><AnimatedNumber value={blockResult.blocksNeeded} decimals={0} /></span>
                                 <span className="text-xs text-slate-400 mt-1">
                                     includes {waste}% waste&nbsp;·&nbsp;{nf(blockResult.courses, 0)} courses × {nf(blockResult.blocksPerCourse, 0)}/course
                                 </span>

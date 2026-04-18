@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatedNumber } from "./AnimatedNumber";
 import React, { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -893,7 +894,7 @@ export default function ConcreteDrivewayCostCalc() {
                             {/* Grand total highlight card */}
                             <div className="bg-teal-900/10 border border-teal-500/30 p-5 rounded-sm flex flex-col items-center justify-center text-center">
                                 <div className="text-xs uppercase text-teal-400 font-bold tracking-widest mb-1">Total Estimated Cost</div>
-                                <div className="text-4xl font-black text-white">{fmtCurrency(calc.TOTAL_COST)}</div>
+                                <div className="text-4xl font-black text-white">$<AnimatedNumber value={calc.TOTAL_COST} decimals={2} /></div>
                                 <div className="mt-3 text-[11px] text-white/50 leading-tight">
                                     Includes {fmtCurrency(calc.CONCRETE_COST)} for concrete
                                     {calc.mode === "READY_MIX" && calc.FEES_TOTAL > 0 ? ` and ${fmtCurrency(calc.FEES_TOTAL)} in fees` : ""}

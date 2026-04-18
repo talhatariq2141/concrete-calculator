@@ -1,6 +1,7 @@
 // components/calculators/ConcreteSidewalkCalc.tsx
 "use client";
 
+import { AnimatedNumber } from "./AnimatedNumber";
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -741,7 +742,7 @@ export default function ConcreteSidewalkCalc() {
                             {/* Hero number */}
                             <div className="flex flex-col items-center justify-center py-4 mb-4 rounded-sm bg-slate-800 border border-slate-700">
                                 <span className="text-xs uppercase tracking-wider text-slate-400">Concrete Volume</span>
-                                <span className="text-4xl font-extrabold text-teal-400">{nf(volYd3, 2)}</span>
+                                <span className="text-4xl font-extrabold text-teal-400"><AnimatedNumber value={volYd3} decimals={2} /></span>
                                 <span className="text-xs text-slate-400 mt-1">
                                     cubic yards&nbsp;·&nbsp;{nf(grossVolFt3, 1)} ft³&nbsp;·&nbsp;{nf(volM3, 3)} m³
                                 </span>

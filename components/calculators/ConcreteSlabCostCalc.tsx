@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatedNumber } from "./AnimatedNumber";
 import React, { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -571,7 +572,7 @@ export default function ConcreteSlabCostCalc() {
 
                             <div className="bg-teal-900/10 border border-teal-500/30 p-5 rounded-sm flex flex-col items-center justify-center text-center">
                                 <div className="text-xs uppercase text-teal-400 font-bold tracking-widest mb-1">Total Estimated Cost</div>
-                                <div className="text-4xl font-black text-white">{fmtCurrency(calc.total_cost)}</div>
+                                <div className="text-4xl font-black text-white">$<AnimatedNumber value={calc.total_cost} decimals={2} /></div>
                                 <div className="mt-3 text-[11px] text-white/50 leading-tight">
                                     This includes ${fmtCurrency(calc.material_total)} for concrete and ${fmtCurrency(calc.labor_total + calc.extra_total)} for installation and prep.
                                 </div>

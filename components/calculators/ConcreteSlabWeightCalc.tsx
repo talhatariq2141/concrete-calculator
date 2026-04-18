@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatedNumber } from "./AnimatedNumber";
 import React, { useMemo, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -467,7 +468,7 @@ export default function ConcreteSlabWeightCalc() {
                             <div className="bg-teal-900/10 border border-teal-500/30 p-8 rounded-sm flex flex-col items-center justify-center text-center">
                                 <Weight className="h-10 w-10 text-teal-400 mb-4" />
                                 <div className="text-xs uppercase text-teal-400 font-bold tracking-widest mb-1">Estimated Total Weight</div>
-                                <div className="text-5xl font-black text-white">{fmt(calc.weight_lbs, 0)}</div>
+                                <div className="text-5xl font-black text-white"><AnimatedNumber value={calc.weight_lbs} decimals={0} /></div>
                                 <div className="text-xl font-bold text-teal-400 mt-1">POUNDS (lb)</div>
 
                                 <div className="mt-8 pt-6 border-t border-teal-500/20 w-full">

@@ -1,6 +1,7 @@
 // components/calculators/WireMeshCalc.tsx
 "use client";
 
+import { AnimatedNumber } from "./AnimatedNumber";
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -886,7 +887,7 @@ export default function WireMeshCalc() {
                                     {form.label}s Needed
                                 </span>
                                 <span className="text-4xl font-extrabold text-teal-400">
-                                    {nf(unitsNeeded, 0)}
+                                    <AnimatedNumber value={unitsNeeded} decimals={0} />
                                 </span>
                                 <span className="text-xs text-slate-400 mt-1">
                                     {form.label.toLowerCase()}s of {form.desc} mesh (includes {waste}% waste)

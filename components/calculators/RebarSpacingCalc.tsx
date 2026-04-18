@@ -235,6 +235,8 @@ function SlabDiagram({ spanIn, coverIn, barCount, barDiameter, barSizeLabel }: D
    Main Component
 ========================= */
 
+import { AnimatedNumber } from "@/components/calculators/AnimatedNumber";
+
 export default function RebarSpacingCalc() {
 
     /* ---------- Mode ---------- */
@@ -678,8 +680,8 @@ export default function RebarSpacingCalc() {
                                 </span>
                                 <span className="text-4xl font-extrabold text-teal-400">
                                     {calcDir === "from-spacing"
-                                        ? nf(barCount, 0)
-                                        : `${nf(ctcIn, 2)}&quot;`}
+                                        ? <AnimatedNumber value={barCount} decimals={0} />
+                                        : <><AnimatedNumber value={ctcIn} decimals={2} />&quot;</>}
                                 </span>
                                 <span className="text-xs text-slate-400 mt-1">
                                     {calcDir === "from-spacing"

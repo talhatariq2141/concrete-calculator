@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatedNumber } from "./AnimatedNumber";
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -541,7 +542,7 @@ export default function MortarCalc() {
                         {/* Hero */}
                         <div className="mt-4 flex flex-col items-center justify-center py-4 mb-4 rounded-sm bg-slate-800 border border-slate-700">
                             <span className="text-xs uppercase tracking-wider text-slate-400">80 lb Mortar Bags Needed</span>
-                            <span className="text-4xl font-extrabold text-teal-400">{nf(bags80, 0)}</span>
+                            <span className="text-4xl font-extrabold text-teal-400"><AnimatedNumber value={bags80} decimals={0} /></span>
                             <span className="text-xs text-slate-400 mt-1">includes {nf(waste, 0)}% waste allowance</span>
                         </div>
 
