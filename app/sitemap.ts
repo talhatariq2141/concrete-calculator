@@ -17,52 +17,73 @@ const routes: string[] = [
   "/terms-of-service",
   "/disclaimer",
   "/calculators",
+  // Beam Concrete Calculators 
   "/calculators/beam",
   "/calculators/beam/beam-concrete-calculator",
+  // Column Concrete Calculators 
   "/calculators/column",
   "/calculators/column/column-concrete-calculator",
+  // Concrete Yards Calculators 
   "/calculators/concrete-yards",
   "/calculators/concrete-yards/concrete-yards-calculator",
+  // Footing Concrete Calculators 
   "/calculators/footing",
   "/calculators/footing/footing-concrete-calculator",
+  // Concrete Mix Calculators 
   "/calculators/concrete-mix",
   "/calculators/concrete-mix/nominal-mix-m5-m25-calculator",
+  "/calculators/concrete-mix/mortar-calculator",
+  // Pier Caisson Concrete Calculators 
   "/calculators/pier-caisson",
   "/calculators/pier-caisson/pier-caisson-concrete-calculator",
+  "/calculators/pier-caisson/sonotube-concrete-calculator",
+  // Slab Concrete Calculators 
   "/calculators/slab",
   "/calculators/slab/slab-concrete-calculator",
   "/calculators/slab/concrete-slab-cost-calculator",
   "/calculators/slab/concrete-slab-weight-calculator",
   "/calculators/slab/concrete-slab-load-capacity-calculator",
   "/calculators/slab/concrete-sidewalk-calculator",
+  "/calculators/slab/concrete-patio-calculator",
+  // Staircase Concrete Calculators 
   "/calculators/staircase",
   "/calculators/staircase/staircase-concrete-calculator",
+  // Tank Trench Concrete Calculators 
   "/calculators/tank-trench",
   "/calculators/tank-trench/tank-trench-concrete-calculator",
+  // Wall Concrete Calculators 
   "/calculators/wall",
   "/calculators/wall/wall-concrete-calculator",
+  "/calculators/wall/retaining-wall-calculator",
+  // Concrete Bags Calculators 
   "/calculators/concrete-bags",
   "/calculators/concrete-bags/concrete-bag-calculator",
+  // Driveway Concrete Calculators 
   "/calculators/driveway",
   "/calculators/driveway/concrete-driveway-cost-calculator",
+  // Concrete Block Calculators 
   "/calculators/concrete-block",
   "/calculators/concrete-block/concrete-block-calculator",
   "/calculators/concrete-block/cinder-block-calculator",
   "/calculators/concrete-block/cmu-block-calculator",
+  // Gravel Calculators 
   "/calculators/gravel",
   "/calculators/gravel/gravel-calculator",
   "/calculators/gravel/pea-gravel-calculator",
   "/calculators/gravel/gravel-tons-to-yards-calculator",
   "/calculators/gravel/gravel-driveway-calculator",
   "/calculators/gravel/aquarium-gravel-calculator",
+  // Reinforcement Calculators 
   "/calculators/reinforcement",
   "/calculators/reinforcement/rebar-calculator",
   "/calculators/reinforcement/rebar-weight-calculator",
   "/calculators/reinforcement/rebar-spacing-calculator",
   "/calculators/reinforcement/wire-mesh-calculator",
+  // Miscellaneous Concrete Calculators 
   "/calculators/miscellaneous",
   "/calculators/miscellaneous/post-hole-concrete-calculator",
   "/calculators/miscellaneous/crushed-concrete-calculator",
+  "/calculators/miscellaneous/fence-post-concrete-calculator",
 
 ];
 
