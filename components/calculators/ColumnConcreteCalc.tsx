@@ -187,13 +187,15 @@ const UnitSelect = ({
 --------------------------------------------------- */
 
 export default function ColumnConcreteCalc() {
+  const [unitSystem, setUnitSystem] = useState<"imperial" | "metric">("imperial");
+
   const [tab, setTab] = useState<ColumnType>("rectangular");
 
   const [rect, setRect] = useState<RectangularInputs>({
     length: "",
     width: "",
     height: "",
-    unit: "meters",
+    unit: "feet",
     count: "1",
     wastePct: "5",
   });
@@ -201,7 +203,7 @@ export default function ColumnConcreteCalc() {
   const [circ, setCirc] = useState<CircularInputs>({
     diameter: "",
     height: "",
-    unit: "meters",
+    unit: "feet",
     count: "1",
     wastePct: "5",
   });
@@ -261,8 +263,9 @@ export default function ColumnConcreteCalc() {
   };
 
   const resetAll = () => {
-    setRect({ length: "", width: "", height: "", unit: "meters", count: "1", wastePct: "5" });
-    setCirc({ diameter: "", height: "", unit: "meters", count: "1", wastePct: "5" });
+    setUnitSystem("imperial");
+    setRect({ length: "", width: "", height: "", unit: "feet", count: "1", wastePct: "5" });
+    setCirc({ diameter: "", height: "", unit: "feet", count: "1", wastePct: "5" });
     setDisplayUnit("m3");
     setSubmitted(false);
   };
@@ -473,6 +476,31 @@ export default function ColumnConcreteCalc() {
             Keep all dimensions in the <span className="text-white font-medium">same unit</span>.
             Rectangular: <code className="text-slate-200">L × W × H</code>. Circular: <code className="text-slate-200">π × r² × H</code>.
           </p>
+        </div>
+
+        {/* Unit System Toggle */}
+        <div className={stepClass}>
+          <h3 className="text-sm font-semibold text-white/80">Unit System</h3>
+          <div className="mt-2">
+            <Tabs
+              value={unitSystem}
+              onValueChange={(v) => {
+                const sys = v as "imperial" | "metric";
+                setUnitSystem(sys);
+                const defaultUnit: LinearUnit = sys === "imperial" ? "feet" : "meters";
+                setRect((s) => ({ ...s, unit: defaultUnit }));
+                setCirc((s) => ({ ...s, unit: defaultUnit }));
+                setSubmitted(false);
+              }}
+              className="w-full max-w-xs"
+            >
+              <TabsList className="grid w-full grid-cols-2 rounded-sm bg-slate-950 p-1">
+                <TabsTrigger value="imperial" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Imperial</TabsTrigger>
+                <TabsTrigger value="metric" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Metric</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <p className="mt-1 text-xs text-white/60">Switches default units. Individual dropdowns can still be adjusted.</p>
+          </div>
         </div>
 
         <form onSubmit={handleCalculate} className="space-y-0">

@@ -14,6 +14,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { Info, Printer } from "lucide-react";
 
@@ -168,6 +169,9 @@ function KV({ k, v }: { k: string; v: string }) {
 ========================= */
 
 export default function ConcreteBlockCalc() {
+    /* ---------- Unit system ---------- */
+    const [unitSystem, setUnitSystem] = React.useState<"imperial" | "metric">("imperial");
+
     /* ---------- Mode ---------- */
     const [advancedMode, setAdvancedMode] = React.useState(false);
 
@@ -212,8 +216,17 @@ export default function ConcreteBlockCalc() {
 
     /* ===================== Calculations ===================== */
 
-    const wallLenInches = parseFtIn(wallLenFt, wallLenIn);
-    const wallHtInches = parseFtIn(wallHtFt, wallHtIn);
+    /** Converts major/minor dimension inputs to total inches, handling both unit systems. */
+    function parseDims(major: string, minor: string): number {
+        if (unitSystem === "imperial") return parseFtIn(major, minor);
+        // metric: major = meters, minor = centimeters → total inches
+        const m = parseFloat(major) || 0;
+        const cm = parseFloat(minor) || 0;
+        return (m * 100 + cm) / 2.54;
+    }
+
+    const wallLenInches = parseDims(wallLenFt, wallLenIn);
+    const wallHtInches = parseDims(wallHtFt, wallHtIn);
     const wallLenFtTotal = wallLenInches / 12;
     const wallHtFtTotal = wallHtInches / 12;
 
@@ -318,6 +331,7 @@ export default function ConcreteBlockCalc() {
     }
 
     function resetAll() {
+        setUnitSystem("imperial");
         setAdvancedMode(false);
         setWallLenFt("");
         setWallLenIn("");
@@ -480,6 +494,27 @@ export default function ConcreteBlockCalc() {
             <CardContent className="p-6 pt-0">
                 <form onSubmit={handleCalculate} className="space-y-0">
 
+                    {/* Unit System Toggle */}
+                    <div className={stepClass}>
+                        <h3 className="text-sm font-semibold text-white/80">Unit System</h3>
+                        <div className="mt-2">
+                            <Tabs
+                                value={unitSystem}
+                                onValueChange={(v) => {
+                                    setUnitSystem(v as "imperial" | "metric");
+                                    setSubmitted(false);
+                                }}
+                                className="w-full max-w-xs"
+                            >
+                                <TabsList className="grid w-full grid-cols-2 rounded-sm bg-slate-950 p-1">
+                                    <TabsTrigger value="imperial" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Imperial</TabsTrigger>
+                                    <TabsTrigger value="metric" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Metric</TabsTrigger>
+                                </TabsList>
+                            </Tabs>
+                            <p className="mt-1 text-xs text-white/60">Imperial uses ft/in. Metric uses m/cm (automatically converted).</p>
+                        </div>
+                    </div>
+
                     {/* MODE TOGGLE */}
                     <section className={stepClass} aria-labelledby="modeToggle">
                         <div className="flex items-center justify-between">
@@ -521,40 +556,40 @@ export default function ConcreteBlockCalc() {
                             Step 1 — Wall Dimensions
                         </h3>
                         <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            <Field label="Wall Length" hint="Total wall length." subHint="Enter feet and inches">
+                            <Field label="Wall Length" hint="Total wall length." subHint={unitSystem === "imperial" ? "Enter feet and inches" : "Enter meters and centimeters"}>
                                 <div className="flex gap-2">
                                     <NumberInput
                                         value={wallLenFt}
                                         onChange={(v) => { setWallLenFt(v); setSubmitted(false); }}
                                         placeholder="e.g., 20"
-                                        badge="ft"
-                                        ariaLabel="Wall length feet"
+                                        badge={unitSystem === "imperial" ? "ft" : "m"}
+                                        ariaLabel="Wall length major unit"
                                     />
                                     <NumberInput
                                         value={wallLenIn}
                                         onChange={(v) => { setWallLenIn(v); setSubmitted(false); }}
                                         placeholder="0"
-                                        badge="in"
-                                        ariaLabel="Wall length inches"
+                                        badge={unitSystem === "imperial" ? "in" : "cm"}
+                                        ariaLabel="Wall length minor unit"
                                     />
                                 </div>
                             </Field>
 
-                            <Field label="Wall Height" hint="Wall height." subHint="Enter feet and inches">
+                            <Field label="Wall Height" hint="Wall height." subHint={unitSystem === "imperial" ? "Enter feet and inches" : "Enter meters and centimeters"}>
                                 <div className="flex gap-2">
                                     <NumberInput
                                         value={wallHtFt}
                                         onChange={(v) => { setWallHtFt(v); setSubmitted(false); }}
                                         placeholder="e.g., 8"
-                                        badge="ft"
-                                        ariaLabel="Wall height feet"
+                                        badge={unitSystem === "imperial" ? "ft" : "m"}
+                                        ariaLabel="Wall height major unit"
                                     />
                                     <NumberInput
                                         value={wallHtIn}
                                         onChange={(v) => { setWallHtIn(v); setSubmitted(false); }}
                                         placeholder="0"
-                                        badge="in"
-                                        ariaLabel="Wall height inches"
+                                        badge={unitSystem === "imperial" ? "in" : "cm"}
+                                        ariaLabel="Wall height minor unit"
                                     />
                                 </div>
                             </Field>

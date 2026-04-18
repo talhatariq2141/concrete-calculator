@@ -16,6 +16,7 @@ import {
 import { Info, Printer, Weight } from "lucide-react";
 import { toMeters as toMetersEngine } from "@/lib/calc-engine";
 import { CONCRETE_DENSITIES } from "@/lib/material-data";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 /* -------------------- Types -------------------- */
 type LinearUnit = "meters" | "yards" | "feet" | "inches" | "centimeter";
@@ -114,6 +115,8 @@ const densities = [
 
 /* ------------------ Component ------------------ */
 export default function ConcreteSlabWeightCalc() {
+    const [unitSystem, setUnitSystem] = useState<"imperial" | "metric">("imperial");
+
     // Dimensions
     const [length, setLength] = useState<string>("");
     const [lengthUnit, setLengthUnit] = useState<LinearUnit>("feet");
@@ -174,6 +177,7 @@ export default function ConcreteSlabWeightCalc() {
     const numberOrEmpty = (v: string) => (v === "" ? "" : v.replace(/[^0-9.]/g, ""));
 
     const resetAll = () => {
+        setUnitSystem("imperial");
         setLength("");
         setWidth("");
         setThickness("");
@@ -303,6 +307,37 @@ export default function ConcreteSlabWeightCalc() {
                 </div>
 
                 <form onSubmit={handleCalculate} className="space-y-0">
+                    {/* Unit System Toggle */}
+                    <div className={stepClass}>
+                        <h3 className="text-sm font-semibold text-white/80">Unit System</h3>
+                        <div className="mt-2">
+                            <Tabs
+                                value={unitSystem}
+                                onValueChange={(v) => {
+                                    const sys = v as "imperial" | "metric";
+                                    setUnitSystem(sys);
+                                    if (sys === "imperial") {
+                                        setLengthUnit("feet");
+                                        setWidthUnit("feet");
+                                        setThicknessUnit("inches");
+                                    } else {
+                                        setLengthUnit("meters");
+                                        setWidthUnit("meters");
+                                        setThicknessUnit("centimeter");
+                                    }
+                                    setSubmitted(false);
+                                }}
+                                className="w-full max-w-xs"
+                            >
+                                <TabsList className="grid w-full grid-cols-2 rounded-sm bg-slate-950 p-1">
+                                    <TabsTrigger value="imperial" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Imperial</TabsTrigger>
+                                    <TabsTrigger value="metric" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Metric</TabsTrigger>
+                                </TabsList>
+                            </Tabs>
+                            <p className="mt-1 text-xs text-white/60">Switches default units. Individual dropdowns can still be adjusted.</p>
+                        </div>
+                    </div>
+
                     <section className={stepClass}>
                         <h3 className="text-sm font-semibold text-white/80">Step 1 — Dimensions & Quantity</h3>
                         <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">

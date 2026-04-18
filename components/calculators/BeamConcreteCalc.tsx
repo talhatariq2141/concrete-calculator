@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { Info, Printer } from "lucide-react";
 import { toMeters as toMetersEngine } from "@/lib/calc-engine";
@@ -61,13 +62,16 @@ const unitAbbrev: Record<LinearUnit, string> = {
 --------------------------------------------- */
 
 export default function BeamConcreteCalc() {
+  // Unit system toggle
+  const [unitSystem, setUnitSystem] = useState<"imperial" | "metric">("imperial");
+
   // Form state (same fields)
   const [length, setLength] = useState<string>("");
   const [width, setWidth] = useState<string>("");
   const [depth, setDepth] = useState<string>("");
   const [qty, setQty] = useState<string>("");
 
-  const [unit, setUnit] = useState<LinearUnit>("meters");
+  const [unit, setUnit] = useState<LinearUnit>("feet");
   const [wastePct, setWastePct] = useState<string>("5");
   const [useDryFactor, setUseDryFactor] = useState<boolean>(true);
   const [dryFactor, setDryFactor] = useState<string>("1.5");
@@ -167,11 +171,12 @@ export default function BeamConcreteCalc() {
   };
 
   const handleReset = () => {
+    setUnitSystem("imperial");
     setLength("");
     setWidth("");
     setDepth("");
     setQty("");
-    setUnit("meters");
+    setUnit("feet");
     setWastePct("5");
     setUseDryFactor(true);
     setDryFactor("1.5");
@@ -389,6 +394,29 @@ export default function BeamConcreteCalc() {
           <p className="text-sm text-slate-300">
             Keep all inputs in the <span className="text-white font-medium">same unit</span>. Toggle the void only if the beam has a continuous duct/void.
           </p>
+        </div>
+
+        {/* Unit System Toggle */}
+        <div className={stepClass}>
+          <h3 className="text-sm font-semibold text-white/80">Unit System</h3>
+          <div className="mt-2">
+            <Tabs
+              value={unitSystem}
+              onValueChange={(v) => {
+                const sys = v as "imperial" | "metric";
+                setUnitSystem(sys);
+                setUnit(sys === "imperial" ? "feet" : "meters");
+                setSubmitted(false);
+              }}
+              className="w-full max-w-xs"
+            >
+              <TabsList className="grid w-full grid-cols-2 rounded-sm bg-slate-950 p-1">
+                <TabsTrigger value="imperial" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Imperial</TabsTrigger>
+                <TabsTrigger value="metric" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Metric</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <p className="mt-1 text-xs text-white/60">Switches default units. The dropdown below allows fine-grained control.</p>
+          </div>
         </div>
 
         {/* STEP 1: Units */}

@@ -178,7 +178,8 @@ function KV({ k, v }: { k: string; v: string }) {
 ----------------------------------------------------------------------------- */
 export default function TankTrenchConcreteCalc() {
   // ---------------- Global units & waste ----------------
-  const [unit, setUnit] = React.useState<LinearUnit>("meters");
+  const [unitSystem, setUnitSystem] = React.useState<"imperial" | "metric">("imperial");
+  const [unit, setUnit] = React.useState<LinearUnit>("feet");
 
   // NOTE: per request, text fields start empty — so wastePct is also a string.
   const [wastePct, setWastePct] = React.useState<string>("");
@@ -330,7 +331,8 @@ export default function TankTrenchConcreteCalc() {
    *  - Hides results
    */
   function resetAll() {
-    setUnit("meters");
+    setUnitSystem("imperial");
+    setUnit("feet");
     setWastePct("");
 
     setTab("trench");
@@ -594,6 +596,29 @@ export default function TankTrenchConcreteCalc() {
             Trench volume uses rectangular or trapezoidal prism geometry.
             Tanks subtract inner void from outer envelope; cover slab is optional.
           </p>
+        </div>
+
+        {/* Unit System Toggle */}
+        <div className={stepClass}>
+          <h3 className="text-sm font-semibold text-white/80">Unit System</h3>
+          <div className="mt-2">
+            <Tabs
+              value={unitSystem}
+              onValueChange={(v) => {
+                const sys = v as "imperial" | "metric";
+                setUnitSystem(sys);
+                setUnit(sys === "imperial" ? "feet" : "meters");
+                setSubmitted(false);
+              }}
+              className="w-full max-w-xs"
+            >
+              <TabsList className="grid w-full grid-cols-2 rounded-sm bg-slate-950 p-1">
+                <TabsTrigger value="imperial" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Imperial</TabsTrigger>
+                <TabsTrigger value="metric" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Metric</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <p className="mt-1 text-xs text-white/60">Switches default units. The dropdown allows fine-grained control.</p>
+          </div>
         </div>
 
         {/* STEP 1 — Units & Waste */}

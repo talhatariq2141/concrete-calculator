@@ -15,6 +15,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import { Info, Printer } from "lucide-react";
 import {
   pierVolume,
@@ -165,7 +170,7 @@ const UnitSelect = ({
 
 // Default starting values (used on initial load)
 const DEFAULT_INPUTS: Inputs = {
-  unit: "m",
+  unit: "ft",
   diameter: "0.6",
   depth: "3",
   qty: "4",
@@ -178,7 +183,7 @@ const DEFAULT_INPUTS: Inputs = {
 
 // All-zero state for Reset (per your request)
 const ZERO_INPUTS: Inputs = {
-  unit: "m",         // keep a sane default unit
+  unit: "ft",         // keep a sane default unit
   diameter: "0",
   depth: "0",
   qty: "0",
@@ -190,9 +195,12 @@ const ZERO_INPUTS: Inputs = {
 };
 
 export default function PierCaissonConcreteCalc() {
+  const [unitSystem, setUnitSystem] = useState<"imperial" | "metric">("imperial");
   const [inputs, setInputs] = useState<Inputs>(DEFAULT_INPUTS);
   const [results, setResults] = useState<Results>(null);
   const [submitted, setSubmitted] = useState(false);
+
+  const setUnit = (u: LinearUnit) => setInputs((s) => ({ ...s, unit: u }));
 
   const canCalculate = useMemo(() => {
     const d = parseFloat(inputs.diameter);
@@ -250,6 +258,7 @@ export default function PierCaissonConcreteCalc() {
    *  clears results, and hides the results section.
    */
   const reset = () => {
+    setUnitSystem("imperial");
     setInputs(ZERO_INPUTS);
     setResults(null);
     setSubmitted(false);
@@ -420,6 +429,29 @@ export default function PierCaissonConcreteCalc() {
             <code className="mx-1 text-slate-200">π r² h</code>; belled base uses frustum formula
             <code className="mx-1 text-slate-200">(π h / 3)(R₁² + R₁R₂ + R₂²)</code>.
           </p>
+        </div>
+
+        {/* Unit System Toggle */}
+        <div className={stepClass}>
+          <h3 className="text-sm font-semibold text-white/80">Unit System</h3>
+          <div className="mt-2">
+            <Tabs
+              value={unitSystem}
+              onValueChange={(v) => {
+                const sys = v as "imperial" | "metric";
+                setUnitSystem(sys);
+                setUnit(sys === "imperial" ? "ft" : "m");
+                setSubmitted(false);
+              }}
+              className="w-full max-w-xs"
+            >
+              <TabsList className="grid w-full grid-cols-2 rounded-sm bg-slate-950 p-1">
+                <TabsTrigger value="imperial" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Imperial</TabsTrigger>
+                <TabsTrigger value="metric" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Metric</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <p className="mt-1 text-xs text-white/60">Switches default units. The dropdown allows fine-grained control.</p>
+          </div>
         </div>
 
         {/* STEP 1 — Units & Waste */}

@@ -12,7 +12,8 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-import { Info, Printer } from "lucide-react"; // ⬅️ NEW: Printer icon
+import { Info, Printer } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toFeet, cubicFtToYd, cubicFtToM3 } from "@/lib/calc-engine";
 
 /* -------------------------------------------------------------
@@ -34,6 +35,9 @@ type LinearUnit =
 
 /* --- Original state/logic (unchanged) --- */
 export default function ConcreteYardsCalc() {
+  // Unit system toggle
+  const [unitSystem, setUnitSystem] = React.useState<"imperial" | "metric">("imperial");
+
   // Shape & units (centralized)
   const [shape, setShape] = React.useState<Shape>("rectangle");
   const [unit, setUnit] = React.useState<LinearUnit>("feet");
@@ -141,6 +145,7 @@ export default function ConcreteYardsCalc() {
   }
 
   function resetAll() {
+    setUnitSystem("imperial");
     setShape("rectangle");
     setUnit("feet");
     setLength("");
@@ -359,6 +364,29 @@ export default function ConcreteYardsCalc() {
           <p className="text-sm text-slate-300">
             Keep all inputs in the <span className="text-white font-medium">same unit</span>. Rectangle: <code className="text-slate-200">L × W × T</code>. Circular: <code className="text-slate-200">π × (D/2)² × T</code>.
           </p>
+        </div>
+
+        {/* Unit System Toggle */}
+        <div className={stepClass}>
+          <h3 className="text-sm font-semibold text-white/80">Unit System</h3>
+          <div className="mt-2">
+            <Tabs
+              value={unitSystem}
+              onValueChange={(v) => {
+                const sys = v as "imperial" | "metric";
+                setUnitSystem(sys);
+                setUnit(sys === "imperial" ? "feet" : "meters");
+                clearResults();
+              }}
+              className="w-full max-w-xs"
+            >
+              <TabsList className="grid w-full grid-cols-2 rounded-sm bg-slate-950 p-1">
+                <TabsTrigger value="imperial" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Imperial</TabsTrigger>
+                <TabsTrigger value="metric" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Metric</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <p className="mt-1 text-xs text-white/60">Switches default units. The dropdown below allows fine-grained control.</p>
+          </div>
         </div>
 
         {/* STEP 1 — Shape & Units */}
