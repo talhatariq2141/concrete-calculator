@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { Info, Printer } from "lucide-react";
 import {
@@ -157,6 +158,9 @@ type Results = {
 export default function PostHoleConcreteCalc() {
   /* --- Mode --- */
   const [mode, setMode] = useState<CalcMode>("quick");
+
+  /* --- Unit System --- */
+  const [unitSystem, setUnitSystem] = useState<"imperial" | "metric">("imperial");
 
   /* --- Units --- */
   const [unit, setUnit] = useState<LinearUnit>("in");
@@ -348,6 +352,7 @@ export default function PostHoleConcreteCalc() {
   };
 
   const reset = () => {
+    setUnitSystem("imperial");
     setNumHoles("4"); setHoleDia("10"); setHoleWidth("10"); setHoleLength("10");
     setHoleDepth("36"); setGravelDepth("4"); setWastePct("10");
     setPostWidth("3.5"); setPostLength("3.5"); setPostDia(""); setEmbeddedPostDepth("30");
@@ -495,6 +500,29 @@ export default function PostHoleConcreteCalc() {
             Keep all inputs in the <span className="text-white font-medium">same unit</span>. The calculator handles cylindrical (
             <code className="mx-1 text-slate-200">π r² h</code>) and rectangular volume formulas internally.
           </p>
+        </div>
+
+        {/* Unit System Toggle */}
+        <div className={stepClass}>
+          <h3 className="text-sm font-semibold text-white/80">Unit System</h3>
+          <div className="mt-2">
+            <Tabs
+              value={unitSystem}
+              onValueChange={(v) => {
+                const sys = v as "imperial" | "metric";
+                setUnitSystem(sys);
+                setUnit(sys === "imperial" ? "in" : "cm");
+                setSubmitted(false);
+              }}
+              className="w-full max-w-xs"
+            >
+              <TabsList className="grid w-full grid-cols-2 rounded-sm bg-slate-950 p-1">
+                <TabsTrigger value="imperial" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Imperial</TabsTrigger>
+                <TabsTrigger value="metric" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Metric</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <p className="mt-1 text-xs text-white/60">Switches default units. Individual fields can still be adjusted.</p>
+          </div>
         </div>
 
         {/* MODE TOGGLE */}

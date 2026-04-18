@@ -151,8 +151,9 @@ function KV({ k, v }: { k: string; v: string }) {
    Component (Reset fixed + empty defaults)
 ========================= */
 export default function StaircaseConcreteCalc() {
+  const [unitSystem, setUnitSystem] = React.useState<"imperial" | "metric">("imperial");
   const [mode, setMode] = React.useState<Mode>("waist");
-  const [unit, setUnit] = React.useState<LinearUnit>("m");
+  const [unit, setUnit] = React.useState<LinearUnit>("ft");
 
   // shared inputs — EMPTY by default
   const [steps, setSteps] = React.useState<string>("");     // was "12"
@@ -300,8 +301,9 @@ export default function StaircaseConcreteCalc() {
    * - Hides results
    */
   function resetAll() {
+    setUnitSystem("imperial");
     setMode("waist");
-    setUnit("m");
+    setUnit("ft");
 
     setSteps("");
     setTread("");
@@ -483,6 +485,29 @@ export default function StaircaseConcreteCalc() {
             Waist-slab model uses <code className="text-slate-200">waist × width × sloped length</code> plus triangular step wedges
             <code className="text-slate-200"> 0.5 × tread × riser × width × steps</code>. Landings are rectangular prisms.
           </p>
+        </div>
+
+        {/* Unit System Toggle */}
+        <div className={stepClass}>
+          <h3 className="text-sm font-semibold text-white/80">Unit System</h3>
+          <div className="mt-2">
+            <Tabs
+              value={unitSystem}
+              onValueChange={(v) => {
+                const sys = v as "imperial" | "metric";
+                setUnitSystem(sys);
+                setUnit(sys === "imperial" ? "ft" : "m");
+                setSubmitted(false);
+              }}
+              className="w-full max-w-xs"
+            >
+              <TabsList className="grid w-full grid-cols-2 rounded-sm bg-slate-950 p-1">
+                <TabsTrigger value="imperial" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Imperial</TabsTrigger>
+                <TabsTrigger value="metric" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Metric</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <p className="mt-1 text-xs text-white/60">Switches default units. The dropdown allows fine-grained control.</p>
+          </div>
         </div>
 
         <form onSubmit={onCalculate} className="space-y-0">

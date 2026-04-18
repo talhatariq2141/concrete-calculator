@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Info, Printer } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toMeters as toMetersEngine } from "@/lib/calc-engine";
 
 /* -------------------- Types (unchanged) -------------------- */
@@ -124,17 +125,20 @@ function KV({ k, v }: { k: string; v: string }) {
 
 /* ------------------ Component (logic unchanged) ------------------ */
 export default function SlabConcreteCalc() {
+  // Unit system toggle
+  const [unitSystem, setUnitSystem] = useState<"imperial" | "metric">("imperial");
+
   // Inputs
   const [length, setLength] = useState<string>("");
-  const [lengthUnit, setLengthUnit] = useState<LinearUnit>("meters");
+  const [lengthUnit, setLengthUnit] = useState<LinearUnit>("feet");
   const [width, setWidth] = useState<string>("");
-  const [widthUnit, setWidthUnit] = useState<LinearUnit>("meters");
+  const [widthUnit, setWidthUnit] = useState<LinearUnit>("feet");
   const [thickness, setThickness] = useState<string>("");
-  const [thicknessUnit, setThicknessUnit] = useState<LinearUnit>("centimeter");
+  const [thicknessUnit, setThicknessUnit] = useState<LinearUnit>("inches");
 
   // Output unit selectors
-  const [areaOutUnit, setAreaOutUnit] = useState<AreaUnit>("m2");
-  const [volumeOutUnit, setVolumeOutUnit] = useState<VolumeUnit>("m3");
+  const [areaOutUnit, setAreaOutUnit] = useState<AreaUnit>("ft2");
+  const [volumeOutUnit, setVolumeOutUnit] = useState<VolumeUnit>("yd3");
 
   // UI flow
   const [submitted, setSubmitted] = useState(false);
@@ -188,14 +192,15 @@ export default function SlabConcreteCalc() {
   const numberOrEmpty = (v: string) => (v === "" ? "" : v.replace(/[^0-9.]/g, ""));
 
   const resetAll = () => {
+    setUnitSystem("imperial");
     setLength("");
     setWidth("");
     setThickness("");
-    setLengthUnit("meters");
-    setWidthUnit("meters");
-    setThicknessUnit("centimeter");
-    setAreaOutUnit("m2");
-    setVolumeOutUnit("m3");
+    setLengthUnit("feet");
+    setWidthUnit("feet");
+    setThicknessUnit("inches");
+    setAreaOutUnit("ft2");
+    setVolumeOutUnit("yd3");
     setSubmitted(false);
   };
 
@@ -383,6 +388,41 @@ export default function SlabConcreteCalc() {
           <p className="text-sm text-slate-300">
             Area uses <code className="text-slate-200">L × W</code>. Volume uses <code className="text-slate-200">Area × Thickness</code>.
           </p>
+        </div>
+
+        {/* Unit System Toggle */}
+        <div className={stepClass}>
+          <h3 className="text-sm font-semibold text-white/80">Unit System</h3>
+          <div className="mt-2">
+            <Tabs
+              value={unitSystem}
+              onValueChange={(v) => {
+                const sys = v as "imperial" | "metric";
+                setUnitSystem(sys);
+                if (sys === "imperial") {
+                  setLengthUnit("feet");
+                  setWidthUnit("feet");
+                  setThicknessUnit("inches");
+                  setAreaOutUnit("ft2");
+                  setVolumeOutUnit("yd3");
+                } else {
+                  setLengthUnit("meters");
+                  setWidthUnit("meters");
+                  setThicknessUnit("centimeter");
+                  setAreaOutUnit("m2");
+                  setVolumeOutUnit("m3");
+                }
+                setSubmitted(false);
+              }}
+              className="w-full max-w-xs"
+            >
+              <TabsList className="grid w-full grid-cols-2 rounded-sm bg-slate-950 p-1">
+                <TabsTrigger value="imperial" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Imperial</TabsTrigger>
+                <TabsTrigger value="metric" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Metric</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <p className="mt-1 text-xs text-white/60">Switches default units. Individual fields can still be adjusted below.</p>
+          </div>
         </div>
 
         <form onSubmit={handleCalculate} className="space-y-0">

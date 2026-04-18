@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { Printer } from "lucide-react"; // <-- for Print/Save icon
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toMeters as toMetersEngine } from "@/lib/calc-engine";
 import { MIX_PARTS, WALL_PHYSICS } from "@/lib/material-data";
 
@@ -95,9 +96,12 @@ const unitAbbrev = {
 ===================================================================================== */
 
 export default function WallConcreteCalc() {
+  // ---------------- Unit System ----------------
+  const [unitSystem, setUnitSystem] = React.useState<"imperial" | "metric">("imperial");
+
   // ---------------- Units ----------------
-  const [lenUnit, setLenUnit] = React.useState<LinearUnit>("m");
-  const [thickUnit, setThickUnit] = React.useState<ThickUnit>("cm");
+  const [lenUnit, setLenUnit] = React.useState<LinearUnit>("ft");
+  const [thickUnit, setThickUnit] = React.useState<ThickUnit>("in");
   const [outVolUnit, setOutVolUnit] = React.useState<VolumeUnit>("m3");
 
   // ---------------- Wall inputs (EMPTY) ----------------
@@ -207,8 +211,9 @@ export default function WallConcreteCalc() {
    * - Hides results
    */
   function resetAll() {
-    setLenUnit("m");
-    setThickUnit("cm");
+    setUnitSystem("imperial");
+    setLenUnit("ft");
+    setThickUnit("in");
     setOutVolUnit("m3");
     setLength("");
     setHeight("");
@@ -433,6 +438,35 @@ export default function WallConcreteCalc() {
 
       <CardContent className="p-6 pt-0">
         <form onSubmit={handleCalculate} className="space-y-0">
+          {/* Unit System Toggle */}
+          <div className={stepClass}>
+            <h3 className="text-sm font-semibold text-white/80">Unit System</h3>
+            <div className="mt-2">
+              <Tabs
+                value={unitSystem}
+                onValueChange={(v) => {
+                  const sys = v as "imperial" | "metric";
+                  setUnitSystem(sys);
+                  if (sys === "imperial") {
+                    setLenUnit("ft");
+                    setThickUnit("in");
+                  } else {
+                    setLenUnit("m");
+                    setThickUnit("cm");
+                  }
+                  setSubmitted(false);
+                }}
+                className="w-full max-w-xs"
+              >
+                <TabsList className="grid w-full grid-cols-2 rounded-sm bg-slate-950 p-1">
+                  <TabsTrigger value="imperial" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Imperial</TabsTrigger>
+                  <TabsTrigger value="metric" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Metric</TabsTrigger>
+                </TabsList>
+              </Tabs>
+              <p className="mt-1 text-xs text-white/60">Switches default units. Individual dropdowns can still be adjusted.</p>
+            </div>
+          </div>
+
           {/* STEP 1 — Choose Units */}
           <section className={stepClass} aria-labelledby="step1">
             <h3 id="step1" className="text-sm font-semibold text-white/80">

@@ -21,6 +21,7 @@ import {
     AlertTriangle,
     Truck,
 } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CONCRETE_BAG_COVERAGE } from "@/lib/material-data";
 
 /* -------------------- Constants -------------------- */
@@ -100,6 +101,9 @@ function KV({ k, v, highlight = false }: { k: string; v: string; highlight?: boo
 
 /* ------------------ Component ------------------ */
 export default function ConcreteDrivewayCostCalc() {
+    /* — Unit system — */
+    const [unitSystem, setUnitSystem] = useState<"imperial" | "metric">("imperial");
+
     /* — Geometry — */
     const [lengthFt, setLengthFt] = useState<string>("");
     const [widthFt, setWidthFt] = useState<string>("");
@@ -164,10 +168,16 @@ export default function ConcreteDrivewayCostCalc() {
 
     /* — Core calculation — */
     const calc = useMemo(() => {
-        const L = p(lengthFt);
-        const W = p(widthFt);
-        const EA = p(extraArea);
-        const TI = p(thicknessIn);
+        // Convert dimension inputs to imperial units the calculation logic expects
+        // If metric: length/width in meters → feet; thickness in cm → inches; extra area in m² → sq ft
+        const toFt = (v: string) => unitSystem === "imperial" ? p(v) : p(v) * 3.28084;
+        const toIn = (v: string) => unitSystem === "imperial" ? p(v) : p(v) / 2.54;
+        const toSqFt = (v: string) => unitSystem === "imperial" ? p(v) : p(v) * 10.7639;
+
+        const L = toFt(lengthFt);
+        const W = toFt(widthFt);
+        const EA = toSqFt(extraArea);
+        const TI = toIn(thicknessIn);
         const WP = clamp(p(wastePct), 0, 20);
 
         if (L <= 0 || W <= 0) return null;
@@ -292,7 +302,7 @@ export default function ConcreteDrivewayCostCalc() {
             };
         }
     }, [
-        lengthFt, widthFt, extraArea, thicknessIn, wastePct, pricingMode,
+        unitSystem, lengthFt, widthFt, extraArea, thicknessIn, wastePct, pricingMode,
         pricePerYd3, deliveryFee, truckCapacity, minDeliveryYd3, shortLoadThreshold,
         shortLoadFee, minChargeTotal, afterHoursFee, returnedConcreteFee,
         bagSizeLb, pricePerBag, effectiveBagYield,
@@ -308,6 +318,7 @@ export default function ConcreteDrivewayCostCalc() {
     const numberOrEmpty = (v: string) => (v === "" ? "" : v.replace(/[^0-9.]/g, ""));
 
     const resetAll = () => {
+        setUnitSystem("imperial");
         setLengthFt(""); setWidthFt(""); setExtraArea("0");
         setThicknessIn("4"); setWastePct("7");
         setPricingMode("READY_MIX");
@@ -477,40 +488,61 @@ export default function ConcreteDrivewayCostCalc() {
                 </div>
 
                 <form onSubmit={handleCalculate} className="space-y-0">
+                    {/* Unit System Toggle */}
+                    <div className={stepClass}>
+                        <h3 className="text-sm font-semibold text-white/80">Unit System</h3>
+                        <div className="mt-2">
+                            <Tabs
+                                value={unitSystem}
+                                onValueChange={(v) => {
+                                    setUnitSystem(v as "imperial" | "metric");
+                                    setSubmitted(false);
+                                }}
+                                className="w-full max-w-xs"
+                            >
+                                <TabsList className="grid w-full grid-cols-2 rounded-sm bg-slate-950 p-1">
+                                    <TabsTrigger value="imperial" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Imperial</TabsTrigger>
+                                    <TabsTrigger value="metric" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Metric</TabsTrigger>
+                                </TabsList>
+                            </Tabs>
+                            <p className="mt-1 text-xs text-white/60">Imperial uses ft/in. Metric uses m/cm (automatically converted).</p>
+                        </div>
+                    </div>
+
                     {/* STEP 1 — Geometry */}
                     <section className={stepClass}>
                         <h3 className="text-sm font-semibold text-white/80">Step 1 — Driveway Dimensions</h3>
                         <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-6">
                             <div>
-                                <Label htmlFor="dw-length" className="text-teal-500">Length (ft)</Label>
+                                <Label htmlFor="dw-length" className="text-teal-500">{unitSystem === "imperial" ? "Length (ft)" : "Length (m)"}</Label>
                                 <NumberInput
                                     id="dw-length"
                                     value={lengthFt}
                                     onChange={(v) => { setLengthFt(numberOrEmpty(v)); setSubmitted(false); }}
                                     placeholder="e.g., 40"
-                                    badge="ft"
-                                    tooltip="Measure the driveway from the garage (or start point) to the street in feet."
+                                    badge={unitSystem === "imperial" ? "ft" : "m"}
+                                    tooltip={unitSystem === "imperial" ? "Measure the driveway from the garage (or start point) to the street in feet." : "Measure the driveway length in meters."}
                                 />
                             </div>
                             <div>
-                                <Label htmlFor="dw-width" className="text-teal-500">Width (ft)</Label>
+                                <Label htmlFor="dw-width" className="text-teal-500">{unitSystem === "imperial" ? "Width (ft)" : "Width (m)"}</Label>
                                 <NumberInput
                                     id="dw-width"
                                     value={widthFt}
                                     onChange={(v) => { setWidthFt(numberOrEmpty(v)); setSubmitted(false); }}
                                     placeholder="e.g., 12"
-                                    badge="ft"
-                                    tooltip="Measure the driveway side-to-side in feet."
+                                    badge={unitSystem === "imperial" ? "ft" : "m"}
+                                    tooltip={unitSystem === "imperial" ? "Measure the driveway side-to-side in feet." : "Measure the driveway width in meters."}
                                 />
                             </div>
                             <div>
-                                <Label htmlFor="dw-extra" className="text-teal-500">Extra Area (sq ft)</Label>
+                                <Label htmlFor="dw-extra" className="text-teal-500">{unitSystem === "imperial" ? "Extra Area (sq ft)" : "Extra Area (m²)"}</Label>
                                 <NumberInput
                                     id="dw-extra"
                                     value={extraArea}
                                     onChange={(v) => { setExtraArea(numberOrEmpty(v)); setSubmitted(false); }}
                                     placeholder="0"
-                                    badge="sq ft"
+                                    badge={unitSystem === "imperial" ? "sq ft" : "m²"}
                                     tooltip="Add turnarounds, aprons, or widened sections (optional)."
                                 />
                             </div>
@@ -522,14 +554,14 @@ export default function ConcreteDrivewayCostCalc() {
                         <h3 className="text-sm font-semibold text-white/80">Step 2 — Thickness &amp; Waste</h3>
                         <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div>
-                                <Label htmlFor="dw-thick" className="text-teal-500">Thickness (inches)</Label>
+                                <Label htmlFor="dw-thick" className="text-teal-500">{unitSystem === "imperial" ? "Thickness (inches)" : "Thickness (cm)"}</Label>
                                 <NumberInput
                                     id="dw-thick"
                                     value={thicknessIn}
                                     onChange={(v) => { setThicknessIn(numberOrEmpty(v)); setSubmitted(false); }}
-                                    placeholder="4"
-                                    badge="in"
-                                    tooltip="Common residential driveways are 4–5 inches. Choose thicker if heavier vehicles use the driveway."
+                                    placeholder={unitSystem === "imperial" ? "4" : "10"}
+                                    badge={unitSystem === "imperial" ? "in" : "cm"}
+                                    tooltip={unitSystem === "imperial" ? "Common residential driveways are 4–5 inches. Choose thicker if heavier vehicles use the driveway." : "Common residential driveways are 10–13 cm. Choose thicker if heavier vehicles use the driveway."}
                                 />
                                 <div className="flex gap-2 mt-2">
                                     <ThicknessPreset val="4" label='4" Standard' />

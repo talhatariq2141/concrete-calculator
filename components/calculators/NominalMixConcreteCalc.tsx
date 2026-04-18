@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Info, Printer } from "lucide-react"; // ⬅️ NEW: Printer icon for Print/Save
 import { NOMINAL_MIX_RATIOS, VOL_TO_M3 } from "@/lib/material-data";
 
@@ -89,9 +90,12 @@ const NumberInput = ({
    COMPONENT (logic untouched; UI/UX refactor to Dark Slate + Teal)
 --------------------------------------------------------------------------------- */
 export default function NominalMixConcreteCalc() {
+  // Unit System
+  const [unitSystem, setUnitSystem] = React.useState<"imperial" | "metric">("imperial");
+
   // Inputs
   const [grade, setGrade] = React.useState<GradeKey>("M20");
-  const [unitVol, setUnitVol] = React.useState<UnitVol>("m3");
+  const [unitVol, setUnitVol] = React.useState<UnitVol>("yd3");
   const [inputVol, setInputVol] = React.useState<string>("1");
 
   const [dryFactor, setDryFactor] = React.useState<number>(1.54);
@@ -194,8 +198,9 @@ export default function NominalMixConcreteCalc() {
   }
 
   function onReset() {
+    setUnitSystem("imperial");
     setGrade("M20");
-    setUnitVol("m3");
+    setUnitVol("yd3");
     setInputVol("1");
     setDryFactor(1.54);
     setWastagePct(2);
@@ -381,6 +386,33 @@ export default function NominalMixConcreteCalc() {
             Mix ratio is selected by grade (e.g., M20 = 1:1.5:3). You can override W/C and material densities
             if needed for local materials.
           </p>
+        </div>
+
+        {/* Unit System Toggle */}
+        <div className={stepClass}>
+          <h3 className="text-sm font-semibold text-white/80">Unit System</h3>
+          <div className="mt-2">
+            <Tabs
+              value={unitSystem}
+              onValueChange={(v) => {
+                const sys = v as "imperial" | "metric";
+                setUnitSystem(sys);
+                if (sys === "imperial") {
+                  setUnitVol("yd3");
+                } else {
+                  setUnitVol("m3");
+                }
+                setSubmitted(false);
+              }}
+              className="w-full max-w-xs"
+            >
+              <TabsList className="grid w-full grid-cols-2 rounded-sm bg-slate-950 p-1">
+                <TabsTrigger value="imperial" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Imperial</TabsTrigger>
+                <TabsTrigger value="metric" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Metric</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <p className="mt-1 text-xs text-white/60">Switches default units. Individual dropdowns can still be adjusted.</p>
+          </div>
         </div>
 
         {/* STEP 1 — Grade, Volume & W/C */}

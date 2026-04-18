@@ -13,6 +13,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Info, Printer, Calculator, ShieldCheck, AlertTriangle } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { REBAR_TABLE_SLAB } from "@/lib/material-data";
 
 /* -------------------- Types -------------------- */
@@ -91,6 +92,9 @@ function KV({ k, v, highlight = false, alert = false }: { k: string; v: string; 
 
 /* ------------------ Component ------------------ */
 export default function ConcreteSlabLoadCapacityCalc() {
+    // Unit system
+    const [unitSystem, setUnitSystem] = useState<"imperial" | "metric">("imperial");
+
     // Geometry
     const [thickness, setThickness] = useState<string>("6");
     const [span, setSpan] = useState<string>("12");
@@ -119,13 +123,18 @@ export default function ConcreteSlabLoadCapacityCalc() {
 
     // Calculations
     const calc = useMemo(() => {
-        const h = parseFloat(thickness);
-        const L = parseFloat(span);
+        // Dimension inputs: convert to imperial (inches / feet) when metric is selected
+        // metric: thickness/spacing/cover in cm → inches; span in m → feet
+        const toIn = (v: string) => unitSystem === "imperial" ? parseFloat(v) : parseFloat(v) / 2.54;
+        const toFt = (v: string) => unitSystem === "imperial" ? parseFloat(v) : parseFloat(v) * 3.28084;
+
+        const h = toIn(thickness);
+        const L = toFt(span);
         const fcp = parseFloat(fc);
         const fyp = parseFloat(fy);
         const gC = parseFloat(gammaC);
-        const s = parseFloat(spacing);
-        const cov = parseFloat(cover);
+        const s = toIn(spacing);
+        const cov = toIn(cover);
         const sd = parseFloat(superDead) || 0;
         const rl = parseFloat(reqLive) || 0;
 
@@ -190,7 +199,7 @@ export default function ConcreteSlabLoadCapacityCalc() {
             comparison,
             isLmaxPositive: Lmax >= 0,
         };
-    }, [thickness, span, fc, fy, gammaC, barSize, spacing, cover, superDead, reqLive]);
+    }, [unitSystem, thickness, span, fc, fy, gammaC, barSize, spacing, cover, superDead, reqLive]);
 
     const handleCalculate = (e: React.FormEvent) => {
         e.preventDefault();
@@ -199,6 +208,7 @@ export default function ConcreteSlabLoadCapacityCalc() {
 
 
     const resetAll = () => {
+        setUnitSystem("imperial");
         setThickness("6");
         setSpan("12");
         setFc("4000");
@@ -325,16 +335,37 @@ export default function ConcreteSlabLoadCapacityCalc() {
                 </div>
 
                 <form onSubmit={handleCalculate}>
+                    {/* Unit System Toggle */}
+                    <div className={stepClass}>
+                        <h3 className="text-sm font-semibold text-white/80">Unit System</h3>
+                        <div className="mt-2">
+                            <Tabs
+                                value={unitSystem}
+                                onValueChange={(v) => {
+                                    setUnitSystem(v as "imperial" | "metric");
+                                    setSubmitted(false);
+                                }}
+                                className="w-full max-w-xs"
+                            >
+                                <TabsList className="grid w-full grid-cols-2 rounded-sm bg-slate-950 p-1">
+                                    <TabsTrigger value="imperial" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Imperial</TabsTrigger>
+                                    <TabsTrigger value="metric" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Metric</TabsTrigger>
+                                </TabsList>
+                            </Tabs>
+                            <p className="mt-1 text-xs text-white/60">Imperial uses ft/in. Metric uses m/cm (automatically converted). Structural units (psi, psf) remain unchanged.</p>
+                        </div>
+                    </div>
+
                     <section className={stepClass}>
                         <h3 className="text-sm font-semibold text-white/80">Step 1 — Geometry & Materials</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                             <div>
                                 <Label htmlFor="thickness" className="text-slate-300">Slab Thickness</Label>
-                                <NumberInput id="thickness" value={thickness} onChange={setThickness} badge="in" />
+                                <NumberInput id="thickness" value={thickness} onChange={setThickness} badge={unitSystem === "imperial" ? "in" : "cm"} />
                             </div>
                             <div>
                                 <Label htmlFor="span" className="text-slate-300">Clear Span (Center to Center)</Label>
-                                <NumberInput id="span" value={span} onChange={setSpan} badge="ft" />
+                                <NumberInput id="span" value={span} onChange={setSpan} badge={unitSystem === "imperial" ? "ft" : "m"} />
                             </div>
                             <div>
                                 <Label htmlFor="fc" className="text-slate-300">Concrete Strength (f&apos;c)</Label>
@@ -365,11 +396,11 @@ export default function ConcreteSlabLoadCapacityCalc() {
                             </div>
                             <div>
                                 <Label htmlFor="spacing" className="text-slate-300">Bar Spacing (OC)</Label>
-                                <NumberInput id="spacing" value={spacing} onChange={setSpacing} badge="in" />
+                                <NumberInput id="spacing" value={spacing} onChange={setSpacing} badge={unitSystem === "imperial" ? "in" : "cm"} />
                             </div>
                             <div>
                                 <Label htmlFor="cover" className="text-slate-300">Clear Cover</Label>
-                                <NumberInput id="cover" value={cover} onChange={setCover} badge="in" />
+                                <NumberInput id="cover" value={cover} onChange={setCover} badge={unitSystem === "imperial" ? "in" : "cm"} />
                             </div>
                             <div>
                                 <Label htmlFor="fy" className="text-slate-300">Steel Yield (fy)</Label>

@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { Info, Printer } from "lucide-react";
 import { toFeet, cubicFtToYd, cubicFtToM3 } from "@/lib/calc-engine";
@@ -120,6 +121,9 @@ type Results = {
 };
 
 export default function CrushedConcreteCalc() {
+  /* --- Unit System --- */
+  const [unitSystem, setUnitSystem] = useState<"imperial" | "metric">("imperial");
+
   /* --- Units --- */
   const [unit, setUnit] = useState<LinearUnit>("ft");
 
@@ -352,6 +356,30 @@ export default function CrushedConcreteCalc() {
           </p>
         </div>
 
+        {/* Unit System Toggle */}
+        <div className={stepClass}>
+          <h3 className="text-sm font-semibold text-white/80">Unit System</h3>
+          <div className="mt-2">
+            <Tabs
+              value={unitSystem}
+              onValueChange={(v) => {
+                const sys = v as "imperial" | "metric";
+                setUnitSystem(sys);
+                setUnit(sys === "imperial" ? "ft" : "m");
+                setDepthUnit(sys === "imperial" ? "in" : "cm");
+                setSubmitted(false);
+              }}
+              className="w-full max-w-xs"
+            >
+              <TabsList className="grid w-full grid-cols-2 rounded-sm bg-slate-950 p-1">
+                <TabsTrigger value="imperial" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Imperial</TabsTrigger>
+                <TabsTrigger value="metric" className="rounded-sm text-slate-300 data-[state=active]:bg-slate-700 data-[state=active]:text-white">Metric</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            <p className="mt-1 text-xs text-white/60">Switches default units. Individual fields can still be adjusted.</p>
+          </div>
+        </div>
+
         <section className={stepClass}>
           <h3 className="text-sm font-semibold text-white/80">Step 1 — Calculation Mode</h3>
           <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -520,6 +548,7 @@ export default function CrushedConcreteCalc() {
           </Button>
           <Button
             onClick={() => {
+              setUnitSystem("imperial");
               setShape("rectangle"); setLength("10"); setWidth("10"); setRadius("5"); setBase("10"); setHeight("10"); setBase1("8"); setBase2("12"); setCustomArea("100"); setKnownVolume("5"); setCoverageTons("10");
               setUnit("ft"); setDepth("4"); setDepthUnit("in"); setWastePct("10"); setDensityType("standard"); setTruckCapacityTons("15");
               setPrice("40"); setDeliveryFee("100"); setResults(null); setSubmitted(false);
